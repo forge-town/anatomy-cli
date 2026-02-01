@@ -1,0 +1,11 @@
+{
+  "name": "anatomy-cli",
+  "version": "0.0.1",
+  "main": "index.js",
+  "bin": {
+    "anatomy-cli": "./bin/index.js",
+    "anatomy": "./bin/index.js"
+  },
+  "author": "forge-town",
+  "description": ""
+}
