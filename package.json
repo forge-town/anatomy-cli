@@ -1,11 +1,45 @@
 {
   "name": "anatomy-cli",
   "version": "0.0.1",
-  "main": "index.js",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "anatomy-cli": "./bin/index.js",
-    "anatomy": "./bin/index.js"
+    "anatomy-cli": "./bin/anatomy.js",
+    "anatomy": "./bin/anatomy.js"
   },
   "author": "forge-town",
-  "description": ""
+  "description": "Define, examine, and scaffold any structure with Zod schemas",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forge-town/anatomy-cli.git"
+  },
+  "keywords": [
+    "anatomy",
+    "zod",
+    "schema",
+    "validation",
+    "scaffold"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/forge-town/anatomy-cli/issues"
+  },
+  "homepage": "https://github.com/forge-town/anatomy-cli#readme"
 }
