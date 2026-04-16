@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { examineCommand } from "./commands/examine.js";
 import { skeletonCommand } from "./commands/skeleton.js";
+import { schemaCommand } from "./commands/schema.js";
 
 export function createCli(): Command {
   const program = new Command();
@@ -12,6 +13,7 @@ export function createCli(): Command {
 
   program.addCommand(examineCommand());
   program.addCommand(skeletonCommand());
+  program.addCommand(schemaCommand());
 
   return program;
 }

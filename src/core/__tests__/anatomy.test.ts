@@ -62,4 +62,36 @@ describe("defineAnatomy", () => {
     const failure = anatomy.safeParse({ name: 123 });
     expect(failure.success).toBe(false);
   });
+
+  it("should expose toJSONSchema that returns standard JSON Schema", () => {
+    const anatomy = defineAnatomy({
+      name: "test",
+      schema: z.object({
+        name: z.string(),
+        port: z.number().default(3000),
+      }),
+    });
+
+    const jsonSchema = anatomy.toJSONSchema();
+
+    expect(jsonSchema).toHaveProperty("$schema");
+    expect(jsonSchema.type).toBe("object");
+    expect(jsonSchema.properties).toHaveProperty("name");
+    expect(jsonSchema.properties).toHaveProperty("port");
+    expect(jsonSchema.properties.port.default).toBe(3000);
+    expect(jsonSchema.required).toContain("name");
+  });
+
+  it("should include anatomy metadata in JSON Schema", () => {
+    const anatomy = defineAnatomy({
+      name: "my-component",
+      schema: z.object({ name: z.string() }),
+      description: "My component anatomy",
+    });
+
+    const jsonSchema = anatomy.toJSONSchema();
+
+    expect(jsonSchema.title).toBe("my-component");
+    expect(jsonSchema.description).toBe("My component anatomy");
+  });
 });

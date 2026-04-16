@@ -1,27 +1,25 @@
 import { Command } from "commander";
 import { resolve } from "node:path";
 import chalk from "chalk";
-import { skeleton } from "../../core/skeleton.js";
 import { loadAnatomy } from "../loader.js";
 
-export function skeletonCommand(): Command {
-  const cmd = new Command("skeleton");
+export function schemaCommand(): Command {
+  const cmd = new Command("schema");
 
   cmd
-    .description("Generate a skeleton JSON from an anatomy definition (.ts/.js or .json)")
+    .description("Export anatomy definition as JSON Schema")
     .requiredOption("-a, --anatomy <path>", "Path to anatomy definition file (.ts/.js/.json)")
     .option("-o, --output <path>", "Output file path (default: stdout)")
     .action(async (options: { anatomy: string; output?: string }) => {
       const anatomy = await loadAnatomy(options.anatomy);
-      const result = skeleton(anatomy);
-
-      const json = JSON.stringify(result, null, 2);
+      const jsonSchema = anatomy.toJSONSchema();
+      const json = JSON.stringify(jsonSchema, null, 2);
 
       if (options.output) {
         const { writeFile } = await import("node:fs/promises");
         const outputPath = resolve(options.output);
         await writeFile(outputPath, json + "\n", "utf-8");
-        console.log(chalk.green(`✓ Skeleton written to ${outputPath}`));
+        console.log(chalk.green(`✓ JSON Schema written to ${outputPath}`));
       } else {
         console.log(json);
       }

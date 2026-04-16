@@ -1,12 +1,4 @@
-import { z } from "zod";
-
-interface Anatomy<T extends z.ZodType> {
-  name: string;
-  schema: T;
-  description: string | undefined;
-  parse: (data: unknown) => z.infer<T>;
-  safeParse: (data: unknown) => z.SafeParseReturnType<unknown, z.infer<T>>;
-}
+import type { Anatomy } from "./anatomy.js";
 
 interface ExamineError {
   path: (string | number)[];
@@ -29,10 +21,10 @@ interface ExamineFailure {
 
 type ExamineResult<T> = ExamineSuccess<T> | ExamineFailure;
 
-export function examine<T extends z.ZodType>(
+export function examine<T>(
   anatomy: Anatomy<T>,
   data: unknown
-): ExamineResult<z.infer<T>> {
+): ExamineResult<T> {
   const result = anatomy.safeParse(data);
 
   if (result.success) {
