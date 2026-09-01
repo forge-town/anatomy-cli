@@ -28,6 +28,9 @@
   "scripts": {
     "anatomy": "bun run apps/anatomy-cli/src/main.ts",
     "anatomy-cli": "bun run apps/anatomy-cli/src/main.ts",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "build": "bun run --filter 'anatomy-cli' build",
     "check-types": "bunx --no-install tsc --noEmit && bun run --filter '*' check-types",
     "lint": "bun run --filter '*' lint",
@@ -40,12 +43,23 @@
   "packageManager": "bun@1.3.11",
   "devDependencies": {
     "@anatomy-cli/anatomy": "workspace:*",
-    "anatomy-cli": "workspace:*",
     "@anatomy-cli/config": "workspace:*",
     "@anatomy-cli/schemas": "workspace:*",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^25.9.2",
+    "anatomy-cli": "workspace:*",
     "oxlint": "^1.59.0",
+    "shadcn-vue": "^2.8.2",
+    "tailwindcss": "^4.3.3",
     "typescript": "5.9.2",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.8"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^1.0.0",
+    "reka-ui": "^2.10.4",
+    "tailwind-merge": "^3.6.0"
   }
 }

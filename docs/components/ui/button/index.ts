@@ -1,0 +1,4 @@
+import { cva, type VariantProps } from "class-variance-authority";
+export { default as Button } from "./Button.vue";
+export const buttonVariants = cva("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#32f3e9] disabled:pointer-events-none disabled:opacity-50", { variants: { variant: { default: "bg-white text-[#16171d] hover:bg-[#f4f3ec]", outline: "border border-[#5b5661] bg-transparent text-white hover:border-white", ghost: "text-white hover:bg-[#2a2530]", link: "text-[#32f3e9] underline-offset-4 hover:underline" }, size: { default: "h-10 px-4 py-2", sm: "h-9 rounded-md px-3", lg: "h-11 rounded-md px-8", icon: "h-10 w-10" } }, defaultVariants: { variant: "default", size: "default" } });
+export type ButtonVariants = VariantProps<typeof buttonVariants>;

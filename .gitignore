@@ -1,6 +1,7 @@
 node_modules/
 .bun/
 dist/
+docs/.vitepress/dist/
 coverage/
 .turbo/
 .anatomy-cli-test/
@@ -9,6 +10,7 @@ coverage/
 *.tgz
 *.tsbuildinfo
 *.pem
+.vitepress
 
 # Local environment and credentials
 .env
