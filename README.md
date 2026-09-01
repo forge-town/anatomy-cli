@@ -39,7 +39,7 @@ as a standalone Node.js entry point, so registry installs do not need Bun.
 
 The commands below install the global `anatomy-cli` command from npm. They are
 the five supported installation styles; the package must first be published as
-`@anatomy-cli/cli` for the registry-based commands to resolve.
+`anatomy-cli` for the registry-based commands to resolve.
 
 ### macOS / Linux (curl)
 
@@ -56,19 +56,19 @@ powershell -c "irm https://raw.githubusercontent.com/forge-town/anatomy-cli/main
 ### npm
 
 ```bash
-npm install -g --ignore-scripts @anatomy-cli/cli
+npm install -g --ignore-scripts anatomy-cli
 ```
 
 ### pnpm
 
 ```bash
-pnpm add -g --ignore-scripts @anatomy-cli/cli
+pnpm add -g --ignore-scripts anatomy-cli
 ```
 
 ### Bun
 
 ```bash
-bun add -g --ignore-scripts @anatomy-cli/cli
+bun add -g --ignore-scripts anatomy-cli
 ```
 
 After any installation method, verify the command with:

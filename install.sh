@@ -2,7 +2,7 @@
 
 set -eu
 
-package_name="${ANATOMY_CLI_PACKAGE:-@anatomy-cli/cli}"
+package_name="${ANATOMY_CLI_PACKAGE:-anatomy-cli}"
 package_version="${ANATOMY_CLI_VERSION:-latest}"
 package_spec="${ANATOMY_CLI_SPEC:-${package_name}@${package_version}}"
 

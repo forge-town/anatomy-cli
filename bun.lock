@@ -3,23 +3,24 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "anatomy-cli",
+      "name": "anatomy-cli-workspace",
       "devDependencies": {
         "@anatomy-cli/anatomy": "workspace:*",
-        "@anatomy-cli/cli": "workspace:*",
         "@anatomy-cli/config": "workspace:*",
         "@anatomy-cli/schemas": "workspace:*",
         "@types/node": "^25.9.2",
+        "anatomy-cli": "workspace:*",
         "oxlint": "^1.59.0",
         "typescript": "5.9.2",
         "vitest": "^4.1.8",
       },
     },
     "apps/anatomy-cli": {
-      "name": "@anatomy-cli/cli",
-      "version": "0.1.0",
+      "name": "anatomy-cli",
+      "version": "0.0.2",
       "bin": {
         "anatomy-cli": "./bin/anatomy-cli.js",
+        "anatomy": "./bin/anatomy-cli.js",
       },
       "devDependencies": {
         "@anatomy-cli/anatomy": "workspace:*",
@@ -71,8 +72,6 @@
   },
   "packages": {
     "@anatomy-cli/anatomy": ["@anatomy-cli/anatomy@workspace:packages/anatomy"],
-
-    "@anatomy-cli/cli": ["@anatomy-cli/cli@workspace:apps/anatomy-cli"],
 
     "@anatomy-cli/config": ["@anatomy-cli/config@workspace:packages/anatomy-cli-config"],
 
@@ -177,6 +176,8 @@
     "@vitest/spy": ["@vitest/spy@4.1.11", "", {}, "sha512-apNa/prQy2qCeywhnixOHPRCgGNhvg7T4Dapfl1GahLp/R+uhBm5cPyFoNVyqsNd2h1nJxL6BqqdIjiABL60YA=="],
 
     "@vitest/utils": ["@vitest/utils@4.1.11", "", { "dependencies": { "@vitest/pretty-format": "4.1.11", "convert-source-map": "^2.0.0", "tinyrainbow": "^3.1.0" } }, "sha512-zTCVGpyFsGWBhllOyKlTw/vnr6D9qxsfSDyfbyZmTyjHw5N/VuvzHpHoQjm2ZJzn4RJgx5w4r7V0er69CmLgPQ=="],
+
+    "anatomy-cli": ["anatomy-cli@workspace:apps/anatomy-cli"],
 
     "assertion-error": ["assertion-error@2.0.1", "", {}, "sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA=="],
 

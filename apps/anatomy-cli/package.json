@@ -1,8 +1,22 @@
 {
-  "name": "@anatomy-cli/cli",
-  "version": "0.1.0",
+  "name": "anatomy-cli",
+  "version": "0.0.2",
   "description": "Scan repository file trees against Anatomy Draft definitions.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forge-town/anatomy-cli.git",
+    "directory": "apps/anatomy-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/forge-town/anatomy-cli/issues"
+  },
+  "homepage": "https://github.com/forge-town/anatomy-cli#readme",
+  "keywords": [
+    "anatomy",
+    "cli",
+    "validation"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -13,7 +27,8 @@
     "anatomies"
   ],
   "bin": {
-    "anatomy-cli": "./bin/anatomy-cli.js"
+    "anatomy-cli": "./bin/anatomy-cli.js",
+    "anatomy": "./bin/anatomy-cli.js"
   },
   "exports": {
     ".": "./dist/index.js"

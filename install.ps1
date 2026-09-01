@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$packageName = if ($env:ANATOMY_CLI_PACKAGE) { $env:ANATOMY_CLI_PACKAGE } else { "@anatomy-cli/cli" }
+$packageName = if ($env:ANATOMY_CLI_PACKAGE) { $env:ANATOMY_CLI_PACKAGE } else { "anatomy-cli" }
 $packageVersion = if ($env:ANATOMY_CLI_VERSION) { $env:ANATOMY_CLI_VERSION } else { "latest" }
 $packageSpec = if ($env:ANATOMY_CLI_SPEC) { $env:ANATOMY_CLI_SPEC } else { "$packageName@$packageVersion" }
 
