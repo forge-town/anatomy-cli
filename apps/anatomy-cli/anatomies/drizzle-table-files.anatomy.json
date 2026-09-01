@@ -1,0 +1,113 @@
+{
+  "name": "Drizzle table files",
+  "purpose": "Require Drizzle table definition files to use the *.table.ts suffix while allowing the tables barrel and optional JSON support modules.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "index.ts"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000002",
+          "kind": "file",
+          "name": {
+            "type": "placeholder",
+            "value": "<Table>.table.ts"
+          },
+          "quantity": "zero_or_more",
+          "policyOverrides": {}
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000003",
+          "kind": "directory",
+          "name": {
+            "type": "literal",
+            "value": "agent"
+          },
+          "quantity": "optional",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000004",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Table>.table.ts"
+              },
+              "quantity": "zero_or_more",
+              "policyOverrides": {}
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000005",
+              "kind": "file",
+              "name": {
+                "type": "literal",
+                "value": "json.ts"
+              },
+              "quantity": "optional",
+              "policyOverrides": {}
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000006",
+          "kind": "directory",
+          "name": {
+            "type": "literal",
+            "value": "better-auth"
+          },
+          "quantity": "optional",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000007",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Table>.table.ts"
+              },
+              "quantity": "zero_or_more",
+              "policyOverrides": {}
+            }
+          ]
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000008",
+          "kind": "directory",
+          "name": {
+            "type": "literal",
+            "value": "storage"
+          },
+          "quantity": "optional",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000009",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Table>.table.ts"
+              },
+              "quantity": "zero_or_more",
+              "policyOverrides": {}
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

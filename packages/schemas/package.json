@@ -1,0 +1,27 @@
+{
+  "name": "@anatomy-cli/schemas",
+  "version": "0.1.0",
+  "description": "Runtime Zod schemas for Anatomy Draft definitions.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./anatomy": "./src/anatomy/index.ts",
+    "./anatomy/*": "./src/anatomy/*"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "oxlint src/",
+    "test": "vitest run --passWithNoTests",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "oxlint": "^1.59.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.8"
+  }
+}

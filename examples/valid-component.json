@@ -1,9 +1,0 @@
-{
-  "name": "UserCard",
-  "files": {
-    "component": "UserCard.tsx",
-    "test": "UserCard.test.tsx",
-    "story": "UserCard.stories.tsx",
-    "index": "index.ts"
-  }
-}

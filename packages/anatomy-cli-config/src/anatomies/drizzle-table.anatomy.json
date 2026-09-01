@@ -1,0 +1,60 @@
+{
+  "name": "Tellyn Drizzle table files",
+  "purpose": "Require domain-grouped Drizzle table modules to use the *.table.ts suffix and explicit barrels.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "id": "12000000-0000-4000-8000-000000000001",
+          "kind": "file",
+          "name": { "type": "literal", "value": "index.ts" },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "12000000-0000-4000-8000-000000000002",
+          "kind": "directory",
+          "name": { "type": "placeholder", "value": "<Domain>" },
+          "quantity": "one_or_more",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "12000000-0000-4000-8000-000000000003",
+              "kind": "file",
+              "name": { "type": "literal", "value": "index.ts" },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "12000000-0000-4000-8000-000000000004",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Table>.table.ts"
+              },
+              "quantity": "one_or_more",
+              "policyOverrides": {}
+            },
+            {
+              "id": "12000000-0000-4000-8000-000000000005",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Table>.spec.ts"
+              },
+              "quantity": "zero_or_more",
+              "policyOverrides": {}
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@anatomy-cli/anatomy",
+  "version": "0.1.0",
+  "description": "Anatomy Draft tree model, validation, and conformance engine.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": "./src/core/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "oxlint src/",
+    "test": "vitest run",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "dependencies": {
+    "@anatomy-cli/schemas": "workspace:*",
+    "neverthrow": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "oxlint": "^1.59.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.8"
+  }
+}

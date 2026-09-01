@@ -13,10 +13,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": [
-    "apps/anatomy-cli/src",
-    "packages/anatomy/src",
-    "packages/schemas/src",
-    "packages/anatomy-cli-config/src"
-  ]
+  "include": ["src"]
 }

@@ -1,0 +1,30 @@
+{
+  "name": "@anatomy-cli/config",
+  "version": "0.1.0",
+  "description": "Reusable Anatomy Draft definitions for common repository structures.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./dao": "./src/anatomies/dao.anatomy.json",
+    "./drizzle-relation": "./src/anatomies/drizzle-relation.anatomy.json",
+    "./drizzle-table": "./src/anatomies/drizzle-table.anatomy.json",
+    "./mobile-screen": "./src/anatomies/mobile-screen.anatomy.json",
+    "./repository": "./src/anatomies/repository.anatomy.json",
+    "./schemas": "./src/anatomies/schemas.anatomy.json",
+    "./service": "./src/anatomies/service.anatomy.json",
+    "./trpc-router": "./src/anatomies/trpc-router.anatomy.json",
+    "./zod-schema": "./src/anatomies/zod-schema.anatomy.json"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "oxlint src/",
+    "test": "vitest run",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "oxlint": "^1.59.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.8"
+  }
+}

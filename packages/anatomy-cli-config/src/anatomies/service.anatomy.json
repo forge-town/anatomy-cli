@@ -1,0 +1,210 @@
+{
+  "name": "Tellyn Service files",
+  "purpose": "Require PascalCase *Service modules with explicit barrels and conventional helper, method, and schema submodules.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "id": "16000000-0000-4000-8000-000000000001",
+          "kind": "file",
+          "name": { "type": "literal", "value": "index.ts" },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "16000000-0000-4000-8000-000000000002",
+          "kind": "directory",
+          "name": { "type": "placeholder", "value": "<Name>Service" },
+          "quantity": "one_or_more",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "16000000-0000-4000-8000-000000000003",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>.service.ts"
+              },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "16000000-0000-4000-8000-000000000004",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>.service.spec.ts"
+              },
+              "quantity": "optional",
+              "policyOverrides": {}
+            },
+            {
+              "id": "16000000-0000-4000-8000-000000000005",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>.service.error.ts"
+              },
+              "quantity": "optional",
+              "policyOverrides": {}
+            },
+            {
+              "id": "16000000-0000-4000-8000-000000000006",
+              "kind": "file",
+              "name": { "type": "literal", "value": "index.ts" },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "16000000-0000-4000-8000-000000000007",
+              "kind": "directory",
+              "name": { "type": "literal", "value": "helpers" },
+              "quantity": "optional",
+              "policyOverrides": {},
+              "children": [
+                {
+                  "id": "16000000-0000-4000-8000-000000000008",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "index.ts" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000009",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Helper>.helper.spec.ts"
+                  },
+                  "quantity": "zero_or_more",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000010",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Helper>.helper.ts"
+                  },
+                  "quantity": "one_or_more",
+                  "policyOverrides": {}
+                }
+              ]
+            },
+            {
+              "id": "16000000-0000-4000-8000-000000000011",
+              "kind": "directory",
+              "name": { "type": "literal", "value": "methods" },
+              "quantity": "optional",
+              "policyOverrides": {},
+              "children": [
+                {
+                  "id": "16000000-0000-4000-8000-000000000012",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "index.ts" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000013",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Method>.method.spec.ts"
+                  },
+                  "quantity": "zero_or_more",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000014",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Method>.method.ts"
+                  },
+                  "quantity": "one_or_more",
+                  "policyOverrides": {}
+                }
+              ]
+            },
+            {
+              "id": "16000000-0000-4000-8000-000000000015",
+              "kind": "directory",
+              "name": { "type": "literal", "value": "schemas" },
+              "quantity": "optional",
+              "policyOverrides": {},
+              "children": [
+                {
+                  "id": "16000000-0000-4000-8000-000000000016",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "index.ts" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000017",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Schema>.schema.ts"
+                  },
+                  "quantity": "one_or_more",
+                  "policyOverrides": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "16000000-0000-4000-8000-000000000018",
+          "kind": "directory",
+          "name": { "type": "literal", "value": "integrations" },
+          "quantity": "optional",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "16000000-0000-4000-8000-000000000019",
+              "kind": "directory",
+              "name": { "type": "placeholder", "value": "<Integration>" },
+              "quantity": "one_or_more",
+              "policyOverrides": {},
+              "children": [
+                {
+                  "id": "16000000-0000-4000-8000-000000000020",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "index.ts" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000021",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Module>.spec.ts"
+                  },
+                  "quantity": "zero_or_more",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "16000000-0000-4000-8000-000000000022",
+                  "kind": "file",
+                  "name": { "type": "placeholder", "value": "<Module>.ts" },
+                  "quantity": "one_or_more",
+                  "policyOverrides": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

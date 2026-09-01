@@ -1,0 +1,149 @@
+{
+  "name": "DAO operation units",
+  "purpose": "Require every DAO to aggregate independently tested, folderized persistence operations with colocated barrel exports.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "id": "12000000-0000-4000-8000-000000000001",
+          "kind": "file",
+          "name": { "type": "literal", "value": "index.ts" },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "12000000-0000-4000-8000-000000000002",
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "dao-documentation.spec.ts"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "12000000-0000-4000-8000-000000000003",
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "dao-read-contracts.spec.ts"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "12000000-0000-4000-8000-000000000004",
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "dao-singleton-architecture.spec.ts"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "12000000-0000-4000-8000-000000000005",
+          "kind": "directory",
+          "name": { "type": "placeholder", "value": "<Name>Dao" },
+          "quantity": "one_or_more",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "12000000-0000-4000-8000-000000000006",
+              "kind": "file",
+              "name": { "type": "literal", "value": "index.ts" },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "12000000-0000-4000-8000-000000000007",
+              "kind": "file",
+              "name": { "type": "placeholder", "value": "<Name>.dao.ts" },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "12000000-0000-4000-8000-000000000008",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>.dao.spec.ts"
+              },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "12000000-0000-4000-8000-000000000009",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>.types.ts"
+              },
+              "quantity": "optional",
+              "policyOverrides": {}
+            },
+            {
+              "id": "12000000-0000-4000-8000-000000000010",
+              "kind": "directory",
+              "name": { "type": "literal", "value": "_operations" },
+              "quantity": "exactly_one",
+              "policyOverrides": {},
+              "children": [
+                {
+                  "id": "12000000-0000-4000-8000-000000000011",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "index.ts" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "12000000-0000-4000-8000-000000000012",
+                  "kind": "directory",
+                  "name": { "type": "placeholder", "value": "<Operation>" },
+                  "quantity": "one_or_more",
+                  "policyOverrides": {},
+                  "children": [
+                    {
+                      "id": "12000000-0000-4000-8000-000000000013",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "index.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "12000000-0000-4000-8000-000000000014",
+                      "kind": "file",
+                      "name": {
+                        "type": "placeholder",
+                        "value": "<Operation>.operation.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "12000000-0000-4000-8000-000000000015",
+                      "kind": "file",
+                      "name": {
+                        "type": "placeholder",
+                        "value": "<Operation>.operation.spec.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

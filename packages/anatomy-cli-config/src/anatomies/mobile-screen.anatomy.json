@@ -1,0 +1,60 @@
+{
+  "name": "Tellyn mobile screen files",
+  "purpose": "Require every mobile screen to use a dedicated *Screen directory with a main component, Storybook story, and barrel.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "id": "15000000-0000-4000-8000-000000000001",
+          "kind": "directory",
+          "name": { "type": "placeholder", "value": "<Name>Screen" },
+          "quantity": "one_or_more",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "15000000-0000-4000-8000-000000000002",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>Screen.tsx"
+              },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "15000000-0000-4000-8000-000000000003",
+              "kind": "file",
+              "name": {
+                "type": "placeholder",
+                "value": "<Name>Screen.stories.tsx"
+              },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "15000000-0000-4000-8000-000000000004",
+              "kind": "file",
+              "name": { "type": "literal", "value": "index.ts" },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "15000000-0000-4000-8000-000000000005",
+              "kind": "file",
+              "name": { "type": "placeholder", "value": "<Component>.tsx" },
+              "quantity": "zero_or_more",
+              "policyOverrides": {}
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

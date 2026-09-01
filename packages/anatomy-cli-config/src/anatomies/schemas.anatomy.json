@@ -1,0 +1,91 @@
+{
+  "name": "Schemas package structure",
+  "purpose": "Require every Zod schema module to live inside a domain directory, use the *.schema.ts suffix, and expose that domain through an index.ts barrel.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "id": "00000000-0000-4000-8000-000000000101",
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "package.json"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000102",
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "tsconfig.json"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "00000000-0000-4000-8000-000000000103",
+          "kind": "directory",
+          "name": {
+            "type": "literal",
+            "value": "src"
+          },
+          "quantity": "exactly_one",
+          "policyOverrides": {},
+          "children": [
+            {
+              "id": "00000000-0000-4000-8000-000000000104",
+              "kind": "file",
+              "name": {
+                "type": "literal",
+                "value": "index.ts"
+              },
+              "quantity": "exactly_one",
+              "policyOverrides": {}
+            },
+            {
+              "id": "00000000-0000-4000-8000-000000000105",
+              "kind": "directory",
+              "name": {
+                "type": "placeholder",
+                "value": "<Domain>"
+              },
+              "quantity": "one_or_more",
+              "policyOverrides": {},
+              "children": [
+                {
+                  "id": "00000000-0000-4000-8000-000000000106",
+                  "kind": "file",
+                  "name": {
+                    "type": "literal",
+                    "value": "index.ts"
+                  },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                },
+                {
+                  "id": "00000000-0000-4000-8000-000000000107",
+                  "kind": "file",
+                  "name": {
+                    "type": "placeholder",
+                    "value": "<Schema>.schema.ts"
+                  },
+                  "quantity": "one_or_more",
+                  "policyOverrides": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

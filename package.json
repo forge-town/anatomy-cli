@@ -1,46 +1,50 @@
 {
   "name": "anatomy-cli",
-  "version": "0.0.1",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "bin": {
-    "anatomy-cli": "./bin/anatomy.js",
-    "anatomy": "./bin/anatomy.js"
-  },
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Bun monorepo for Anatomy Draft definitions and repository structure checks.",
+  "license": "MIT",
   "author": "forge-town",
-  "description": "Define, examine, and scaffold any structure with Zod schemas",
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
-    "test:watch": "vitest"
-  },
-  "dependencies": {
-    "ajv": "^8.18.0",
-    "chalk": "^5.6.2",
-    "commander": "^14.0.3",
-    "zod": "^4.3.6"
-  },
-  "devDependencies": {
-    "@types/node": "^25.6.0",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.2",
-    "vitest": "^4.1.4"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/forge-town/anatomy-cli.git"
   },
-  "keywords": [
-    "anatomy",
-    "zod",
-    "schema",
-    "validation",
-    "scaffold"
-  ],
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/forge-town/anatomy-cli/issues"
   },
-  "homepage": "https://github.com/forge-town/anatomy-cli#readme"
+  "homepage": "https://github.com/forge-town/anatomy-cli#readme",
+  "keywords": [
+    "anatomy",
+    "bun",
+    "schema",
+    "filesystem",
+    "validation"
+  ],
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "anatomy": "bun run apps/anatomy-cli/src/main.ts",
+    "anatomy-cli": "bun run apps/anatomy-cli/src/main.ts",
+    "check-types": "bunx --no-install tsc --noEmit && bun run --filter '*' check-types",
+    "lint": "bun run --filter '*' lint",
+    "test": "bun run --filter '*' test",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "packageManager": "bun@1.3.11",
+  "devDependencies": {
+    "@anatomy-cli/anatomy": "workspace:*",
+    "@anatomy-cli/cli": "workspace:*",
+    "@anatomy-cli/config": "workspace:*",
+    "@anatomy-cli/schemas": "workspace:*",
+    "@types/node": "^25.9.2",
+    "oxlint": "^1.59.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.8"
+  }
 }
