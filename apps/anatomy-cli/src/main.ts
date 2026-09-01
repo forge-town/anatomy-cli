@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import { AnatomyCliExitCode, runAnatomyCli } from "./cli";
 import { AnatomyCliUsage } from "./cli-arguments";

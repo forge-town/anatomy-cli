@@ -30,19 +30,63 @@ block · warn · allow result
 ## Requirements
 
 - Bun 1.3 or newer
+- Node.js 18 or newer for the published CLI package when it is installed with npm or pnpm
 
-The workspace is Bun-first: package entry points intentionally reference the
-TypeScript source files, so use Bun to run and develop it rather than treating
-the workspace as a precompiled Node/npm distribution.
+The repository is Bun-first for development. Published CLI releases are bundled
+as a standalone Node.js entry point, so registry installs do not need Bun.
+
+## Install a published release
+
+The commands below install the global `anatomy-cli` command from npm. They are
+the five supported installation styles; the package must first be published as
+`@anatomy-cli/cli` for the registry-based commands to resolve.
+
+### macOS / Linux (curl)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/forge-town/anatomy-cli/main/install.sh | sh
+```
+
+### Windows (PowerShell)
+
+```powershell
+powershell -c "irm https://raw.githubusercontent.com/forge-town/anatomy-cli/main/install.ps1 | iex"
+```
+
+### npm
+
+```bash
+npm install -g --ignore-scripts @anatomy-cli/cli
+```
+
+### pnpm
+
+```bash
+pnpm add -g --ignore-scripts @anatomy-cli/cli
+```
+
+### Bun
+
+```bash
+bun add -g --ignore-scripts @anatomy-cli/cli
+```
+
+After any installation method, verify the command with:
+
+```bash
+anatomy-cli --help
+```
 
 ## Quick start
 
+To work from the open-source repository instead of a published release:
+
 ```bash
-bun install
-bun run apps/anatomy-cli/src/main.ts --help
+bun install --frozen-lockfile
+bun run anatomy --help
 bunx --no-install anatomy-cli --help
-bun run apps/anatomy-cli/src/main.ts \\
-  --definition ./packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json \\
+bun run anatomy \
+  --definition ./packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json \
   --target ./packages/schemas/src/anatomy
 ```
 
@@ -62,6 +106,7 @@ Use `--format json` for CI integrations and repeat `--ignore` for additional dir
 
 ```bash
 bun run quality
+bun run build
 ```
 
 The workspace is self-contained: it has no path or workspace dependency on
@@ -70,3 +115,14 @@ direct Anatomy dependencies. The schemas package contains the complete Anatomy
 schema surface required by the CLI; unrelated Daedalus product domains are not
 part of this standalone project. The original Daedalus repository is kept
 outside this workspace and is not modified by this project.
+
+## Publishing
+
+The root package is intentionally private. To publish a CLI release, authenticate
+with npm and publish the app workspace with Bun; Bun replaces local `workspace:`
+references while packing and the prepack hook creates the Node.js bundle:
+
+```bash
+cd apps/anatomy-cli
+bun publish --access public
+```

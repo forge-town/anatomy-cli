@@ -3,18 +3,23 @@
   "version": "0.1.0",
   "description": "Scan repository file trees against Anatomy Draft definitions.",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "files": [
-    "src",
+    "bin",
+    "dist",
     "anatomies"
   ],
   "bin": {
-    "anatomy-cli": "./src/main.ts"
+    "anatomy-cli": "./bin/anatomy-cli.js"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
+    "build": "bun build src/main.ts --target=node --outfile=dist/main.js && bun build src/index.ts --target=node --outfile=dist/index.js",
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
     "scan:self": "bun src/main.ts --definition ../../packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json --target ../../packages/schemas/src/anatomy",
@@ -22,14 +27,17 @@
     "check-types": "tsc --noEmit",
     "lint": "oxlint src/",
     "test": "vitest run",
-    "quality": "bun run check-types && bun run lint && bun run test"
+    "quality": "bun run check-types && bun run lint && bun run test && bun run build",
+    "prepack": "bun run build"
   },
-  "dependencies": {
-    "@anatomy-cli/anatomy": "workspace:*",
-    "@anatomy-cli/schemas": "workspace:*",
-    "neverthrow": "^8.2.0"
+  "engines": {
+    "node": ">=18",
+    "bun": ">=1.3.0"
   },
   "devDependencies": {
+    "@anatomy-cli/anatomy": "workspace:*",
+    "@anatomy-cli/schemas": "workspace:*",
+    "neverthrow": "^8.2.0",
     "@types/node": "^25.9.2",
     "oxlint": "^1.59.0",
     "typescript": "5.9.2",
