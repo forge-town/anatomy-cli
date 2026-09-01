@@ -6,8 +6,8 @@ import { AnatomyQuantitySchema } from "./AnatomyQuantity.schema";
 
 /** Anatomy 树中的文件要求，包含命名、数量和策略约束。 */
 export const AnatomyFileEntrySchema = z.object({
-  /** 文件条目的唯一标识。 */
-  id: z.string().uuid(),
+  /** 文件条目的唯一标识；省略时由 schema 解析阶段生成。 */
+  id: z.string().uuid().default(() => crypto.randomUUID()),
   /** 文件名的固定值或占位表达式。 */
   name: AnatomyNameExpressionSchema,
   /** 允许该文件出现的数量范围。 */

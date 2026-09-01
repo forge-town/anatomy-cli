@@ -10,8 +10,8 @@ export const AnatomyOneOfGroupSchema: z.ZodType<{
   maximumMatches: number;
   alternatives: AnatomyEntry[];
 }> = z.object({
-  /** 互斥组的唯一标识。 */
-  id: z.string().uuid(),
+  /** 互斥组的唯一标识；省略时由 schema 解析阶段生成。 */
+  id: z.string().uuid().default(() => crypto.randomUUID()),
   /** 节点判别字段，固定为候选组。 */
   kind: z.literal("one_of"),
   /** 至少需要匹配的候选数量。 */

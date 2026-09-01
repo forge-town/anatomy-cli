@@ -1,0 +1,62 @@
+{
+  "name": "Anatomy CLI source modules",
+  "purpose": "A concrete Anatomy case for the apps/anatomy-cli/src directory. Keep the CLI entrypoint, adapters, formatters, and their tests explicit so structural changes are intentional.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "index.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "main.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "cli.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "cli.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "cli-arguments.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "cli-arguments.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "filesystem.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "filesystem.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "format-result.ts" },
+          "quantity": "exactly_one"
+        }
+      ]
+    }
+  }
+}

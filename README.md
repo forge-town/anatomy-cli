@@ -91,8 +91,9 @@ bun run anatomy \
 ```
 
 The example above checks one of the bundled definitions against this repository and
-returns a passing result. The two definitions under `apps/anatomy-cli/anatomies/`
-are also available for projects that follow the service-file or Drizzle-table layout.
+returns a passing result. The definitions under `apps/anatomy-cli/anatomies/` are
+also available as concrete cases for projects that follow the CLI, service-file, or
+Drizzle-table layouts.
 The old Daedalus-only shortcuts for its private models, services, and application
 packages were intentionally not carried over; pass your own target with `--target`.
 
@@ -101,6 +102,12 @@ Use `--format json` for CI integrations and repeat `--ignore` for additional dir
 - `0` — the target conforms
 - `1` — one or more findings have `block` severity
 - `2` — the definition or target could not be read
+
+Anatomy JSON definitions only need the human-readable metadata and structural
+constraints. Node `id` values and empty `policyOverrides` objects may be omitted;
+the schema generates IDs and defaults policy overrides while reading the file. See
+[`cli-source.anatomy.json`](./apps/anatomy-cli/anatomies/cli-source.anatomy.json) for
+a complete case built from this project's `apps/anatomy-cli/src` directory.
 
 ## Development
 
