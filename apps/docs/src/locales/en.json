@@ -1,0 +1,254 @@
+{
+  "common": {
+    "chinese": "中文",
+    "english": "English",
+    "selectLanguage": "Select language",
+    "language": "Language"
+  },
+  "navigation": {
+    "features": "Features",
+    "enterprise": "Enterprise",
+    "resources": "Resources",
+    "pricing": "Pricing",
+    "guide": "Guide",
+    "config": "Config",
+    "concepts": "Concepts",
+    "searchDocs": "Search docs",
+    "contactSales": "Contact Sales",
+    "signIn": "View docs",
+    "startTrial": "Get started",
+    "documentation": "Documentation",
+    "quickStart": "Quick start",
+    "anatomyConcepts": "Anatomy concepts",
+    "definitionSchema": "Definition schema",
+    "ciIntegration": "CI integration",
+    "contributing": "Contributing",
+    "github": "GitHub ↗"
+  },
+  "homePage": {
+    "eyebrow": "STRUCTURE CONTRACT / VERSIONED WORKFLOW",
+    "title": "Give every repository a clear shape.",
+    "description": "Describe your team's conventions in a versioned Anatomy definition, then check the real file tree with one deterministic command.",
+    "primaryCta": "Get started",
+    "secondaryCta": "View on GitHub",
+    "signal": "Deterministic checks · Built for teams",
+    "previewLabel": "ANATOMY / LIVE STRUCTURE",
+    "statusLabel": "ANATOMY / STATUS",
+    "statusDetail": "0 blocked · 0 warnings",
+    "statusPass": "PASS",
+    "monoRailLabel": "Structure index",
+    "monoEyebrow": "STRUCTURE INDEX / CANVAS STUDY 02",
+    "monoModules": "MODULES 12",
+    "monoRules": "RULES 24",
+    "monoMeta": "DISPLAY FACE / STRUCTURE GLYPH",
+    "monoUnit": "400 / UNIT 12 PX",
+    "monoTitle": "Start with one structure.",
+    "monoDescription": "Break directories, conventions, and checks into small units, then let Anatomy reassemble them into a repository shape you can verify.",
+    "monoPrimaryCta": "Define the shape",
+    "monoSecondaryCta": "View GitHub",
+    "monoConsoleTitle": "PIXEL STRUCTURE TERMINAL",
+    "monoConsoleMode": "LIVE / 01",
+    "monoConsoleEyebrow": "CANVAS 2D / STRUCTURE LANGUAGE",
+    "monoConsoleTitle2": "Structure is running.",
+    "monoConsoleDescription": "Every block maps to a verifiable structure rule, so changes become visible before the check runs.",
+    "monoConsoleLink": "Explore Anatomy concepts",
+    "previewLoaded": "structure contract loaded",
+    "previewChecked": "24 entries checked",
+    "previewConforms": "structure conforms",
+    "previewEyebrow": "ONE COMMAND TO START",
+    "previewTitle": "Turn structural decisions into team alignment.",
+    "previewDescription": "Use one contract locally, in pull requests, and in CI so every change stays reviewable.",
+    "installEyebrow": "ONE COMMAND TO START",
+    "installTitle": "Install once. Check everywhere.",
+    "installDescription": "Use the same structural contract locally, in pull requests, and in CI.",
+    "copyCommand": "Copy install command",
+    "runNext": "Then run",
+    "workflowEyebrow": "THE WORKFLOW",
+    "workflowTitle": "One shared shape for every repository.",
+    "ctaEyebrow": "START BUILDING",
+    "ctaTitle": "Give your repository a shared shape.",
+    "ctaDescription": "Start with an Anatomy definition and make structural decisions visible, reviewable, and evolvable.",
+    "features": {
+      "define": { "title": "Define the shape", "copy": "Describe names, nesting, quantities, and one-of rules in JSON instead of relying on tribal knowledge.", "link": "Read the definition example" },
+      "check": { "title": "Check with confidence", "copy": "Scan the real file tree and return actionable block, warn, and allow findings.", "link": "Explore the checks" },
+      "ship": { "title": "Ship it in CI", "copy": "Stable exit codes and JSON output make structure checks part of every pull request.", "link": "Configure CI integration" }
+    },
+    "managers": { "npm": "npm", "pnpm": "pnpm", "bun": "Bun", "curl": "curl" }
+  },
+  "startup": {
+    "navigationLabel": "Main navigation",
+    "featuresNav": "Features",
+    "pricingNav": "Pricing",
+    "contactNav": "Contact",
+    "login": "View docs",
+    "headerCta": "Get started",
+    "lightTheme": "Switch to light theme",
+    "darkTheme": "Switch to dark theme",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "heroTitleLine1": "Make repository structure",
+    "heroTitleLine2": "clear in seconds, not hours.",
+    "heroDescription": "Describe conventions in a versioned Anatomy definition, then check the real file tree locally, in pull requests, and in CI.",
+    "heroPrimary": "Create a definition",
+    "heroSecondary": "View docs",
+    "dashboardAlt": "Anatomy repository structure check dashboard",
+    "featuresTitle": "Checks made easy",
+    "featuresDescription": "From definition to CI, give structural decisions one clear workflow.",
+    "oneClickTitle": "One click check",
+    "oneClickCopy": "Scan your repository in seconds and make conformance obvious.",
+    "workflowTitle": "Intuitive workflow",
+    "workflowCopy": "Manage structure with familiar commands and JSON output, without complex steps.",
+    "edgeTitle": "Runs everywhere",
+    "edgeCopy": "Use the same deterministic checking engine locally, in pull requests, and in CI.",
+    "copyTitle": "Stop guessing",
+    "copyCopy": "When conventions become versioned definitions, your team can catch issues before commit.",
+    "live": "your structure is live ✨",
+    "pricingTitle": "Simple plans for every team",
+    "pricingDescription": "From a personal repository to a large organization, choose the right way to govern structure.",
+    "planHobby": "Hobby",
+    "planHobbyButton": "Get Hobby",
+    "planStarter": "Starter",
+    "planStarterButton": "Get Starter",
+    "planPro": "Pro",
+    "planProButton": "Get Pro",
+    "planBasicAnalytics": "Access to basic structure reports",
+    "planDataPoints": "Up to 10,000 entries per month",
+    "planEmailSupport": "Email support",
+    "planCommunity": "Community forum access",
+    "planCancel": "Cancel anytime",
+    "planAdvancedAnalytics": "Advanced structure dashboard",
+    "planReports": "Customizable reports and charts",
+    "planRealtime": "Real-time structure tracking",
+    "planIntegrations": "Integration with third-party tools",
+    "planEverythingHobby": "Everything in Hobby Plan",
+    "planStorage": "Unlimited repository structure storage",
+    "planDashboards": "Customizable team dashboards",
+    "planSegmentation": "Advanced structure segmentation",
+    "planProcessing": "Real-time check processing",
+    "planAi": "AI-powered structure recommendations",
+    "planEverythingPro": "Everything in Pro Plan",
+    "ctaTitle": "Make your repository structure clear with zero friction today.",
+    "ctaDescription": "Turn directories, conventions, and checks into a structure contract your team can maintain together.",
+    "ctaButton": "Start checking",
+    "trusted": "Trusted by 27,000+ repositories",
+    "footerDescription": "Clear, reviewable, evolvable structure for every repository.",
+    "copyright": "© Anatomy CLI 2026. All rights reserved.",
+    "footerPages": "Pages",
+    "footerSocials": "Community",
+    "footerLegal": "Legal",
+    "footerRegister": "Register",
+    "home": "Home",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "signup": "Create a definition",
+    "bookDemo": "View quick start"
+  },
+  "docsPage": {
+    "backHome": "Anatomy CLI",
+    "previous": "Previous",
+    "next": "Next",
+    "onThisPage": "ON THIS PAGE",
+    "copyCode": "Copy code"
+  },
+  "docs": {
+    "sections": { "guide": "Guide", "reference": "Reference", "concepts": "Concepts", "development": "Development" },
+    "installation": {
+      "title": "Install Anatomy CLI",
+      "summary": "Start from a release package and run your first structure check in under a minute.",
+      "blocks": {
+        "0": "Anatomy CLI provides the anatomy-cli and anatomy command aliases. Choose the installation method that matches your environment.",
+        "1": "macOS / Linux",
+        "3": "Windows PowerShell",
+        "5": "Package managers",
+        "7": "After installation, run anatomy-cli --help to confirm the command is available. Release packages require Node.js 18+; source development requires Bun 1.3+."
+      }
+    },
+    "quick-start": {
+      "title": "Your first check",
+      "summary": "Run a complete check with one definition file and one target directory.",
+      "blocks": {
+        "0": "The minimum Anatomy CLI invocation needs a definition file and a target directory. --target defaults to the current directory.",
+        "2": "Ignore directories",
+        "4": "Use JSON in scripts"
+      }
+    },
+    "ci": {
+      "title": "CI integration",
+      "summary": "Stable exit codes and JSON output make structure checks a natural part of every pull request.",
+      "blocks": {
+        "0": "Exit code 0 means the target conforms to the definition, 1 means a block finding exists, and 2 means a runtime error or invalid definition."
+      }
+    },
+    "cli": {
+      "title": "Commands and options",
+      "summary": "The complete CLI option reference and common combinations.",
+      "blocks": {
+        "1": [
+          "--definition, -d: Anatomy Draft or Version JSON file, required.",
+          "--target, -t: Directory to check, defaults to the current directory.",
+          "--format: human or json, defaults to human.",
+          "--ignore: Comma-separated names; can be passed more than once.",
+          "--help, -h: Show help."
+        ]
+      }
+    },
+    "output": {
+      "title": "Output and exit codes",
+      "summary": "Human output is suited to local inspection; JSON output is suited to archiving and automation.",
+      "blocks": {
+        "0": "Human output",
+        "1": "The default output shows whether the check conforms, the finding count, and the path and message for every finding.",
+        "3": "JSON output",
+        "5": [
+          "0: conforms is true; the check passed.",
+          "1: At least one block finding; merging should be blocked.",
+          "2: Runtime error or invalid definition; fix the configuration and retry."
+        ]
+      }
+    },
+    "anatomy": {
+      "title": "Anatomy concepts",
+      "summary": "Describe repository structure with a versioned JSON definition.",
+      "blocks": {
+        "0": "The CLI compares an Anatomy definition with the deterministic file tree of the target directory, checking names, nesting, quantities, one-of rules, and policies.",
+        "1": [
+          "Names: whether a file or directory is named correctly.",
+          "Nesting: whether an entry sits under the expected parent directory.",
+          "Quantities: whether required, optional, or bounded entries meet their constraints.",
+          "one-of: whether exactly one allowed structure was selected from multiple candidates.",
+          "Policies: whether a finding is marked block, warn, or allow."
+        ]
+      }
+    },
+    "definition": {
+      "title": "Definition example",
+      "summary": "Start with a minimal definition for a service directory.",
+      "blocks": {
+        "1": "Keep definition files in a visible location such as anatomy/ or config/anatomies/, then reference them with an explicit relative path in CI."
+      }
+    },
+    "contributing": {
+      "title": "Repository layout and development",
+      "summary": "Understand the roles of the CLI, engine, schema, and definition packages in the monorepo.",
+      "blocks": {
+        "0": [
+          "apps/anatomy-cli: CLI entry point, argument parsing, and filesystem adapters.",
+          "packages/anatomy: Anatomy tree utilities and the conformance engine.",
+          "packages/schemas: Runtime schemas for Anatomy Draft.",
+          "packages/anatomy-cli-config: Reusable example definitions."
+        ]
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Structure you can trust.",
+    "explore": "EXPLORE",
+    "resources": "RESOURCES",
+    "guide": "Guide",
+    "config": "Config",
+    "concepts": "Concepts",
+    "ci": "CI integration",
+    "contributing": "Contributing"
+  }
+}

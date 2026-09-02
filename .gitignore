@@ -1,7 +1,8 @@
 node_modules/
 .bun/
 dist/
-docs/.vitepress/dist/
+apps/docs/.vitepress/dist/
+apps/docs/.output/
 coverage/
 .turbo/
 .anatomy-cli-test/
