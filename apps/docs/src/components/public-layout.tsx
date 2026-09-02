@@ -25,11 +25,11 @@ export const Brand = ({ immersive = false, mono = false }: { immersive?: boolean
 );
 
 const ThemeToggle = ({ immersive = false }: { immersive?: boolean }) => {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("anatomy-theme");
-    const nextDark = stored ? stored === "dark" : !window.matchMedia("(prefers-color-scheme: light)").matches;
+    const nextDark = stored === "dark";
     setDark(nextDark);
     document.documentElement.dataset.theme = nextDark ? "dark" : "light";
   }, []);

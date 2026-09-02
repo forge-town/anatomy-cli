@@ -5,27 +5,6 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0c0912;
-  --foreground: #f7f5fb;
-  --card: #17131f;
-  --card-foreground: #f7f5fb;
-  --popover: #17131f;
-  --popover-foreground: #f7f5fb;
-  --primary: #32f3e9;
-  --primary-foreground: #0c0912;
-  --secondary: #6c3bff;
-  --muted: #211b2c;
-  --muted-foreground: #aaa4b5;
-  --border: #302b3b;
-  --ring: #b39aff;
-  --font-interface: "Geist Variable", "Noto Sans SC Variable", "Plus Jakarta Sans", ui-sans-serif, sans-serif;
-  font-family: var(--font-interface);
-  color-scheme: dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-}
-
-:root[data-theme="light"] {
   --background: #f8f8fa;
   --foreground: #17151d;
   --card: #ffffff;
@@ -39,16 +18,36 @@
   --muted-foreground: #676172;
   --border: #dedde4;
   --ring: #6c3bff;
+  --font-interface: "Geist Variable", "Noto Sans SC Variable", "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  --font-display: "Geist Variable", "Noto Sans SC Variable", "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  font-family: var(--font-interface);
   color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
-* { box-sizing: border-box; border-color: var(--border); }
+:root[data-theme="dark"] {
+  --background: #0c0912;
+  --foreground: #f7f5fb;
+  --card: #17131f;
+  --card-foreground: #f7f5fb;
+  --popover: #17131f;
+  --popover-foreground: #f7f5fb;
+  --primary: #32f3e9;
+  --primary-foreground: #0c0912;
+  --secondary: #6c3bff;
+  --muted: #211b2c;
+  --muted-foreground: #aaa4b5;
+  --border: #302b3b;
+  --ring: #b39aff;
+  color-scheme: dark;
+}
+
+/* Keep Tailwind's component-level border colors intact. A global border-color
+   here would override every layered `border-*` utility on the page. */
+* { box-sizing: border-box; }
 html { background: var(--background); }
 body { min-width: 320px; margin: 0; background: var(--background); color: var(--foreground); -webkit-font-smoothing: antialiased; }
 a { text-decoration: none; }
 button, input { font: inherit; }
 ::selection { background: var(--ring); color: var(--primary-foreground); }
-
-.startup-diagonal {
-  background-image: repeating-linear-gradient(45deg, transparent 0, transparent 138px, rgba(71, 85, 105, 0.075) 139px, rgba(71, 85, 105, 0.075) 140px, transparent 141px, transparent 210px);
-}

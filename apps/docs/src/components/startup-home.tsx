@@ -1,5 +1,5 @@
 import { ArrowRight, Check, Menu, Moon, Sun, X } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,26 @@ const route = (href: string) => href as never;
 
 const StartupLogo = () => <span className="inline-flex items-center gap-2 text-sm font-medium tracking-[0.18em] text-neutral-950"><img alt="" className="size-7 rounded-sm" src="/logo.svg" /><span>ANATOMY</span></span>;
 
+const StartupGridBackground = () => {
+  const gridLineStyle = {
+    "--background": "#ffffff",
+    "--color": "rgba(0, 0, 0, 0.2)",
+    "--height": "5px",
+    "--width": "1px",
+    "--fade-stop": "90%",
+    "--offset": "150px",
+  } as CSSProperties;
+  const gridLineClass = "absolute top-[calc(var(--offset)/2*-1)] h-[calc(100%+var(--offset))] w-[var(--width)] bg-[linear-gradient(to_bottom,var(--color),var(--color)_50%,transparent_0,transparent)] [background-size:var(--width)_var(--height)] [mask:linear-gradient(to_top,var(--background)_var(--fade-stop),transparent),_linear-gradient(to_bottom,var(--background)_var(--fade-stop),transparent),_linear-gradient(black,black)] [mask-composite:exclude] z-30";
+
+  return <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 grid h-full w-full -rotate-45 transform select-none grid-cols-2 gap-10 md:grid-cols-4">
+    {Array.from({ length: 4 }, (_, index) => <div className="relative h-full w-full" key={index}>
+      <div className={`${gridLineClass} left-0`} style={gridLineStyle} />
+      <div className={`${gridLineClass} left-auto right-0`} style={gridLineStyle} />
+    </div>)}
+    {[-400, -200, 200, 400].map((offset) => <div className="absolute left-96 top-20 m-auto h-14 w-px rounded-full bg-gradient-to-t from-orange-500 via-yellow-500 to-transparent" key={offset} style={{ transform: `translateX(${offset}px) translateY(-200px) rotate(-45deg)` }} />)}
+  </div>;
+};
+
 const StartupHeader = () => {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,14 +54,22 @@ const StartupHeader = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const stored = window.localStorage.getItem("anatomy-theme");
+    const nextDark = stored === "dark";
+    setDark(nextDark);
+    document.documentElement.dataset.theme = nextDark ? "dark" : "light";
+  }, []);
+
   const toggleTheme = () => {
     const next = !dark;
     setDark(next);
     document.documentElement.dataset.theme = next ? "dark" : "light";
+    window.localStorage.setItem("anatomy-theme", next ? "dark" : "light");
   };
 
   return <header className="fixed inset-x-0 top-0 z-50 px-4 py-3 sm:px-8">
-    <div className={`mx-auto flex h-12 items-center justify-between transition-all duration-300 ${scrolled ? "max-w-5xl rounded-full border border-neutral-200 bg-white/90 px-4 shadow-[0_8px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl" : "w-full px-1"}`}>
+    <div className={`mx-auto flex h-12 items-center justify-between transition-[max-width,background-color,box-shadow,border-radius,padding] duration-300 ${scrolled ? "max-w-5xl rounded-full border border-neutral-200 bg-white/90 px-4 shadow-[0_8px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl" : "w-full px-1"}`}>
       <Link aria-label="Anatomy" className="shrink-0" to="/"><StartupLogo /></Link>
       <nav className="hidden items-center gap-9 text-sm text-neutral-600 md:flex" aria-label={t("startup.navigationLabel")}>
         <a className="transition-colors hover:text-neutral-950" href="#features">{t("startup.featuresNav")}</a>
@@ -89,17 +117,21 @@ const FeatureCard = ({ title, copy, image, wide = false, showHeader = true, chil
 
 const StartupHero = () => {
   const { t } = useTranslation();
-  return <section className="startup-diagonal relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 py-24 md:px-8 md:pb-[184.5px] md:pt-44">
+  return <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 py-24 md:px-8 md:pb-[184.5px] md:pt-44">
+    <StartupGridBackground />
     <div className="relative z-10 flex w-full flex-col items-center text-center">
-      <h1 className="max-w-4xl text-balance text-[clamp(42px,7vw,72px)] font-semibold leading-none tracking-[-0.06em] text-neutral-900"><span className="block">{t("startup.heroTitleLine1")}</span><span className="block">{t("startup.heroTitleLine2")}</span></h1>
+      <h1 className="-mt-4 mb-7 w-full max-w-3xl text-balance font-[var(--font-display)] text-5xl font-semibold leading-[1.15] tracking-normal text-[#23272f] lg:max-w-xl lg:text-[52px]"><span className="block">{t("startup.heroTitleLine1")}</span><span className="block">{t("startup.heroTitleLine2")}</span></h1>
       <p className="relative z-20 mt-8 max-w-lg px-4 text-base leading-6 text-neutral-600">{t("startup.heroDescription")}</p>
       <div className="mt-8 hidden items-center gap-4 sm:flex">
         <Button nativeButton={false} render={<Link to={route("/docs/installation")} />} className="h-9 w-40 rounded-md border border-neutral-950 bg-neutral-950 px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.18)] hover:bg-neutral-800">{t("startup.heroPrimary")}<ArrowRight size={15} /></Button>
         <Button nativeButton={false} render={<a href="#contact" />} variant="outline" className="h-9 w-40 rounded-md border-neutral-200 bg-white px-4 text-sm font-bold text-neutral-900 shadow-sm hover:bg-neutral-50">{t("startup.heroSecondary")}</Button>
       </div>
-      <div className="relative mt-16 w-full max-w-[1150px] md:mt-[106px]">
-        <div aria-hidden="true" className="absolute -inset-5 rounded-[28px] border border-neutral-200/70 bg-white/40" />
-        <img alt={t("startup.dashboardAlt")} className="relative w-full rounded-[20px] border border-neutral-200 object-cover shadow-[0_25px_65px_rgba(15,23,42,0.12)]" src={dashboardNew} />
+      <div className="relative mt-16 w-full max-w-7xl md:mt-[106px]">
+        <div className="relative mx-auto max-w-7xl rounded-[32px] border border-neutral-200/50 bg-neutral-100 p-2 backdrop-blur-lg md:p-4">
+          <div className="rounded-[24px] border border-neutral-200 bg-white p-2">
+            <img alt={t("startup.dashboardAlt")} className="w-full rounded-[20px] object-cover" src={dashboardNew} />
+          </div>
+        </div>
       </div>
     </div>
   </section>;
