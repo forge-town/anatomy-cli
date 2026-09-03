@@ -88,7 +88,7 @@ button, input { font: inherit; }
 
 .startup-grid-background::before {
   position: absolute;
-  z-index: 0;
+  z-index: 3;
   inset: 0;
   content: "";
   background: radial-gradient(ellipse 68% 56% at 50% 43%, rgba(35, 35, 31, 0.16), transparent 74%);
@@ -235,7 +235,7 @@ button, input { font: inherit; }
 
 .startup-grid-background__layer--incoming {
   z-index: 2;
-  background: var(--background);
+  background: var(--line-background);
 }
 
 @keyframes startup-grid-breathe {
