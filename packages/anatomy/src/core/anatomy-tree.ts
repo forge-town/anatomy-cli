@@ -289,6 +289,7 @@ export const createEmptyStructure = (): AnatomyStructure => {
       nameMismatch: "warn",
       nestingMismatch: "block",
     },
+    bindings: {},
     root: { children: [] },
   };
 };

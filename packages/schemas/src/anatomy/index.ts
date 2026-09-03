@@ -1,4 +1,6 @@
 export * from "./AnatomyDetail.schema";
+export * from "./AnatomyBinding.schema";
+export * from "./AnatomyBindingFormat.schema";
 export * from "./AnatomyDirectoryEntry.schema";
 export * from "./AnatomyDraft.schema";
 export * from "./AnatomyDraftCreateInput.schema";

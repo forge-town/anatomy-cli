@@ -1,7 +1,12 @@
 import { type AnatomyDraftInput } from "@anatomy-cli/schemas";
 import { createEmptyAnatomyDraft } from "./createEmptyAnatomyDraft";
 import { describe, expect, it } from "vitest";
-import { AnatomyCheckCode, checkAnatomy, type AnatomyFileTreeEntry } from "./check-anatomy";
+import {
+  AnatomyCheckCode,
+  checkAnatomy,
+  type AnatomyFileTreeEntry,
+} from "./check-anatomy";
+import { AnatomyValidationCode } from "./validate-anatomy-for-publish";
 
 const file = (id: string, name: string, quantity = "exactly_one" as const) => {
   return {
@@ -15,10 +20,11 @@ const file = (id: string, name: string, quantity = "exactly_one" as const) => {
 
 const definition = (
   children: AnatomyDraftInput["structure"]["root"]["children"],
+  bindings: AnatomyDraftInput["structure"]["bindings"] = {},
 ): AnatomyDraftInput => {
   const draft = createEmptyAnatomyDraft("Component", "Component structure");
 
-  return { ...draft, structure: { ...draft.structure, root: { children } } };
+  return { ...draft, structure: { ...draft.structure, bindings, root: { children } } };
 };
 
 const standaloneDialogDefinition = (() => {
@@ -154,6 +160,142 @@ describe("checkAnatomy", () => {
     };
     const result = checkAnatomy(definition([placeholder]), [
       { kind: "file", name: "useAnatomyScan.spec.ts" },
+    ])._unsafeUnwrap();
+
+    expect(result.conforms).toBe(true);
+    expect(result.issues).toEqual([]);
+  });
+
+  it("enforces a built-in format for a placeholder value", () => {
+    const expected = {
+      ...file("00000000-0000-4000-8000-000000000027", "unused"),
+      name: { type: "placeholder" as const, value: "<Name>.ts" },
+    };
+    const result = checkAnatomy(definition([expected], { Name: { format: "PascalCase" } }), [
+      { kind: "file", name: "user.ts" },
+    ])._unsafeUnwrap();
+
+    expect(result.issues).toEqual([
+      expect.objectContaining({
+        code: AnatomyCheckCode.bindingFormatMismatch,
+        path: "user.ts",
+      }),
+    ]);
+  });
+
+  it.each([
+    ["PascalCase", "UserName"],
+    ["camelCase", "userName"],
+    ["kebab-case", "user-name"],
+    ["snake_case", "user_name"],
+    ["SCREAMING_SNAKE_CASE", "USER_NAME"],
+  ] as const)("accepts the %s built-in format", (format, value) => {
+    const expected = {
+      ...file("00000000-0000-4000-8000-000000000027", "unused"),
+      name: { type: "placeholder" as const, value: "<Name>.ts" },
+    };
+    const result = checkAnatomy(definition([expected], { Name: { format } }), [
+      { kind: "file", name: `${value}.ts` },
+    ])._unsafeUnwrap();
+
+    expect(result.conforms).toBe(true);
+    expect(result.issues).toEqual([]);
+  });
+
+  it("requires custom patterns in addition to built-in formats", () => {
+    const expected = {
+      ...file("00000000-0000-4000-8000-000000000028", "unused"),
+      name: { type: "placeholder" as const, value: "<Name>.ts" },
+    };
+    const result = checkAnatomy(
+      definition([expected], {
+        Name: { format: "PascalCase", pattern: "[A-Z][a-z]+" },
+      }),
+      [{ kind: "file", name: "User2.ts" }],
+    )._unsafeUnwrap();
+
+    expect(result.issues).toEqual([
+      expect.objectContaining({
+        code: AnatomyCheckCode.bindingPatternMismatch,
+        path: "User2.ts",
+      }),
+    ]);
+  });
+
+  it("returns definition validation errors for invalid binding patterns", () => {
+    const expected = {
+      ...file("00000000-0000-4000-8000-000000000033", "unused"),
+      name: { type: "placeholder" as const, value: "<Name>.ts" },
+    };
+    const result = checkAnatomy(definition([expected], { Name: { pattern: "[" } }), [
+      { kind: "file", name: "User.ts" },
+    ]);
+
+    expect(result.isErr()).toBe(true);
+    if (result.isErr()) {
+      expect(result.error).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ code: AnatomyValidationCode.invalidBindingPattern }),
+        ]),
+      );
+    }
+  });
+
+  it("reuses a captured directory placeholder in descendants", () => {
+    const directory = {
+      id: "00000000-0000-4000-8000-000000000029",
+      kind: "directory" as const,
+      name: { type: "placeholder" as const, value: "<Name>Service" },
+      quantity: "exactly_one" as const,
+      policyOverrides: {},
+      children: [
+        {
+          ...file("00000000-0000-4000-8000-000000000030", "unused"),
+          name: { type: "placeholder" as const, value: "<Name>Service.ts" },
+        },
+      ],
+    };
+    const result = checkAnatomy(definition([directory], { Name: { format: "PascalCase" } }), [
+      {
+        kind: "directory",
+        name: "UserService",
+        children: [{ kind: "file", name: "OrderService.ts" }],
+      },
+    ])._unsafeUnwrap();
+
+    expect(result.issues).toEqual([
+      expect.objectContaining({
+        code: AnatomyCheckCode.bindingConsistencyMismatch,
+        path: "UserService/OrderService.ts",
+      }),
+    ]);
+  });
+
+  it("gives each repeated placeholder directory its own scope", () => {
+    const directory = {
+      id: "00000000-0000-4000-8000-000000000031",
+      kind: "directory" as const,
+      name: { type: "placeholder" as const, value: "<Name>Service" },
+      quantity: "one_or_more" as const,
+      policyOverrides: {},
+      children: [
+        {
+          ...file("00000000-0000-4000-8000-000000000032", "unused"),
+          name: { type: "placeholder" as const, value: "<Name>Service.ts" },
+        },
+      ],
+    };
+    const result = checkAnatomy(definition([directory], { Name: { format: "PascalCase" } }), [
+      {
+        kind: "directory",
+        name: "UserService",
+        children: [{ kind: "file", name: "UserService.ts" }],
+      },
+      {
+        kind: "directory",
+        name: "OrderService",
+        children: [{ kind: "file", name: "OrderService.ts" }],
+      },
     ])._unsafeUnwrap();
 
     expect(result.conforms).toBe(true);

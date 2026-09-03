@@ -12,6 +12,7 @@ export const createEmptyAnatomyDraft = (name: string, purpose: string): AnatomyD
       nameMismatch: "warn",
       nestingMismatch: "block",
     },
+    bindings: {},
     root: { children: [] },
   },
 });

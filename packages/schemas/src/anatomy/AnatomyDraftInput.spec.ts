@@ -57,4 +57,47 @@ describe("AnatomyDraftInputSchema", () => {
     expect(directory && directory.kind !== "one_of" ? directory.policyOverrides : undefined).toEqual({});
     expect(child && child.kind !== "one_of" ? child.policyOverrides : undefined).toEqual({});
   });
+
+  it("parses placeholder bindings and rejects invalid binding patterns", () => {
+    const parsed = AnatomyDraftInputSchema.parse({
+      name: "Bound example",
+      purpose: "Constrain a captured name.",
+      structure: {
+        schemaVersion: 1,
+        defaultPolicies,
+        bindings: {
+          Name: { format: "PascalCase", pattern: "[A-Z][A-Za-z0-9]*" },
+        },
+        root: { children: [] },
+      },
+    });
+
+    expect(parsed.structure.bindings).toEqual({
+      Name: { format: "PascalCase", pattern: "[A-Z][A-Za-z0-9]*" },
+    });
+    expect(() =>
+      AnatomyDraftInputSchema.parse({
+        name: "Invalid",
+        purpose: "",
+        structure: {
+          schemaVersion: 1,
+          defaultPolicies,
+          bindings: { Name: { pattern: "[" } },
+          root: { children: [] },
+        },
+      }),
+    ).toThrow();
+    expect(() =>
+      AnatomyDraftInputSchema.parse({
+        name: "Invalid binding name",
+        purpose: "",
+        structure: {
+          schemaVersion: 1,
+          defaultPolicies,
+          bindings: { "not a name": { format: "PascalCase" } },
+          root: { children: [] },
+        },
+      }),
+    ).toThrow();
+  });
 });

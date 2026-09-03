@@ -1,58 +1,182 @@
-import { ArrowRight, Check, Menu, Moon, Sun, X } from "lucide-react";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { AlertCircle, ArrowRight, Braces, CheckCircle2, Copy, FileCode2, Folder, FolderOpen, Menu, Moon, Sun, X, type LucideIcon } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { LanguageSwitcher } from "@/components/language-switcher";
-
-const dashboardNew = "https://assets.aceternity.com/pro/dashboard-new.webp";
-const dashboard = "https://assets.aceternity.com/pro/dashboard.webp";
-const avatars = [
-  "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=128&q=80",
-  "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=128&q=80",
-  "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=128&q=80",
-  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=128&q=80",
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=128&q=80",
-  "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=128&q=80",
-];
 
 const route = (href: string) => href as never;
 
-const StartupLogo = () => <span className="inline-flex items-center gap-2 text-sm font-medium tracking-[0.18em] text-neutral-950"><img alt="" className="size-7 rounded-sm" src="/logo.svg" /><span>ANATOMY</span></span>;
+const StartupLogo = () => <span className="inline-flex items-center text-sm font-semibold tracking-[0.12em] text-[var(--line-foreground)]">Anatomy CLI</span>;
 
-const StartupGridBackground = () => {
-  const gridLineStyle = {
-    "--background": "#ffffff",
-    "--color": "rgba(0, 0, 0, 0.2)",
-    "--height": "5px",
-    "--width": "1px",
-    "--fade-stop": "90%",
-    "--offset": "150px",
-  } as CSSProperties;
-  const gridLineClass = "absolute top-[calc(var(--offset)/2*-1)] h-[calc(100%+var(--offset))] w-[var(--width)] bg-[linear-gradient(to_bottom,var(--color),var(--color)_50%,transparent_0,transparent)] [background-size:var(--width)_var(--height)] [mask:linear-gradient(to_top,var(--background)_var(--fade-stop),transparent),_linear-gradient(to_bottom,var(--background)_var(--fade-stop),transparent),_linear-gradient(black,black)] [mask-composite:exclude] z-30";
+type GridRef = { current: HTMLDivElement | null };
 
-  return <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 grid h-full w-full -rotate-45 transform select-none grid-cols-2 gap-10 md:grid-cols-4">
-    {Array.from({ length: 4 }, (_, index) => <div className="relative h-full w-full" key={index}>
-      <div className={`${gridLineClass} left-0`} style={gridLineStyle} />
-      <div className={`${gridLineClass} left-auto right-0`} style={gridLineStyle} />
-    </div>)}
-    {[-400, -200, 200, 400].map((offset) => <div className="absolute left-96 top-20 m-auto h-14 w-px rounded-full bg-gradient-to-t from-orange-500 via-yellow-500 to-transparent" key={offset} style={{ transform: `translateX(${offset}px) translateY(-200px) rotate(-45deg)` }} />)}
+const StartupGridBackground = ({ gridRef }: { gridRef: GridRef }) => <div ref={gridRef} aria-hidden="true" className="startup-grid-background pointer-events-none absolute inset-0 z-0">
+  <span className="startup-grid-background__pattern startup-grid-background__pattern--triangle" />
+  <span className="startup-grid-background__pattern startup-grid-background__pattern--hexagon" />
+  <span className="startup-grid-background__pattern startup-grid-background__pattern--square-diamond" />
+  <span className="startup-grid-background__pattern startup-grid-background__pattern--octagon" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--far-before" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--near-before" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--current" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--near-after" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--far-after" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--far-before" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--near-before" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--current" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--near-after" />
+  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--far-after" />
+</div>;
+
+type StructureTreeRowProps = {
+  icon: LucideIcon;
+  label: string;
+  indent?: 0 | 1 | 2;
+  status?: "pass" | "warn" | "error";
+};
+
+const StructureTreeRow = ({ icon: Icon, label, indent = 0, status }: StructureTreeRowProps) => {
+  const indentClass = indent === 2 ? "pl-12" : indent === 1 ? "pl-6" : "pl-0";
+  const iconTone = status === "error" ? "text-red-500" : status === "warn" ? "text-[var(--line-accent)]" : "text-[var(--line-muted)]";
+  return <div className={`flex min-h-10 items-center gap-3 border-b border-[var(--line-border)] px-2 text-sm last:border-b-0 ${indentClass} ${status === "warn" ? "bg-[var(--line-warning-surface)]" : ""}`}>
+    <Icon aria-hidden="true" className={`size-3.5 shrink-0 ${iconTone}`} />
+    <code className="font-mono text-[12px] text-[var(--line-foreground)]">{label}</code>
+    {status && <span className="ml-auto inline-flex items-center">
+      {status === "pass" ? <CheckCircle2 aria-hidden="true" className="size-3.5 text-[var(--line-success)]" /> : <AlertCircle aria-hidden="true" className={`size-3.5 ${status === "warn" ? "text-[var(--line-accent)]" : "text-red-500"}`} />}
+    </span>}
+  </div>;
+};
+
+const scanRows = [
+  { icon: FolderOpen, label: "src/", status: "pass" as const },
+  { icon: Folder, label: "components/", indent: 1 as const, status: "pass" as const },
+  { icon: Folder, label: "ui/", indent: 2 as const, status: "pass" as const },
+  { icon: Folder, label: "routes/", indent: 1 as const, status: "pass" as const },
+  { icon: Folder, label: "lib/", indent: 1 as const, status: "pass" as const },
+  { icon: Folder, label: "tests/", indent: 1 as const, status: "pass" as const },
+  { icon: Folder, label: "legacy/", indent: 1 as const, status: "warn" as const },
+];
+
+const definitionExample = `{
+  "root": {
+    "children": [
+      {
+        "kind": "directory",
+        "name": { "type": "literal", "value": "src" },
+        "quantity": "exactly_one",
+        "children": [
+          {
+            "kind": "directory",
+            "name": { "type": "literal", "value": "components" },
+            "quantity": "exactly_one",
+            "children": [
+              {
+                "kind": "directory",
+                "name": { "type": "literal", "value": "ui" },
+                "quantity": "exactly_one",
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "directory",
+            "name": { "type": "literal", "value": "routes" },
+            "quantity": "exactly_one",
+            "children": []
+          },
+          {
+            "kind": "directory",
+            "name": { "type": "literal", "value": "lib" },
+            "quantity": "exactly_one",
+            "children": []
+          },
+          {
+            "kind": "directory",
+            "name": { "type": "literal", "value": "tests" },
+            "quantity": "exactly_one",
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}`;
+
+const humanDefinitionRows = [
+  { key: "definitionRootRule", path: "src/" },
+  { key: "definitionComponentsRule", path: "src/components/" },
+  { key: "definitionUiRule", path: "src/components/ui/" },
+  { key: "definitionRoutesRule", path: "src/routes/" },
+  { key: "definitionLibRule", path: "src/lib/" },
+  { key: "definitionTestsRule", path: "src/tests/" },
+] as const;
+
+const StructureScanPreview = ({ onStageChange }: { onStageChange?: (stage: number) => void }) => {
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [scanStage, setScanStage] = useState(0);
+  const [showJson, setShowJson] = useState(false);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    const node = previewRef.current;
+    if (!node) return;
+    let frame = 0;
+    const updateStage = () => {
+      const rect = node.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const start = window.innerHeight * 0.84;
+      const end = window.innerHeight * 0.5;
+      const progress = Math.max(0, Math.min(1, (start - center) / (start - end)));
+      const nextStage = Math.min(scanRows.length, Math.ceil(progress * scanRows.length));
+      setScanStage((current) => Math.max(current, nextStage));
+    };
+    const onScroll = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateStage);
+    };
+    updateStage();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateStage);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updateStage);
+    };
+  }, []);
+
+  useEffect(() => {
+    onStageChange?.(scanStage);
+  }, [onStageChange, scanStage]);
+
+  return <div ref={previewRef} data-scan-stage={scanStage} className="grid overflow-hidden bg-[var(--line-surface)] text-left md:grid-cols-2">
+    <div className="border-b border-[var(--line-border)] px-5 py-6 md:border-b-0 md:border-r md:px-8 md:py-8">
+      <div className="flex h-8 items-center justify-between gap-4 border-b border-[var(--line-border)]">
+        <div className="flex min-w-0 items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--line-muted)]"><FileCode2 aria-hidden="true" className="size-3.5 shrink-0 text-[var(--line-accent)]" /> {showJson ? "anatomy.json" : t("startup.definitionHumanLabel")}</div>
+        <Button aria-label={showJson ? t("startup.definitionHumanToggle") : t("startup.definitionJsonToggle")} aria-pressed={showJson} className="size-7 shrink-0 rounded-sm border-0 bg-transparent p-0 text-[var(--line-muted)] shadow-none hover:bg-[var(--line-hover)] hover:text-[var(--line-foreground)]" size="icon" title={showJson ? t("startup.definitionHumanToggle") : t("startup.definitionJsonToggle")} variant="ghost" onClick={() => setShowJson((current) => !current)}><Braces aria-hidden="true" className="size-3.5" /></Button>
+      </div>
+      <div className="relative mt-5 h-[20rem] overflow-hidden">
+        <div aria-hidden={showJson} className={`absolute inset-0 overflow-y-auto pr-3 transition-[opacity,transform] duration-300 ease-out ${showJson ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"}`}>
+          <p className="text-base font-medium leading-7 tracking-[-0.01em] text-[var(--line-foreground)]">{t("startup.definitionHumanIntro")}</p>
+          <div className="mt-5 space-y-3 font-mono text-xs text-[var(--line-muted)]">
+            {humanDefinitionRows.map((row, index) => <div className="flex items-center gap-3 border-b border-[var(--line-border)] pb-3 last:border-b-0" key={row.key}><span className="w-5 shrink-0 text-[10px] text-[var(--line-accent)]">0{index + 1}</span><code className="text-[var(--line-foreground)]">{row.path}</code><span>{t(`startup.${row.key}`)}</span><CheckCircle2 aria-hidden="true" className="ml-auto size-3.5 shrink-0 text-[var(--line-success)]" /></div>)}
+          </div>
+        </div>
+        <pre aria-hidden={!showJson} className={`absolute inset-0 overflow-y-auto overflow-x-hidden overscroll-contain whitespace-pre-wrap break-words pr-3 font-mono text-[11px] leading-5 transition-[opacity,transform] duration-300 ease-out sm:text-xs ${showJson ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}>{definitionExample}</pre>
+      </div>
+    </div>
+    <div className="bg-[var(--line-surface-raised)] px-5 py-6 md:px-8 md:py-8">
+      <div className="flex h-8 items-center gap-2 border-b border-[var(--line-border)] font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--line-muted)]"><FolderOpen aria-hidden="true" className="size-3.5 text-[var(--line-accent)]" /> src/</div>
+      <div className="mt-5">
+        {scanRows.map((row, index) => <div className={["transition-[opacity,transform] duration-500", scanStage > index ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"].join(" ")} key={row.label}><StructureTreeRow icon={row.icon} label={row.label} indent={row.indent} status={row.status} /></div>)}
+      </div>
+    </div>
   </div>;
 };
 
 const StartupHeader = () => {
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 28);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("anatomy-theme");
@@ -68,68 +192,167 @@ const StartupHeader = () => {
     window.localStorage.setItem("anatomy-theme", next ? "dark" : "light");
   };
 
-  return <header className="fixed inset-x-0 top-0 z-50 px-4 py-3 sm:px-8">
-    <div className={`mx-auto flex h-12 items-center justify-between transition-[max-width,background-color,box-shadow,border-radius,padding] duration-300 ${scrolled ? "max-w-5xl rounded-full border border-neutral-200 bg-white/90 px-4 shadow-[0_8px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl" : "w-full px-1"}`}>
-      <Link aria-label="Anatomy" className="shrink-0" to="/"><StartupLogo /></Link>
-      <nav className="hidden items-center gap-9 text-sm text-neutral-600 md:flex" aria-label={t("startup.navigationLabel")}>
-        <a className="transition-colors hover:text-neutral-950" href="#features">{t("startup.featuresNav")}</a>
-        <a className="transition-colors hover:text-neutral-950" href="#pricing">{t("startup.pricingNav")}</a>
-        <a className="transition-colors hover:text-neutral-950" href="#contact">{t("startup.contactNav")}</a>
-      </nav>
+  return <header className="sticky top-0 z-50 bg-[color-mix(in_srgb,var(--line-background)_92%,transparent)] px-4 backdrop-blur-xl sm:px-8">
+    <div className="mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-4">
+      <Link aria-label="Anatomy CLI" className="shrink-0" to="/"><StartupLogo /></Link>
       <div className="hidden items-center gap-4 md:flex">
-        <Button aria-label={dark ? t("startup.lightTheme") : t("startup.darkTheme")} className="size-9 rounded-lg border-0 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900" size="icon" variant="ghost" onClick={toggleTheme}>{dark ? <Sun size={16} /> : <Moon size={16} />}</Button>
+        <Button aria-label={dark ? t("startup.lightTheme") : t("startup.darkTheme")} className="size-9 rounded-md border-0 text-[var(--line-muted)] hover:bg-[var(--line-hover)] hover:text-[var(--line-foreground)]" size="icon" variant="ghost" onClick={toggleTheme}>{dark ? <Sun size={16} /> : <Moon size={16} />}</Button>
         <LanguageSwitcher startup />
-        <Link className="text-sm font-semibold text-neutral-950 hover:text-neutral-600" to={route("/docs/installation")}>{t("startup.login")}</Link>
-        <Button nativeButton={false} render={<Link to={route("/docs/installation")} />} size="sm" className="rounded-lg border border-neutral-200 bg-white px-4 text-sm font-semibold text-neutral-950 shadow-sm hover:bg-neutral-50">{t("startup.headerCta")}</Button>
+        <Link className="text-sm font-semibold text-[var(--line-foreground)] hover:text-[var(--line-muted)]" to={route("/docs/installation")}>{t("startup.login")}</Link>
+        <Button nativeButton={false} render={<Link to={route("/docs/installation")} />} size="sm" className="rounded-md border border-[var(--line-border-strong)] bg-transparent px-4 text-sm font-semibold text-[var(--line-foreground)] shadow-none hover:bg-[var(--line-hover)]">{t("startup.headerCta")}</Button>
       </div>
-      <Button aria-label={menuOpen ? t("startup.closeMenu") : t("startup.openMenu")} className="size-9 rounded-lg border border-neutral-200 bg-white text-neutral-900 md:hidden" size="icon" variant="outline" onClick={() => setMenuOpen((open) => !open)}>{menuOpen ? <X size={18} /> : <Menu size={18} />}</Button>
+      <Button aria-label={menuOpen ? t("startup.closeMenu") : t("startup.openMenu")} className="size-9 rounded-md border border-[var(--line-border)] bg-transparent text-[var(--line-foreground)] md:hidden" size="icon" variant="outline" onClick={() => setMenuOpen((open) => !open)}>{menuOpen ? <X size={18} /> : <Menu size={18} />}</Button>
     </div>
-    {menuOpen && <div className="mx-auto mt-2 max-w-5xl rounded-2xl border border-neutral-200 bg-white p-3 shadow-xl md:hidden">
-      <a className="block rounded-lg px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50" href="#features" onClick={() => setMenuOpen(false)}>{t("startup.featuresNav")}</a>
-      <a className="block rounded-lg px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50" href="#pricing" onClick={() => setMenuOpen(false)}>{t("startup.pricingNav")}</a>
-      <a className="block rounded-lg px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50" href="#contact" onClick={() => setMenuOpen(false)}>{t("startup.contactNav")}</a>
+    {menuOpen && <div className="mx-auto max-w-7xl border-x border-b border-[var(--line-border)] bg-[var(--line-background)] p-3 md:hidden">
+      <a className="block border-b border-[var(--line-border)] px-3 py-3 text-sm text-[var(--line-muted)] hover:text-[var(--line-foreground)]" href="#scan" onClick={() => setMenuOpen(false)}>{t("startup.scanNav")}</a>
+      <a className="block border-b border-[var(--line-border)] px-3 py-3 text-sm text-[var(--line-muted)] hover:text-[var(--line-foreground)]" href="#features" onClick={() => setMenuOpen(false)}>{t("startup.capabilitiesNav")}</a>
+      <a className="block border-b border-[var(--line-border)] px-3 py-3 text-sm text-[var(--line-muted)] hover:text-[var(--line-foreground)]" href="#contact" onClick={() => setMenuOpen(false)}>{t("startup.contactNav")}</a>
       <div className="px-3 py-2.5"><LanguageSwitcher startup /></div>
-      <Link className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-950 hover:bg-neutral-50" to={route("/docs/installation")} onClick={() => setMenuOpen(false)}>{t("startup.login")}</Link>
-      <Button nativeButton={false} render={<Link to={route("/docs/installation")} />} className="mt-2 w-full rounded-lg">{t("startup.headerCta")}</Button>
+      <Link className="block px-3 py-2.5 text-sm font-semibold text-[var(--line-foreground)] hover:text-[var(--line-muted)]" to={route("/docs/installation")} onClick={() => setMenuOpen(false)}>{t("startup.login")}</Link>
+      <Button nativeButton={false} render={<Link to={route("/docs/installation")} />} className="mt-2 w-full rounded-md border border-[var(--line-accent)] bg-[var(--line-accent)] text-[var(--line-background)] shadow-none hover:bg-[var(--line-foreground)] hover:text-[var(--line-background)]">{t("startup.headerCta")}</Button>
     </div>}
   </header>;
 };
 
-const DeploymentSteps = () => {
-  const { t } = useTranslation();
-  return <div className="relative flex min-h-[230px] items-center justify-center overflow-hidden px-8 pt-5">
-    <div aria-hidden="true" className="absolute left-1/2 top-2 h-[210px] w-px -translate-x-1/2 bg-neutral-200" />
-    <div className="relative z-10 grid w-full max-w-[520px] grid-cols-3 gap-3">
-      <Card className="relative mt-8 flex h-36 items-center justify-center rounded-lg border-neutral-100 bg-white p-4 shadow-[0_14px_30px_rgba(15,23,42,0.1)]"><code className="whitespace-pre-wrap font-mono text-[9px] leading-[1.35] text-neutral-700">git add .{`\n`}git commit -m &quot;update&quot;{`\n`}git push</code></Card>
-      <Card className="flex h-36 items-center justify-center rounded-lg border-neutral-100 bg-white p-4 text-2xl font-bold tracking-[-0.08em] text-neutral-950 shadow-[0_14px_30px_rgba(15,23,42,0.1)]">GH</Card>
-      <Card className="relative mt-8 flex h-36 flex-col items-center justify-center rounded-lg border-neutral-100 bg-white p-4 text-neutral-700 shadow-[0_14px_30px_rgba(15,23,42,0.1)]"><span className="text-2xl font-bold tracking-[-0.08em]">Anatomy</span><span className="mt-1 text-[9px] text-neutral-500">{t("startup.live")}</span></Card>
-    </div>
-  </div>;
+type PackageManager = "npm" | "pnpm" | "bun";
+
+const heroTitleKeys = ["startup.heroTitleLine1", "startup.heroTitleLine1Alt", "startup.heroTitleLine1Alt2"] as const;
+type HeroTitlePhase = "present" | "exit" | "enter-start";
+const HERO_GLYPH_STAGGER = 50;
+const HERO_GLYPH_DURATION = 360;
+
+const installCommands: Record<PackageManager, string> = {
+  npm: "npm install -g --ignore-scripts anatomy-cli",
+  pnpm: "pnpm add -g --ignore-scripts anatomy-cli",
+  bun: "bun add -g --ignore-scripts anatomy-cli",
 };
-
-const DotGlobe = () => <div aria-hidden="true" className="absolute -bottom-44 left-1/2 size-[560px] -translate-x-1/2 rounded-full bg-[#050b19] shadow-[0_-10px_60px_rgba(15,23,42,0.25)] before:absolute before:inset-8 before:rounded-full before:bg-[radial-gradient(circle_at_35%_30%,rgba(46,119,255,0.6)_0_1px,transparent_1.8px)] before:bg-[length:11px_11px] before:opacity-95 after:absolute after:inset-[110px_80px_125px] after:rounded-[45%] after:border-[22px] after:border-blue-500/10" />;
-
-const FeatureCard = ({ title, copy, image, wide = false, showHeader = true, children }: { title: string; copy: string; image?: string; wide?: boolean; showHeader?: boolean; children?: ReactNode }) => <Card className={`relative min-h-[400px] overflow-hidden rounded-2xl border-neutral-200/80 bg-neutral-50/75 p-6 text-neutral-700 shadow-[0_12px_40px_rgba(15,23,42,0.04)] ${wide ? "md:col-span-3" : "md:col-span-2"}`}>
-  {showHeader && <><h3 className="relative z-10 text-base font-medium tracking-tight text-neutral-800">{title}</h3><p className="relative z-10 mt-2 max-w-[35rem] text-base leading-6 tracking-tight text-neutral-500">{copy}</p></>}
-  {image && <img alt="" className="absolute inset-x-6 bottom-0 h-auto w-[calc(100%-3rem)] rounded-lg object-cover object-top" src={image} />}
-  {children}
-</Card>;
 
 const StartupHero = () => {
   const { t } = useTranslation();
-  return <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 py-24 md:px-8 md:pb-[184.5px] md:pt-44">
-    <StartupGridBackground />
-    <div className="relative z-10 flex w-full flex-col items-center text-center">
-      <h1 className="-mt-4 mb-7 w-full max-w-3xl text-balance font-[var(--font-display)] text-5xl font-semibold leading-[1.15] tracking-normal text-[#23272f] lg:max-w-xl lg:text-[52px]"><span className="block">{t("startup.heroTitleLine1")}</span><span className="block">{t("startup.heroTitleLine2")}</span></h1>
-      <p className="relative z-20 mt-8 max-w-lg px-4 text-base leading-6 text-neutral-600">{t("startup.heroDescription")}</p>
-      <div className="mt-8 hidden items-center gap-4 sm:flex">
-        <Button nativeButton={false} render={<Link to={route("/docs/installation")} />} className="h-9 w-40 rounded-md border border-neutral-950 bg-neutral-950 px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.18)] hover:bg-neutral-800">{t("startup.heroPrimary")}<ArrowRight size={15} /></Button>
-        <Button nativeButton={false} render={<a href="#contact" />} variant="outline" className="h-9 w-40 rounded-md border-neutral-200 bg-white px-4 text-sm font-bold text-neutral-900 shadow-sm hover:bg-neutral-50">{t("startup.heroSecondary")}</Button>
-      </div>
-      <div className="relative mt-16 w-full max-w-7xl md:mt-[106px]">
-        <div className="relative mx-auto max-w-7xl rounded-[32px] border border-neutral-200/50 bg-neutral-100 p-2 backdrop-blur-lg md:p-4">
-          <div className="rounded-[24px] border border-neutral-200 bg-white p-2">
-            <img alt={t("startup.dashboardAlt")} className="w-full rounded-[20px] object-cover" src={dashboardNew} />
+  const heroRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [packageManager, setPackageManager] = useState<PackageManager>("npm");
+  const [copied, setCopied] = useState(false);
+  const [heroTitleIndex, setHeroTitleIndex] = useState(0);
+  const [heroTitlePhase, setHeroTitlePhase] = useState<HeroTitlePhase>("present");
+  const command = installCommands[packageManager];
+  const maxHeroTitleLength = Math.max(...heroTitleKeys.map((key) => Array.from(t(key)).length));
+  const heroExitDuration = HERO_GLYPH_DURATION + Math.max(0, maxHeroTitleLength - 1) * HERO_GLYPH_STAGGER;
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    const grid = gridRef.current;
+    if (!hero || !grid) return;
+
+    let frame = 0;
+    let latestEvent: PointerEvent | null = null;
+
+    const updatePointerField = () => {
+      frame = 0;
+      if (!latestEvent) return;
+      const rect = hero.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width, latestEvent.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, latestEvent.clientY - rect.top));
+      const gridStep = 72;
+      grid.style.setProperty("--grid-wave-x", `${Math.round(x / gridStep) * gridStep}px`);
+      grid.style.setProperty("--grid-wave-y", `${Math.round(y / gridStep) * gridStep}px`);
+      grid.style.setProperty("--grid-pointer-active", "1");
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      latestEvent = event;
+      if (!frame) frame = window.requestAnimationFrame(updatePointerField);
+    };
+    const onPointerLeave = () => {
+      latestEvent = null;
+      grid.style.setProperty("--grid-pointer-active", "0");
+    };
+
+    hero.addEventListener("pointermove", onPointerMove, { passive: true });
+    hero.addEventListener("pointerleave", onPointerLeave, { passive: true });
+    hero.addEventListener("pointercancel", onPointerLeave, { passive: true });
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      hero.removeEventListener("pointermove", onPointerMove);
+      hero.removeEventListener("pointerleave", onPointerLeave);
+      hero.removeEventListener("pointercancel", onPointerLeave);
+    };
+  }, []);
+
+  useEffect(() => {
+    let revealTimer = 0;
+    let enterFrame = 0;
+    const rotationTimer = window.setInterval(() => {
+      setHeroTitlePhase("exit");
+      revealTimer = window.setTimeout(() => {
+        setHeroTitleIndex((current) => (current + 1) % heroTitleKeys.length);
+        setHeroTitlePhase("enter-start");
+        enterFrame = window.requestAnimationFrame(() => setHeroTitlePhase("present"));
+      }, heroExitDuration);
+    }, 3400);
+    return () => {
+      window.clearInterval(rotationTimer);
+      window.clearTimeout(revealTimer);
+      window.cancelAnimationFrame(enterFrame);
+    };
+  }, [heroExitDuration]);
+
+  const copyInstallCommand = async () => {
+    try {
+      let copiedToClipboard = false;
+      if (typeof navigator !== "undefined" && navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(command);
+          copiedToClipboard = true;
+        } catch {
+          copiedToClipboard = false;
+        }
+      }
+      if (!copiedToClipboard && typeof document !== "undefined") {
+        const helper = document.createElement("textarea");
+        helper.value = command;
+        helper.setAttribute("readonly", "true");
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.select();
+        copiedToClipboard = document.execCommand("copy");
+        helper.remove();
+      }
+      if (!copiedToClipboard) return;
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  const heroTitle = t(heroTitleKeys[heroTitleIndex] ?? heroTitleKeys[0]);
+
+  return <section ref={heroRef} className="relative flex min-h-[75svh] flex-col items-center justify-start overflow-hidden bg-[var(--line-background)] px-4 pb-20 pt-24 text-center md:px-8 md:pt-28">
+    <StartupGridBackground gridRef={gridRef} />
+    <div className="relative z-10 flex w-full max-w-4xl flex-col items-center">
+      <h1 className="mb-7 w-full max-w-3xl text-balance font-[var(--font-display)] text-5xl font-semibold leading-[1.15] tracking-normal text-[var(--line-foreground)] lg:max-w-xl lg:text-[52px]"><span className="block"><span>{t("startup.heroTitlePrefix")}{t("startup.heroTitleJoiner")}</span><span className="hero-cover hero-cover--active"><span className="hero-cover__viewport"><span aria-atomic="true" aria-live="polite" className="hero-cover__text inline-flex whitespace-nowrap">{Array.from(heroTitle).map((character, index) => <span className={`hero-cover__glyph hero-cover__glyph--${heroTitlePhase}`} key={`${heroTitleIndex}-${index}`} style={{ transitionDelay: `${index * HERO_GLYPH_STAGGER}ms` }}>{character}</span>)}</span></span></span></span><span className="block">{t("startup.heroTitleLine2")}</span></h1>
+      <p className="mt-7 max-w-2xl text-pretty text-base leading-7 text-[var(--line-muted)] md:text-lg">{t("startup.heroDescription")}</p>
+      <div className="mt-12 w-full max-w-3xl text-left">
+        <div className="mb-4 flex items-baseline justify-between gap-4">
+          <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-[var(--line-muted)]">{t("startup.quickStart")}</h2>
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--line-muted)]">Anatomy CLI</span>
+        </div>
+        <div className="overflow-hidden border border-[var(--line-border)] bg-[var(--line-surface)]">
+          <div className="flex min-h-12 items-end gap-6 border-b border-[var(--line-border)] px-5">
+            <span className="self-center font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--line-muted)]">{t("startup.installCommandLabel")}</span>
+            <div className="flex items-stretch gap-5">
+              {(["npm", "pnpm", "bun"] as PackageManager[]).map((manager) => <Button aria-pressed={packageManager === manager} className={packageManager === manager ? "h-12 rounded-none border-0 border-b-2 border-b-[var(--line-accent)] px-0 font-mono text-xs font-semibold text-[var(--line-accent)] hover:bg-transparent" : "h-12 rounded-none border-0 px-0 font-mono text-xs text-[var(--line-muted)] hover:bg-transparent hover:text-[var(--line-accent)]"} key={manager} size="sm" variant="ghost" onClick={() => { setPackageManager(manager); setCopied(false); }}>{manager}</Button>)}
+            </div>
+          </div>
+          <div className="p-5">
+            <div className="flex min-h-12 items-center gap-3 border border-[var(--line-border)] bg-[var(--line-surface-raised)] px-4 py-2.5 text-left">
+              <span aria-hidden="true" className="font-mono text-[var(--line-accent)]">$</span>
+              <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-mono text-xs text-[var(--line-foreground)] sm:text-sm">{command}</code>
+              <Button aria-label={copied ? t("startup.copiedInstall") : t("startup.copyInstall")} className="size-8 shrink-0 rounded-md border-0 text-[var(--line-muted)] hover:bg-[var(--line-hover)] hover:text-[var(--line-foreground)]" size="icon" variant="ghost" onClick={copyInstallCommand}>{copied ? <CheckCircle2 size={15} /> : <Copy size={15} />}</Button>
+            </div>
           </div>
         </div>
       </div>
@@ -137,44 +360,57 @@ const StartupHero = () => {
   </section>;
 };
 
-const StartupFeatures = () => {
+const StartupScanSection = () => {
   const { t } = useTranslation();
-  return <section id="features" className="w-full bg-white px-4 pb-20 pt-24 md:px-8">
-    <div className="mx-auto max-w-[1200px]">
-      <div className="text-center"><h2 className="text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl">{t("startup.featuresTitle")}</h2><p className="mx-auto mt-8 max-w-lg text-sm text-neutral-500">{t("startup.featuresDescription")}</p></div>
-      <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-5">
-        <FeatureCard wide showHeader={false} title={t("startup.oneClickTitle")} copy={t("startup.oneClickCopy")}><DeploymentSteps /><div className="absolute bottom-6 left-6 right-6"><h3 className="text-base font-medium tracking-tight text-neutral-800">{t("startup.oneClickTitle")}</h3><p className="mt-2 max-w-[380px] text-base leading-6 text-neutral-500">{t("startup.oneClickCopy")}</p></div></FeatureCard>
-        <FeatureCard title={t("startup.workflowTitle")} copy={t("startup.workflowCopy")} image={dashboard} />
-        <FeatureCard title={t("startup.edgeTitle")} copy={t("startup.edgeCopy")}><DotGlobe /></FeatureCard>
-        <FeatureCard wide title={t("startup.copyTitle")} copy={t("startup.copyCopy")} image={dashboard} />
+  const [scanStage, setScanStage] = useState(0);
+  const matchingRows = scanRows.filter((row) => row.status === "pass").length;
+  const warningRows = scanRows.filter((row) => row.status === "warn").length;
+  const scanComplete = scanStage >= scanRows.length;
+  return <section id="scan" className="relative w-full border-y border-[var(--line-border)] bg-[var(--line-background)] px-4 pb-2 pt-0 md:px-8 md:pb-3">
+    <div className="mx-auto max-w-6xl">
+      <StructureScanPreview onStageChange={setScanStage} />
+      <div className={["grid gap-5 border-t border-[var(--line-border)] px-5 py-4 transition-[opacity,transform] duration-700 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-8 md:px-8", scanComplete ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"].join(" ")}>
+        <div className="min-w-0">
+          <p className="max-w-xl text-base font-medium leading-7 tracking-[-0.01em] text-[var(--line-foreground)]">{t("startup.scanResultDescription")}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs">
+          <span className="inline-flex items-center gap-2 text-[var(--line-success)]"><CheckCircle2 aria-hidden="true" className="size-3.5" />{matchingRows} {t("startup.previewMatches")}</span>
+          <span className="inline-flex items-center gap-2 text-[var(--line-accent)]"><AlertCircle aria-hidden="true" className="size-3.5" />{warningRows} {t("startup.previewWarnings")}</span>
+          <span className="text-[var(--line-muted)]">{scanRows.length} {t("startup.previewEntries")}</span>
+        </div>
       </div>
     </div>
   </section>;
 };
 
-type Plan = { name: string; price: string; featured?: boolean; button: string; features: string[] };
+const CapabilityCard = ({ index, title, copy, children }: { index: number; title: string; copy: string; children: ReactNode }) => <article className={`min-w-0 border-t border-[var(--line-border)] pt-5 ${index === 1 ? "md:pr-6" : "md:border-l md:pl-6 md:pr-6"}`}>
+  <div className="flex items-baseline gap-4"><span className="shrink-0 font-mono text-[10px] font-semibold tracking-[0.16em] text-[var(--line-accent)]">0{index}</span><h3 className="min-w-0 text-left text-lg font-semibold tracking-[-0.02em] text-[var(--line-foreground)]">{title}</h3></div>
+  <p className="mt-3 min-h-0 max-w-sm text-pretty text-sm leading-6 text-[var(--line-muted)] md:min-h-[4.5rem]">{copy}</p>
+  <div className="mt-8 min-w-0">{children}</div>
+</article>;
 
-const PlanCard = ({ plan }: { plan: Plan }) => <div className="min-h-[676px] rounded-3xl border border-neutral-200/80 bg-neutral-50 p-4">
-  <Card className="rounded-xl border-neutral-200 bg-white p-4 shadow-[0_2px_6px_rgba(15,23,42,0.08)]"><div className="flex items-center justify-between"><h3 className="text-lg font-semibold text-neutral-900">{plan.name}</h3>{plan.featured && <span className="rounded-full bg-neutral-900 px-3 py-1 text-xs font-medium text-white">Featured</span>}</div><div className="mt-9 flex items-baseline gap-1 text-neutral-900"><span className="text-base text-neutral-500">$</span><strong className="text-6xl font-semibold tracking-[-0.08em]">{plan.price}</strong><span className="text-sm text-neutral-500">/month</span></div><Button className="mt-10 h-9 w-full rounded-md border-0 bg-gradient-to-b from-blue-500 to-blue-600 text-sm font-medium text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_2px_3px_rgba(37,99,235,0.35)] hover:from-blue-600 hover:to-blue-700">{plan.button}</Button></Card><ul className="mt-11 grid gap-4 px-1 text-sm font-medium text-neutral-700">{plan.features.map((feature) => <li className="flex items-start gap-3" key={feature}><Check className="mt-0.5 size-4 shrink-0 rounded-full bg-neutral-600 p-0.5 text-white" />{feature}</li>)}</ul></div>;
-
-const StartupPricing = () => {
+const StartupFeatures = () => {
   const { t } = useTranslation();
-  const plans: Plan[] = [
-    { name: t("startup.planHobby"), price: "99", button: t("startup.planHobbyButton"), features: [t("startup.planBasicAnalytics"), t("startup.planDataPoints"), t("startup.planEmailSupport"), t("startup.planCommunity"), t("startup.planCancel")] },
-    { name: t("startup.planStarter"), price: "299", featured: true, button: t("startup.planStarterButton"), features: [t("startup.planAdvancedAnalytics"), t("startup.planReports"), t("startup.planRealtime"), t("startup.planIntegrations"), t("startup.planEverythingHobby")] },
-    { name: t("startup.planPro"), price: "1490", button: t("startup.planProButton"), features: [t("startup.planStorage"), t("startup.planDashboards"), t("startup.planSegmentation"), t("startup.planProcessing"), t("startup.planAi"), t("startup.planEverythingHobby"), t("startup.planEverythingPro")] },
-  ];
-  return <section id="pricing" className="relative isolate w-full bg-white px-4 py-20 lg:px-4"><div className="mx-auto max-w-[1240px]"><div className="text-center"><h2 className="pt-4 text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl">{t("startup.pricingTitle")}</h2><p className="mx-auto mt-4 max-w-md text-base leading-6 text-neutral-500">{t("startup.pricingDescription")}</p></div><div className="mt-20 grid gap-4 md:grid-cols-3">{plans.map((plan) => <PlanCard key={plan.name} plan={plan} />)}</div></div></section>;
+  return <section id="features" className="w-full border-t border-[var(--line-border)] bg-[var(--line-background)] px-4 py-20 md:px-8 md:py-24">
+    <div className="mx-auto max-w-7xl">
+      <div className="max-w-2xl"><h2 className="text-balance font-[var(--font-display)] text-3xl font-semibold leading-tight tracking-[-0.04em] text-[var(--line-foreground)] md:text-4xl">{t("startup.featuresTitle")}</h2><p className="mt-5 max-w-xl text-pretty text-base leading-7 text-[var(--line-muted)]">{t("startup.featuresDescription")}</p></div>
+      <div className="mt-14 grid min-w-0 items-stretch gap-10 md:grid-cols-[repeat(3,minmax(0,1fr))] md:gap-0">
+        <CapabilityCard index={1} title={t("startup.oneClickTitle")} copy={t("startup.oneClickCopy")}><div className="font-mono text-xs text-[var(--line-foreground)]"><div className="flex items-center gap-3 border-y border-[var(--line-border)] py-3"><span className="text-[var(--line-muted)]">01</span><code>anatomy.json</code><CheckCircle2 className="ml-auto size-4 text-[var(--line-success)]" /></div><div className="flex items-center gap-3 border-b border-[var(--line-border)] py-3"><span className="text-[var(--line-muted)]">02</span><code>anatomy check ./src</code><ArrowRight className="ml-auto size-4 text-[var(--line-accent)]" /></div></div></CapabilityCard>
+        <CapabilityCard index={2} title={t("startup.workflowTitle")} copy={t("startup.workflowCopy")}><div className="border-y border-[var(--line-border)] py-4 font-mono text-[11px] leading-5 text-[var(--line-muted)]"><div className="mb-3 flex items-center gap-2 text-[var(--line-foreground)]"><FileCode2 className="size-4 text-[var(--line-accent)]" /> anatomy.json</div><pre className="overflow-x-auto whitespace-pre">{`{\n  "root": {\n    "children": [...]\n  }\n}`}</pre></div></CapabilityCard>
+        <CapabilityCard index={3} title={t("startup.edgeTitle")} copy={t("startup.edgeCopy")}><div className="font-mono text-xs text-[var(--line-foreground)]"><div className="flex items-center gap-2 border-y border-[var(--line-border)] py-3 text-[var(--line-success)]"><CheckCircle2 className="size-4" /> 4 {t("startup.previewMatches")}</div><div className="flex items-center gap-2 border-b border-[var(--line-border)] py-3 text-[var(--line-accent)]"><AlertCircle className="size-4" /> 1 {t("startup.previewWarnings")}</div><div className="border-b border-[var(--line-border)] py-3 text-[var(--line-muted)]">local · pull request · CI</div></div></CapabilityCard>
+      </div>
+    </div>
+  </section>;
 };
 
 const StartupCta = () => {
   const { t } = useTranslation();
-  return <section id="contact" className="min-h-[504px] w-full bg-white px-4 py-20 md:px-8"><div className="mx-auto grid max-w-[1200px] items-start gap-12 md:grid-cols-[1fr_auto]"><div><h2 className="max-w-md text-center text-2xl font-bold tracking-tight text-neutral-950 md:text-left md:text-3xl">{t("startup.ctaTitle")}</h2><p className="mt-8 max-w-md text-center text-base leading-6 text-neutral-500 md:text-left">{t("startup.ctaDescription")}</p><div className="mt-9 flex items-center justify-center md:justify-start"><div className="flex -space-x-3">{avatars.map((src) => <img alt="" className="size-14 rounded-full border-2 border-white object-cover" key={src} src={src} />)}</div><div className="ml-5 text-amber-400">★★★★★<p className="mt-1 text-sm text-neutral-500">{t("startup.trusted")}</p></div></div></div><Button nativeButton={false} render={<a href="mailto:hello@anatomy.dev" />} className="mx-auto h-10 rounded-lg border border-blue-600 bg-gradient-to-b from-blue-500 to-blue-600 px-4 text-base font-medium text-white shadow-sm hover:from-blue-600 hover:to-blue-700 md:mx-0 md:self-center">{t("startup.ctaButton")}<ArrowRight size={15} /></Button></div></section>;
+  return <section id="contact" className="w-full border-t border-[var(--line-border)] bg-[var(--line-surface)] px-4 py-20 md:px-8 md:py-24"><div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center"><div><h2 className="max-w-xl text-balance font-[var(--font-display)] text-3xl font-semibold leading-tight tracking-[-0.04em] text-[var(--line-foreground)] md:text-4xl">{t("startup.ctaTitle")}</h2><p className="mt-4 max-w-xl text-pretty text-base leading-7 text-[var(--line-muted)]">{t("startup.ctaDescription")}</p></div><Button nativeButton={false} render={<Link to={route("/docs/installation")} />} className="h-11 rounded-md border border-[var(--line-foreground)] bg-[var(--line-foreground)] px-5 text-sm font-semibold text-[var(--line-background)] shadow-none hover:bg-[var(--line-muted)]">{t("startup.ctaButton")}<ArrowRight size={15} /></Button></div></section>;
 };
 
 const StartupFooter = () => {
   const { t } = useTranslation();
-  return <footer className="border-t border-neutral-100 bg-white px-8 py-20 text-sm text-neutral-500"><div className="mx-auto flex min-h-[200px] max-w-7xl flex-col items-start gap-12 md:flex-row md:px-8"><div className="w-full flex-1"><StartupLogo /><p className="mt-5 max-w-[260px] leading-6">{t("startup.footerDescription")}</p><p className="mt-8 text-xs">{t("startup.copyright")}</p></div><div className="grid w-full grid-cols-2 gap-10 md:w-[571px] md:grid-cols-4"><div><p className="mb-4 font-semibold text-neutral-900">{t("startup.footerPages")}</p><a className="block hover:text-neutral-950" href="#">{t("startup.home")}</a><a className="mt-3 block hover:text-neutral-950" href="#features">{t("startup.featuresNav")}</a><a className="mt-3 block hover:text-neutral-950" href="#pricing">{t("startup.pricingNav")}</a><a className="mt-3 block hover:text-neutral-950" href="#contact">{t("startup.contactNav")}</a><a className="mt-3 block hover:text-neutral-950" href="#">Blog</a></div><div><p className="mb-4 font-semibold text-neutral-900">{t("startup.footerSocials")}</p><a className="block hover:text-neutral-950" href="https://github.com/forge-town/anatomy-cli" target="_blank" rel="noreferrer">GitHub</a><a className="mt-3 block hover:text-neutral-950" href="#">X / Twitter</a><a className="mt-3 block hover:text-neutral-950" href="#">Discord</a><a className="mt-3 block hover:text-neutral-950" href="#">LinkedIn</a></div><div><p className="mb-4 font-semibold text-neutral-900">{t("startup.footerLegal")}</p><a className="block hover:text-neutral-950" href="#">{t("startup.privacy")}</a><a className="mt-3 block hover:text-neutral-950" href="#">{t("startup.terms")}</a><a className="mt-3 block hover:text-neutral-950" href="#">{t("startup.cookies")}</a></div><div><p className="mb-4 font-semibold text-neutral-900">{t("startup.footerRegister")}</p><Link className="block hover:text-neutral-950" to={route("/docs/installation")}>{t("startup.signup")}</Link><Link className="mt-3 block hover:text-neutral-950" to={route("/docs/installation")}>{t("startup.login")}</Link><Link className="mt-3 block hover:text-neutral-950" to={route("/docs/installation")}>{t("startup.bookDemo")}</Link></div></div></div><p aria-hidden="true" className="mt-20 text-center text-5xl font-bold uppercase leading-none tracking-[-0.08em] text-neutral-100 sm:text-8xl md:text-[13rem]">ANATOMY</p></footer>;
+  return <footer className="overflow-hidden border-t border-[var(--line-border)] bg-[var(--line-background)] px-8 py-16 text-sm text-[var(--line-muted)]"><div className="mx-auto flex max-w-7xl flex-col items-start gap-12 md:flex-row md:px-8"><div className="w-full flex-1"><StartupLogo /><p className="mt-5 max-w-[260px] text-pretty leading-6">{t("startup.footerDescription")}</p><p className="mt-8 text-xs">{t("startup.copyright")}</p></div><div className="grid w-full grid-cols-2 gap-10 md:w-[460px] md:grid-cols-3"><div><p className="mb-4 font-semibold text-[var(--line-foreground)]">{t("startup.footerPages")}</p><a className="block hover:text-[var(--line-foreground)]" href="#">{t("startup.home")}</a><a className="mt-3 block hover:text-[var(--line-foreground)]" href="#scan">{t("startup.scanNav")}</a><a className="mt-3 block hover:text-[var(--line-foreground)]" href="#features">{t("startup.capabilitiesNav")}</a><a className="mt-3 block hover:text-[var(--line-foreground)]" href="#contact">{t("startup.contactNav")}</a></div><div><p className="mb-4 font-semibold text-[var(--line-foreground)]">{t("startup.footerSocials")}</p><a className="block hover:text-[var(--line-foreground)]" href="https://github.com/forge-town/anatomy-cli" target="_blank" rel="noreferrer">GitHub</a><a className="mt-3 block hover:text-[var(--line-foreground)]" href="#">X / Twitter</a><a className="mt-3 block hover:text-[var(--line-foreground)]" href="#">Discord</a></div><div><p className="mb-4 font-semibold text-[var(--line-foreground)]">{t("startup.footerRegister")}</p><Link className="block hover:text-[var(--line-foreground)]" to={route("/docs/installation")}>{t("startup.signup")}</Link><Link className="mt-3 block hover:text-[var(--line-foreground)]" to={route("/docs/installation")}>{t("startup.login")}</Link><Link className="mt-3 block hover:text-[var(--line-foreground)]" to={route("/docs/installation")}>{t("startup.bookDemo")}</Link></div></div></div><p aria-hidden="true" className="mt-16 whitespace-nowrap text-center text-5xl font-bold uppercase leading-none tracking-[0.02em] text-[var(--line-border-strong)] sm:text-8xl md:text-[13rem]">ANATOMY CLI</p></footer>;
 };
 
-export const StartupHome = () => <div className="min-h-screen bg-white text-neutral-900"><StartupHeader /><main><StartupHero /><StartupFeatures /><StartupPricing /><StartupCta /></main><StartupFooter /></div>;
+export const StartupHome = () => <div className="min-h-screen bg-[var(--line-background)] text-[var(--line-foreground)]"><StartupHeader /><main><StartupHero /><StartupScanSection /><StartupFeatures /><StartupCta /></main><StartupFooter /></div>;

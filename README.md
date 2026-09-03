@@ -109,6 +109,52 @@ the schema generates IDs and defaults policy overrides while reading the file. S
 [`cli-source.anatomy.json`](./apps/anatomy-cli/anatomies/cli-source.anatomy.json) for
 a complete case built from this project's `apps/anatomy-cli/src` directory.
 
+### Constrain placeholder names
+
+Use `structure.bindings` to constrain the value captured by a placeholder. A
+binding can use one built-in format, a custom regular expression, or both:
+
+```json
+{
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "warn",
+      "nameMismatch": "warn",
+      "nestingMismatch": "block"
+    },
+    "bindings": {
+      "Name": {
+        "format": "PascalCase",
+        "pattern": "[A-Z][A-Za-z0-9]*"
+      }
+    },
+    "root": {
+      "children": [
+        {
+          "kind": "directory",
+          "name": { "type": "placeholder", "value": "<Name>Service" },
+          "quantity": "exactly_one",
+          "children": [
+            {
+              "kind": "file",
+              "name": { "type": "placeholder", "value": "<Name>Service.ts" },
+              "quantity": "exactly_one"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+The supported built-ins are `PascalCase`, `camelCase`, `kebab-case`,
+`snake_case`, and `SCREAMING_SNAKE_CASE`. Custom patterns are full matches even
+when `^` and `$` are omitted. A placeholder captured by a directory is reused
+by matching descendants; each repeated directory gets its own captured value.
+
 ## Development
 
 ```bash

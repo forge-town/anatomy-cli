@@ -5,6 +5,8 @@ export const AnatomyValidationCode = {
   duplicateId: "duplicate_id",
   duplicateLiteralName: "duplicate_literal_name",
   invalidPlaceholder: "invalid_placeholder",
+  invalidBindingName: "invalid_binding_name",
+  invalidBindingPattern: "invalid_binding_pattern",
   absolutePath: "absolute_path",
   invalidOneOfRange: "invalid_one_of_range",
   impossibleOneOf: "impossible_one_of",
@@ -14,11 +16,12 @@ export type AnatomyValidationIssue = {
   code: (typeof AnatomyValidationCode)[keyof typeof AnatomyValidationCode];
   nodeId: string;
   parentId: string | null;
-  field: "id" | "name" | "minimumMatches" | "maximumMatches";
+  field: "id" | "name" | "binding" | "minimumMatches" | "maximumMatches";
   message: string;
 };
 
 const PlaceholderPattern = /^[^<>/\\]*<[^<>/\\]+>[^<>/\\]*$/;
+const BindingNamePattern = /^[A-Za-z][A-Za-z0-9_]*$/;
 const WindowsDrivePattern = /^[a-zA-Z]:[\\/]/;
 const UncPathPattern = /^\\\\/;
 
@@ -35,6 +38,32 @@ export const validateAnatomyForPublish = (
 ): Result<AnatomyDraftInput, AnatomyValidationIssue[]> => {
   const issues: AnatomyValidationIssue[] = [];
   const seenIds = new Set<string>();
+
+  for (const [bindingName, binding] of Object.entries(input.structure.bindings ?? {})) {
+    if (!BindingNamePattern.test(bindingName)) {
+      issues.push({
+        code: AnatomyValidationCode.invalidBindingName,
+        nodeId: bindingName,
+        parentId: null,
+        field: "binding",
+        message: `Binding name "${bindingName}" must start with a letter and contain only letters, numbers, or underscores`,
+      });
+    }
+
+    if (binding.pattern !== undefined) {
+      try {
+        new RegExp(`^(?:${binding.pattern})$`);
+      } catch {
+        issues.push({
+          code: AnatomyValidationCode.invalidBindingPattern,
+          nodeId: bindingName,
+          parentId: null,
+          field: "binding",
+          message: `Binding "${bindingName}" has an invalid regular expression pattern`,
+        });
+      }
+    }
+  }
 
   const validateId = (node: AnatomyNode, parentId: string | null) => {
     if (seenIds.has(node.id)) {
