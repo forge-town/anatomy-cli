@@ -9,7 +9,7 @@ type StartupGridBackgroundProps = {
 };
 
 const ROTATION_INTERVAL_MS = 16_000;
-const REVEAL_DURATION_MS = 2_600;
+const REVEAL_DURATION_MS = 1_800;
 const HOLD_DURATION_MS = ROTATION_INTERVAL_MS - REVEAL_DURATION_MS;
 
 type PatternDefinition = {
@@ -90,7 +90,7 @@ export const StartupGridBackground = ({ gridRef }: StartupGridBackgroundProps) =
             animate={{ clipPath: "circle(120% at 50% 50%)" }}
             transition={{
               duration: shouldReduceMotion ? 0 : REVEAL_DURATION_MS / 1000,
-              ease: [0.22, 1, 0.36, 1],
+              ease: [0.65, 0, 0.35, 1],
             }}
             onAnimationComplete={() => completeTransition(transition.to)}
           >

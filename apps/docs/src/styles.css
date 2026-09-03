@@ -224,7 +224,7 @@ button, input { font: inherit; }
 .startup-grid-background__layer {
   position: absolute;
   inset: 0;
-  overflow: visible;
+  overflow: hidden;
   pointer-events: none;
 }
 
