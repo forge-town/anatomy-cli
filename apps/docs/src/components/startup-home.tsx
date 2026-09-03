@@ -16,16 +16,6 @@ const StartupGridBackground = ({ gridRef }: { gridRef: GridRef }) => <div ref={g
   <span className="startup-grid-background__pattern startup-grid-background__pattern--hexagon" />
   <span className="startup-grid-background__pattern startup-grid-background__pattern--square-diamond" />
   <span className="startup-grid-background__pattern startup-grid-background__pattern--octagon" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--far-before" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--near-before" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--current" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--near-after" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--vertical startup-grid-background__wave-line--far-after" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--far-before" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--near-before" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--current" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--near-after" />
-  <span className="startup-grid-background__wave-line startup-grid-background__wave-line--horizontal startup-grid-background__wave-line--far-after" />
 </div>;
 
 type StructureTreeRowProps = {
@@ -253,9 +243,10 @@ const StartupHero = () => {
       const rect = hero.getBoundingClientRect();
       const x = Math.max(0, Math.min(rect.width, latestEvent.clientX - rect.left));
       const y = Math.max(0, Math.min(rect.height, latestEvent.clientY - rect.top));
-      const gridStep = 72;
-      grid.style.setProperty("--grid-wave-x", `${Math.round(x / gridStep) * gridStep}px`);
-      grid.style.setProperty("--grid-wave-y", `${Math.round(y / gridStep) * gridStep}px`);
+      const patternX = ((x / rect.width + 0.45) / 1.9) * 100;
+      const patternY = ((y / rect.height + 0.45) / 1.9) * 100;
+      grid.style.setProperty("--grid-pointer-x", `${patternX.toFixed(2)}%`);
+      grid.style.setProperty("--grid-pointer-y", `${patternY.toFixed(2)}%`);
       grid.style.setProperty("--grid-pointer-active", "1");
     };
 

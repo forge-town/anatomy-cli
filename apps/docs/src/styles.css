@@ -77,16 +77,29 @@ button, input { font: inherit; }
 ::selection { background: var(--ring); color: var(--primary-foreground); }
 
 .startup-grid-background {
-  --grid-wave-x: 50%;
-  --grid-wave-y: 24%;
+  --grid-pointer-x: 50%;
+  --grid-pointer-y: 24%;
   --grid-pointer-active: 0;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 98%);
-  mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 98%);
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.6) 52%, rgba(0, 0, 0, 0.56) 60%, rgba(0, 0, 0, 0.48) 68%, rgba(0, 0, 0, 0.35) 78%, rgba(0, 0, 0, 0.2) 88%, rgba(0, 0, 0, 0.08) 96%, transparent 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.62) 48%, rgba(0, 0, 0, 0.6) 52%, rgba(0, 0, 0, 0.56) 60%, rgba(0, 0, 0, 0.48) 68%, rgba(0, 0, 0, 0.35) 78%, rgba(0, 0, 0, 0.2) 88%, rgba(0, 0, 0, 0.08) 96%, transparent 100%);
+}
+
+.startup-grid-background::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: "";
+  background: radial-gradient(ellipse 68% 56% at 50% 43%, rgba(35, 35, 31, 0.16), transparent 74%);
+  opacity: 0.38;
+  animation: startup-grid-breathe 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
 }
 
 .startup-grid-background__pattern {
   position: absolute;
+  z-index: 1;
   inset: -45%;
   background-repeat: repeat;
   opacity: 0;
@@ -95,11 +108,33 @@ button, input { font: inherit; }
   will-change: transform;
 }
 
+.startup-grid-background__pattern::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-image:
+    radial-gradient(circle at calc(var(--grid-pointer-x) - 5%) calc(var(--grid-pointer-y) - 4%), rgba(251, 113, 133, 0.95), transparent 8%),
+    radial-gradient(circle at calc(var(--grid-pointer-x) + 6%) calc(var(--grid-pointer-y) + 4%), rgba(34, 211, 238, 0.92), transparent 9%),
+    radial-gradient(circle at var(--grid-pointer-x) var(--grid-pointer-y), rgba(192, 132, 252, 0.96), transparent 11%);
+  -webkit-mask-image: var(--pattern-mask-image);
+  mask-image: var(--pattern-mask-image);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-size: var(--pattern-size);
+  mask-size: var(--pattern-size);
+  opacity: var(--grid-pointer-active);
+  pointer-events: none;
+  transition: opacity 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
+
 .startup-grid-background__pattern--triangle {
   --pattern-enter-x: -28px;
   --pattern-enter-y: 18px;
   --pattern-exit-x: 28px;
   --pattern-exit-y: -18px;
+  --pattern-size: 144px 124px;
+  --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='62' viewBox='0 0 72 62'%3E%3Cpath d='M0 0H72M0 31H72M0 62H72M0 62L36 0L72 62M0 0L36 62L72 0' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
   animation-delay: -1.25s;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='62' viewBox='0 0 72 62'%3E%3Cpath d='M0 0H72M0 31H72M0 62H72M0 62L36 0L72 62M0 0L36 62L72 0' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 144px 124px;
@@ -110,6 +145,8 @@ button, input { font: inherit; }
   --pattern-enter-y: -26px;
   --pattern-exit-x: -22px;
   --pattern-exit-y: 26px;
+  --pattern-size: 144px 124px;
+  --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='124' viewBox='0 0 144 124'%3E%3Cpath d='M36 -10L72 10V52L36 72L0 52V10Z M72 52L108 72V114L72 134L36 114V72Z' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
   animation-delay: -61.25s;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='124' viewBox='0 0 144 124'%3E%3Cpath d='M36 -10L72 10V52L36 72L0 52V10Z M72 52L108 72V114L72 134L36 114V72Z' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 144px 124px;
@@ -120,6 +157,8 @@ button, input { font: inherit; }
   --pattern-enter-y: -20px;
   --pattern-exit-x: 20px;
   --pattern-exit-y: 20px;
+  --pattern-size: 144px 144px;
+  --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='144' viewBox='0 0 144 144'%3E%3Cpath d='M0 0H48V48H0ZM96 0H144V48H96ZM48 48H96V96H48ZM0 96H48V144H0ZM96 96H144V144H96ZM72 0L96 24L72 48L48 24ZM24 48L48 72L24 96L0 72ZM144 72L120 96L96 72L120 48ZM72 144L48 120L72 96L96 120Z' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
   animation-delay: -41.25s;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='144' viewBox='0 0 144 144'%3E%3Cpath d='M0 0H48V48H0ZM96 0H144V48H96ZM48 48H96V96H48ZM0 96H48V144H0ZM96 96H144V144H96ZM72 0L96 24L72 48L48 24ZM24 48L48 72L24 96L0 72ZM144 72L120 96L96 72L120 48ZM72 144L48 120L72 96L96 120Z' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 144px 144px;
@@ -130,59 +169,11 @@ button, input { font: inherit; }
   --pattern-enter-y: 0;
   --pattern-exit-x: -30px;
   --pattern-exit-y: 0;
+  --pattern-size: 144px 144px;
+  --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cpath d='M24 0H72L96 24V72L72 96H24L0 72V24Z M24 24H72V72H24Z M0 0H24V24H0ZM72 0H96V24H72ZM0 72H24V96H0ZM72 72H96V96H72Z' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
   animation-delay: -21.25s;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cpath d='M24 0H72L96 24V72L72 96H24L0 72V24Z M24 24H72V72H24Z M0 0H24V24H0ZM72 0H96V24H72ZM0 72H24V96H0ZM72 72H96V96H72Z' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 144px 144px;
-}
-
-.startup-grid-background__wave-line {
-  position: absolute;
-  z-index: 1;
-  opacity: var(--grid-pointer-active);
-  pointer-events: none;
-  transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1), left 560ms cubic-bezier(0.22, 1, 0.36, 1), top 560ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, left, top;
-}
-
-.startup-grid-background__wave-line--vertical {
-  top: 0;
-  bottom: 0;
-  left: calc(var(--grid-wave-x) + var(--grid-wave-offset));
-  width: 1px;
-  background: var(--grid-wave-color);
-}
-
-.startup-grid-background__wave-line--horizontal {
-  top: calc(var(--grid-wave-y) + var(--grid-wave-offset));
-  right: 0;
-  left: 0;
-  height: 1px;
-  background: var(--grid-wave-color);
-}
-
-.startup-grid-background__wave-line--far-before {
-  --grid-wave-offset: -144px;
-  --grid-wave-color: color-mix(in srgb, var(--line-foreground) 7%, transparent);
-}
-
-.startup-grid-background__wave-line--near-before {
-  --grid-wave-offset: -72px;
-  --grid-wave-color: color-mix(in srgb, var(--line-foreground) 10%, transparent);
-}
-
-.startup-grid-background__wave-line--current {
-  --grid-wave-offset: 0px;
-  --grid-wave-color: color-mix(in srgb, var(--line-foreground) 16%, transparent);
-}
-
-.startup-grid-background__wave-line--near-after {
-  --grid-wave-offset: 72px;
-  --grid-wave-color: color-mix(in srgb, var(--line-foreground) 10%, transparent);
-}
-
-.startup-grid-background__wave-line--far-after {
-  --grid-wave-offset: 144px;
-  --grid-wave-color: color-mix(in srgb, var(--line-foreground) 7%, transparent);
 }
 
 @keyframes startup-grid-pattern-cycle {
@@ -191,8 +182,9 @@ button, input { font: inherit; }
   25%, 100% { opacity: 0; transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
 }
 
-@media (hover: none), (pointer: coarse) {
-  .startup-grid-background__wave-line { display: none; }
+@keyframes startup-grid-breathe {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.52; }
 }
 
 .hero-cover {
@@ -246,7 +238,8 @@ button, input { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .startup-grid-background__pattern { animation: none !important; opacity: 0; transform: none; }
   .startup-grid-background__pattern--triangle { opacity: 1; }
-  .startup-grid-background__wave-line { display: none; }
+  .startup-grid-background::before { animation: none !important; opacity: 0.38; }
+  .startup-grid-background__pattern::after { transition: none !important; }
   .hero-cover__glyph {
     transition: none !important;
     transform: none !important;
