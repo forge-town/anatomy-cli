@@ -1,6 +1,6 @@
-import { createRhombusTiling, pointsToSvg } from "./rhombus";
+import { createPenroseTiling, pointsToSvg } from "./rhombus";
 
-const rhombi = createRhombusTiling();
+const rhombi = createPenroseTiling({ variant: "rhombus" });
 
 export const RhombusPattern = () => (
   <svg
@@ -10,7 +10,13 @@ export const RhombusPattern = () => (
     preserveAspectRatio="xMidYMid slice"
   >
     {rhombi.map((rhombus) => (
-      <polygon key={rhombus.id} points={pointsToSvg(rhombus.points)} />
+      <polygon
+        key={rhombus.id}
+        data-kind={rhombus.kind}
+        points={pointsToSvg(rhombus.points, 0.44)}
+      />
     ))}
   </svg>
 );
+
+RhombusPattern.displayName = "RhombusPattern";

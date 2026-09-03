@@ -6,5 +6,6 @@ export * from "./StartupGridBackground";
 export * from "./StartupHeader";
 export * from "./StartupHero";
 export * from "./RhombusPattern";
+export * from "./KiteDartPattern";
 export * from "./StartupScanSection";
 export * from "./StructureScanPreview";

@@ -14,6 +14,7 @@
       { "path": "StartupCta.tsx", "type": "component", "description": "行动号召区域" },
       { "path": "StartupFooter.tsx", "type": "component", "description": "页脚品牌信息、站内导航和社交链接" },
       { "path": "RhombusPattern.tsx", "type": "component", "description": "60°/120° 菱形密铺 SVG 图层" }
+      ,{ "path": "KiteDartPattern.tsx", "type": "component", "description": "Penrose kite-dart 非周期密铺 SVG 图层" }
     ],
     "folders": []
   },

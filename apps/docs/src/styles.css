@@ -202,6 +202,42 @@ button, input { font: inherit; }
   vector-effect: non-scaling-stroke;
 }
 
+.startup-grid-background__rhombus polygon[data-kind="thin"],
+.startup-grid-background__kite-dart polygon[data-kind="kite"] {
+  fill: rgba(35, 35, 31, 0.025);
+}
+
+.startup-grid-background__rhombus polygon[data-kind="thick"],
+.startup-grid-background__kite-dart polygon[data-kind="dart"] {
+  fill: rgba(35, 35, 31, 0.045);
+}
+
+.startup-grid-background__kite-dart {
+  --pattern-enter-x: -12px;
+  --pattern-enter-y: 14px;
+  --pattern-exit-x: 12px;
+  --pattern-exit-y: -14px;
+  position: absolute;
+  z-index: 2;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  overflow: visible;
+  opacity: 0;
+  transform-origin: center;
+  animation: startup-grid-pattern-cycle 100s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation-delay: -91.25s;
+  pointer-events: none;
+}
+
+.startup-grid-background__kite-dart polygon {
+  fill: none;
+  stroke: rgba(35, 35, 31, 0.12);
+  stroke-linejoin: round;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
 @keyframes startup-grid-pattern-cycle {
   0% { opacity: 0; transform: translate3d(var(--pattern-enter-x), var(--pattern-enter-y), 0); }
   1.25%, 18.75% { opacity: 1; transform: translate3d(0, 0, 0); }
@@ -265,6 +301,7 @@ button, input { font: inherit; }
   .startup-grid-background__pattern { animation: none !important; opacity: 0; transform: none; }
   .startup-grid-background__pattern--triangle { opacity: 1; }
   .startup-grid-background__rhombus { animation: none !important; opacity: 0.9; transform: none; }
+  .startup-grid-background__kite-dart { animation: none !important; opacity: 0.9; transform: none; }
   .startup-grid-background::before { animation: none !important; opacity: 0.38; }
   .startup-grid-background__pattern::after { transition: none !important; }
   .hero-cover__glyph {

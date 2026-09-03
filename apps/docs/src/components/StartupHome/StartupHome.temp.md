@@ -14,7 +14,8 @@ apps/docs/src/components/StartupHome/
 ├── StartupFeatures.tsx  # component: 能力卡片区域
 ├── StartupCta.tsx  # component: 行动号召区域
 ├── StartupFooter.tsx  # component: 页脚内容
-└── RhombusPattern.tsx  # component: 60°/120° 菱形密铺 SVG 图层
+├── RhombusPattern.tsx  # component: Penrose P3 菱形密铺 SVG 图层
+└── KiteDartPattern.tsx  # component: Penrose P2 kite-dart 非周期密铺 SVG 图层
 ```
 
 ## 拆分理由
