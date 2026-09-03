@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { RhombusPattern } from "./RhombusPattern";
@@ -45,42 +46,26 @@ type Transition = {
 export const StartupGridBackground = ({ gridRef }: StartupGridBackgroundProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [transition, setTransition] = useState<Transition | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    let holdTimer: number | undefined;
-    let revealTimer: number | undefined;
-    let cancelled = false;
+    if (transition !== null) return;
 
-    const scheduleNext = (currentIndex: number) => {
-      holdTimer = window.setTimeout(() => {
-        if (cancelled) return;
-
-        const nextIndex = (currentIndex + 1) % patterns.length;
-        setTransition({ from: currentIndex, to: nextIndex });
-
-        revealTimer = window.setTimeout(() => {
-          if (cancelled) return;
-
-          setActiveIndex(nextIndex);
-          setTransition(null);
-          scheduleNext(nextIndex);
-        }, REVEAL_DURATION_MS);
-      }, HOLD_DURATION_MS);
-    };
-
-    scheduleNext(0);
+    const holdTimer = window.setTimeout(() => {
+      setTransition({ from: activeIndex, to: (activeIndex + 1) % patterns.length });
+    }, HOLD_DURATION_MS);
 
     return () => {
-      cancelled = true;
-      if (holdTimer !== undefined) window.clearTimeout(holdTimer);
-      if (revealTimer !== undefined) window.clearTimeout(revealTimer);
+      window.clearTimeout(holdTimer);
     };
-  }, []);
+  }, [activeIndex, transition]);
 
-  const renderPattern = (index: number, phase: "static" | "incoming") =>
-    patterns[index]!.render(
-      `startup-grid-background__layer startup-grid-background__layer--${phase}`,
-    );
+  const renderPattern = (index: number) => patterns[index]!.render("");
+
+  const completeTransition = (nextIndex: number) => {
+    setActiveIndex(nextIndex);
+    setTransition(null);
+  };
 
   return (
     <div
@@ -88,16 +73,38 @@ export const StartupGridBackground = ({ gridRef }: StartupGridBackgroundProps) =
       aria-hidden="true"
       className="startup-grid-background pointer-events-none absolute inset-0 z-0"
     >
-      {transition
-        ? [
-            <div key={`${patterns[transition.from]!.key}-outgoing`} className="startup-grid-background__slot">
-              {renderPattern(transition.from, "static")}
-            </div>,
-            <div key={`${patterns[transition.to]!.key}-incoming`} className="startup-grid-background__slot">
-              {renderPattern(transition.to, "incoming")}
-            </div>,
-          ]
-        : renderPattern(activeIndex, "static")}
+      {transition ? (
+        <>
+          <div
+            key={`${patterns[transition.from]!.key}-outgoing`}
+            className="startup-grid-background__layer startup-grid-background__layer--static"
+            data-pattern={patterns[transition.from]!.key}
+          >
+            {renderPattern(transition.from)}
+          </div>
+          <motion.div
+            key={`${patterns[transition.to]!.key}-incoming`}
+            className="startup-grid-background__layer startup-grid-background__layer--incoming"
+            data-pattern={patterns[transition.to]!.key}
+            initial={{ clipPath: "circle(0% at 50% 50%)" }}
+            animate={{ clipPath: "circle(120% at 50% 50%)" }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : REVEAL_DURATION_MS / 1000,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            onAnimationComplete={() => completeTransition(transition.to)}
+          >
+            {renderPattern(transition.to)}
+          </motion.div>
+        </>
+      ) : (
+        <div
+          className="startup-grid-background__layer startup-grid-background__layer--static"
+          data-pattern={patterns[activeIndex]!.key}
+        >
+          {renderPattern(activeIndex)}
+        </div>
+      )}
     </div>
   );
 };

@@ -221,9 +221,11 @@ button, input { font: inherit; }
   vector-effect: non-scaling-stroke;
 }
 
-.startup-grid-background__slot {
+.startup-grid-background__layer {
   position: absolute;
   inset: 0;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .startup-grid-background__layer--static {
@@ -232,14 +234,6 @@ button, input { font: inherit; }
 
 .startup-grid-background__layer--incoming {
   z-index: 2;
-  clip-path: circle(0% at 50% 50%);
-  animation: startup-grid-pattern-reveal 2600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change: clip-path;
-}
-
-@keyframes startup-grid-pattern-reveal {
-  from { clip-path: circle(0% at 50% 50%); }
-  to { clip-path: circle(120% at 50% 50%); }
 }
 
 @keyframes startup-grid-breathe {
