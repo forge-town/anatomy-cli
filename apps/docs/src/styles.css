@@ -102,6 +102,7 @@ button, input { font: inherit; }
   z-index: 1;
   inset: -45%;
   background-repeat: repeat;
+  background-position: center;
   opacity: 1;
   clip-path: circle(120% at 50% 50%);
   transform-origin: center;
@@ -234,6 +235,7 @@ button, input { font: inherit; }
 
 .startup-grid-background__layer--incoming {
   z-index: 2;
+  background: var(--background);
 }
 
 @keyframes startup-grid-breathe {
