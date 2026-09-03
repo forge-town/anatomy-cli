@@ -134,9 +134,9 @@ button, input { font: inherit; }
   --pattern-exit-x: 28px;
   --pattern-exit-y: -18px;
   --pattern-size: 192px 166px;
-  --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='62' viewBox='0 0 72 62'%3E%3Cpath d='M0 0H72M0 31H72M0 62H72M0 62L36 0L72 62M0 0L36 62L72 0' fill='none' stroke='white' stroke-width='1'/%3E%3C/svg%3E");
+  --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='166' viewBox='0 0 192 166'%3E%3Cpath d='M0 0H192M0 83H192M0 166H192M0 166L96 0L192 166M0 0L96 166L192 0' fill='none' stroke='white' stroke-width='1'/%3E%3C/svg%3E");
   animation-delay: -1.25s;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='62' viewBox='0 0 72 62'%3E%3Cpath d='M0 0H72M0 31H72M0 62H72M0 62L36 0L72 62M0 0L36 62L72 0' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='166' viewBox='0 0 192 166'%3E%3Cpath d='M0 0H192M0 83H192M0 166H192M0 166L96 0L192 166M0 0L96 166L192 0' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 192px 166px;
 }
 
