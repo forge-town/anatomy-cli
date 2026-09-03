@@ -1,8 +1,13 @@
 import { CheckCircle2, Copy } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
-import { StartupGridBackground } from "./StartupGridBackground";
+import {
+  StartupGridBackground,
+  updateGridPatternHover,
+  type StartupGridTransitionRequest,
+} from "./StartupGridBackground";
+import { updateKiteDartHover } from "./KiteDartPattern";
 
 type PackageManager = "npm" | "pnpm" | "bun";
 type HeroTitlePhase = "present" | "exit" | "enter-start";
@@ -24,10 +29,12 @@ export const StartupHero = () => {
   const { t } = useTranslation();
   const heroRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const clickTokenRef = useRef(0);
   const [packageManager, setPackageManager] = useState<PackageManager>("npm");
   const [copied, setCopied] = useState(false);
   const [heroTitleIndex, setHeroTitleIndex] = useState(0);
   const [heroTitlePhase, setHeroTitlePhase] = useState<HeroTitlePhase>("present");
+  const [transitionRequest, setTransitionRequest] = useState<StartupGridTransitionRequest | null>(null);
   const command = installCommands[packageManager];
   const maxHeroTitleLength = Math.max(...heroTitleKeys.map((key) => Array.from(t(key)).length));
   const heroExitDuration =
@@ -46,10 +53,12 @@ export const StartupHero = () => {
       const rect = hero.getBoundingClientRect();
       const x = Math.max(0, Math.min(rect.width, latestEvent.clientX - rect.left));
       const y = Math.max(0, Math.min(rect.height, latestEvent.clientY - rect.top));
-      const patternX = ((x / rect.width + 0.45) / 1.9) * 100;
-      const patternY = ((y / rect.height + 0.45) / 1.9) * 100;
-      grid.style.setProperty("--grid-pointer-x", `${patternX.toFixed(2)}%`);
-      grid.style.setProperty("--grid-pointer-y", `${patternY.toFixed(2)}%`);
+      grid.style.setProperty("--grid-pointer-x", `${((x / rect.width) * 100).toFixed(2)}%`);
+      grid.style.setProperty("--grid-pointer-y", `${((y / rect.height) * 100).toFixed(2)}%`);
+      grid.style.setProperty("--grid-pointer-client-x", `${latestEvent.clientX}px`);
+      grid.style.setProperty("--grid-pointer-client-y", `${latestEvent.clientY}px`);
+      updateGridPatternHover(grid, latestEvent.clientX, latestEvent.clientY);
+      updateKiteDartHover(grid, latestEvent.clientX, latestEvent.clientY);
       grid.style.setProperty("--grid-pointer-active", "1");
     };
     const onPointerMove = (event: PointerEvent) => {
@@ -59,6 +68,9 @@ export const StartupHero = () => {
     };
     const onPointerLeave = () => {
       latestEvent = null;
+      grid.style.setProperty("--grid-pointer-client-x", "-1px");
+      grid.style.setProperty("--grid-pointer-client-y", "-1px");
+      updateKiteDartHover(grid, null, null);
       grid.style.setProperty("--grid-pointer-active", "0");
     };
 
@@ -123,12 +135,32 @@ export const StartupHero = () => {
 
   const heroTitle = t(heroTitleKeys[heroTitleIndex] ?? heroTitleKeys[0]);
 
+  const handleHeroClick = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest("button, a, input, select, textarea")) {
+      return;
+    }
+
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const bounds = hero.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((event.clientX - bounds.left) / Math.max(bounds.width, 1)) * 100));
+    const y = Math.max(0, Math.min(100, ((event.clientY - bounds.top) / Math.max(bounds.height, 1)) * 100));
+    clickTokenRef.current += 1;
+    setTransitionRequest({
+      origin: { x, y },
+      token: clickTokenRef.current,
+    });
+  };
+
   return (
     <section
       ref={heroRef}
       className="relative flex min-h-[75svh] flex-col items-center justify-start overflow-hidden bg-[var(--line-background)] px-4 pb-20 pt-24 text-center md:px-8 md:pt-28"
+      onClick={handleHeroClick}
     >
-      <StartupGridBackground gridRef={gridRef} />
+      <StartupGridBackground gridRef={gridRef} transitionRequest={transitionRequest} />
       <div className="relative z-10 flex w-full max-w-4xl flex-col items-center">
         <h1 className="mb-7 w-full max-w-3xl text-balance font-[var(--font-display)] text-5xl font-semibold leading-[1.15] tracking-normal text-[var(--line-foreground)] lg:max-w-xl lg:text-[52px]">
           <span className="block">

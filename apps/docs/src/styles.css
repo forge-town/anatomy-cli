@@ -79,6 +79,9 @@ button, input { font: inherit; }
 .startup-grid-background {
   --grid-pointer-x: 50%;
   --grid-pointer-y: 24%;
+  --grid-pointer-client-x: -1px;
+  --grid-pointer-client-y: -1px;
+  --grid-hover-radius: 150px;
   --grid-pointer-active: 0;
   overflow: hidden;
   isolation: isolate;
@@ -98,6 +101,8 @@ button, input { font: inherit; }
 }
 
 .startup-grid-background__pattern {
+  --grid-pattern-pointer-x: 50%;
+  --grid-pattern-pointer-y: 24%;
   position: absolute;
   z-index: 1;
   inset: -45%;
@@ -113,9 +118,9 @@ button, input { font: inherit; }
   inset: 0;
   content: "";
   background-image:
-    radial-gradient(circle at calc(var(--grid-pointer-x) - 5%) calc(var(--grid-pointer-y) - 4%), rgba(251, 113, 133, 0.95), transparent 8%),
-    radial-gradient(circle at calc(var(--grid-pointer-x) + 6%) calc(var(--grid-pointer-y) + 4%), rgba(34, 211, 238, 0.92), transparent 9%),
-    radial-gradient(circle at var(--grid-pointer-x) var(--grid-pointer-y), rgba(192, 132, 252, 0.96), transparent 11%);
+    radial-gradient(circle var(--grid-hover-radius) at calc(var(--grid-pattern-pointer-x) - 5%) calc(var(--grid-pattern-pointer-y) - 4%), rgba(251, 113, 133, 0.95), transparent 100%),
+    radial-gradient(circle var(--grid-hover-radius) at calc(var(--grid-pattern-pointer-x) + 6%) calc(var(--grid-pattern-pointer-y) + 4%), rgba(34, 211, 238, 0.92), transparent 100%),
+    radial-gradient(circle var(--grid-hover-radius) at var(--grid-pattern-pointer-x) var(--grid-pattern-pointer-y), rgba(192, 132, 252, 0.96), transparent 100%);
   -webkit-mask-image: var(--pattern-mask-image);
   mask-image: var(--pattern-mask-image);
   -webkit-mask-repeat: repeat;
@@ -172,6 +177,12 @@ button, input { font: inherit; }
   --pattern-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='224' height='224' viewBox='0 0 224 224'%3E%3Cpath d='m79 -6 97 56 56 -97 M-48 50 49 106 -7 203 m15 -26 168 97 97 -168 -168 -97z' fill='none' stroke='white' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='224' height='224' viewBox='0 0 224 224'%3E%3Cpath d='m79 -6 97 56 56 -97 M-48 50 49 106 -7 203 m15 -26 168 97 97 -168 -168 -97z' fill='none' stroke='%2323231f' stroke-opacity='.12' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 224px 224px;
+  background-position: center -14px;
+}
+
+.startup-grid-background__pattern--pythagorean::after {
+  mask-position: center -14px;
+  -webkit-mask-position: center -14px;
 }
 
 .startup-grid-background__rhombus {
@@ -216,12 +227,14 @@ button, input { font: inherit; }
   pointer-events: none;
 }
 
-.startup-grid-background__kite-dart polygon {
+.startup-grid-background__kite-dart-edge {
   fill: none;
-  stroke: rgba(35, 35, 31, 0.12);
+  stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1;
+  stroke-width: 1.55;
   vector-effect: non-scaling-stroke;
+  opacity: var(--kite-edge-opacity, 1);
+  transition: stroke 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .startup-grid-background__layer {
