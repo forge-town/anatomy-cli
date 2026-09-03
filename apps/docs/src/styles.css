@@ -189,8 +189,7 @@ button, input { font: inherit; }
   overflow: visible;
   opacity: 0;
   transform-origin: center;
-  animation: startup-grid-pattern-cycle 100s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-  animation-delay: -81.25s;
+  animation: startup-grid-rhombus-cycle 40s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   pointer-events: none;
 }
 
@@ -225,8 +224,7 @@ button, input { font: inherit; }
   overflow: visible;
   opacity: 0;
   transform-origin: center;
-  animation: startup-grid-pattern-cycle 100s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-  animation-delay: -91.25s;
+  animation: startup-grid-kite-cycle 40s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   pointer-events: none;
 }
 
@@ -242,6 +240,16 @@ button, input { font: inherit; }
   0% { opacity: 0; transform: translate3d(var(--pattern-enter-x), var(--pattern-enter-y), 0); }
   1.25%, 18.75% { opacity: 1; transform: translate3d(0, 0, 0); }
   20%, 100% { opacity: 0; transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
+}
+
+@keyframes startup-grid-rhombus-cycle {
+  0%, 48% { opacity: 1; transform: translate3d(0, 0, 0); }
+  52%, 100% { opacity: 0; transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
+}
+
+@keyframes startup-grid-kite-cycle {
+  0%, 48% { opacity: 0; transform: translate3d(var(--pattern-enter-x), var(--pattern-enter-y), 0); }
+  52%, 100% { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes startup-grid-breathe {

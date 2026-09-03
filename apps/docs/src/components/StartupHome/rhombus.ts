@@ -28,10 +28,10 @@ const intersectsCenteredSquare = (triangle: Triangle, limit: number): boolean =>
   );
 };
 
-const edgeKey = (a: Point, b: Point): string => {
+const edgeKey = (kind: 0 | 1, a: Point, b: Point): string => {
   const first = pointKey(a);
   const second = pointKey(b);
-  return first < second ? `${first}|${second}` : `${second}|${first}`;
+  return first < second ? `${kind}|${first}|${second}` : `${kind}|${second}|${first}`;
 };
 
 const isMirrorAcrossEdge = (edgeA: Point, edgeB: Point, point: Point, other: Point) => {
@@ -137,7 +137,7 @@ const mergeHalfTiles = (
     const edge: [Point, Point] =
       glue === "base" ? [triangle.b, triangle.c] : [triangle.a, triangle.c];
     const other = glue === "base" ? triangle.a : triangle.b;
-    const key = edgeKey(edge[0], edge[1]);
+    const key = edgeKey(triangle.kind, edge[0], edge[1]);
     const list = buckets.get(key) ?? [];
     list.push({ triangle, edge, other });
     buckets.set(key, list);
@@ -170,8 +170,8 @@ const mergeHalfTiles = (
 
 export const createPenroseTiling = ({
   variant,
-  radius = 500,
-  levels = 4,
+  radius = 1200,
+  levels = 6,
 }: {
   variant: PenroseVariant;
   radius?: number;
@@ -194,4 +194,31 @@ export const pointsToSvg = (points: Point[], scaleFactor = 1, offset: Point = [4
     .map(([x, y]) => `${(x * scaleFactor + offset[0]).toFixed(2)},${(y * scaleFactor + offset[1]).toFixed(2)}`)
     .join(" ");
 
-export const createRhombusTiling = (): PenroseTile[] => createPenroseTiling({ variant: "rhombus" });
+/** A deliberately simple 60°/120° edge-to-edge rhombus lattice for the hero. */
+export const createRhombusTiling = ({
+  columns = 36,
+  rows = 24,
+  size = 58,
+}: {
+  columns?: number;
+  rows?: number;
+  size?: number;
+} = {}): PenroseTile[] => {
+  const diagonal: Point = [size * 0.5, size * (Math.sqrt(3) / 2)];
+  return Array.from({ length: rows }, (_, row) =>
+    Array.from({ length: columns }, (_, column) => {
+      const origin: Point = [
+        (column - (columns - 1) / 2) * size + (row - (rows - 1) / 2) * diagonal[0],
+        (row - (rows - 1) / 2) * diagonal[1],
+      ];
+      const top = add(origin, [size, 0]);
+      const right = add(top, diagonal);
+      const left = add(origin, diagonal);
+      return {
+        id: `rhombus-${row}-${column}`,
+        kind: "thin" as const,
+        points: [origin, top, right, left],
+      };
+    }),
+  ).flat();
+};

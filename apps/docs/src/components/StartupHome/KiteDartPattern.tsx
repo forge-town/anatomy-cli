@@ -1,6 +1,6 @@
 import { createPenroseTiling, pointsToSvg } from "./rhombus";
 
-const tiles = createPenroseTiling({ variant: "kite-dart" });
+const tiles = createPenroseTiling({ variant: "kite-dart", radius: 1200, levels: 5 });
 
 export const KiteDartPattern = () => (
   <svg

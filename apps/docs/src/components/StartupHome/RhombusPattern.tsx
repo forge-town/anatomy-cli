@@ -1,6 +1,6 @@
-import { createPenroseTiling, pointsToSvg } from "./rhombus";
+import { createRhombusTiling, pointsToSvg } from "./rhombus";
 
-const rhombi = createPenroseTiling({ variant: "rhombus" });
+const rhombi = createRhombusTiling();
 
 export const RhombusPattern = () => (
   <svg
