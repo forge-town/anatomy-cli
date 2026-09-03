@@ -183,7 +183,7 @@ button, input { font: inherit; }
   --pattern-exit-x: -14px;
   --pattern-exit-y: -12px;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   inset: -12%;
   width: 124%;
   height: 124%;
@@ -211,7 +211,7 @@ button, input { font: inherit; }
   --pattern-exit-x: 12px;
   --pattern-exit-y: -14px;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   inset: -12%;
   width: 124%;
   height: 124%;
@@ -234,10 +234,11 @@ button, input { font: inherit; }
 }
 
 @keyframes startup-grid-pattern-cycle {
-  0% { opacity: 0; clip-path: circle(0% at 50% 50%); transform: translate3d(var(--pattern-enter-x), var(--pattern-enter-y), 0); }
-  1.5% { opacity: 1; clip-path: circle(0% at 50% 50%); transform: translate3d(0, 0, 0); }
-  10% { opacity: 1; clip-path: circle(82% at 50% 50%); transform: translate3d(0, 0, 0); }
-  12.5%, 100% { opacity: 0; clip-path: circle(120% at 50% 50%); transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
+  0% { z-index: 3; opacity: 1; clip-path: circle(0% at 50% 50%); transform: translate3d(0, 0, 0); }
+  3% { z-index: 3; opacity: 1; clip-path: circle(120% at 50% 50%); transform: translate3d(0, 0, 0); }
+  3.1%, 20.5% { z-index: 1; opacity: 1; clip-path: circle(120% at 50% 50%); transform: translate3d(0, 0, 0); }
+  20.8% { z-index: 1; opacity: 0; clip-path: circle(120% at 50% 50%); transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
+  100% { z-index: 1; opacity: 0; clip-path: circle(120% at 50% 50%); transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
 }
 
 @keyframes startup-grid-breathe {
