@@ -120,6 +120,8 @@ button, input { font: inherit; }
   mask-image: var(--pattern-mask-image);
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
   -webkit-mask-size: var(--pattern-size);
   mask-size: var(--pattern-size);
   opacity: var(--grid-pointer-active);
