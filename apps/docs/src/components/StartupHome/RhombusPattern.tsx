@@ -2,10 +2,14 @@ import { createRhombusTiling, pointsToSvg } from "./rhombus";
 
 const rhombi = createRhombusTiling();
 
-export const RhombusPattern = () => (
+type RhombusPatternProps = {
+  className?: string;
+};
+
+export const RhombusPattern = ({ className }: RhombusPatternProps) => (
   <svg
     aria-hidden="true"
-    className="startup-grid-background__rhombus"
+    className={`startup-grid-background__rhombus${className ? ` ${className}` : ""}`}
     viewBox="0 0 820 460"
     preserveAspectRatio="xMidYMid slice"
   >

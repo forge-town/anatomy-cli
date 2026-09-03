@@ -2,10 +2,14 @@ import { createPenroseTiling, pointsToSvg } from "./rhombus";
 
 const tiles = createPenroseTiling({ variant: "kite-dart", radius: 1200, levels: 5 });
 
-export const KiteDartPattern = () => (
+type KiteDartPatternProps = {
+  className?: string;
+};
+
+export const KiteDartPattern = ({ className }: KiteDartPatternProps) => (
   <svg
     aria-hidden="true"
-    className="startup-grid-background__kite-dart"
+    className={`startup-grid-background__kite-dart${className ? ` ${className}` : ""}`}
     viewBox="0 0 820 460"
     preserveAspectRatio="xMidYMid slice"
   >
