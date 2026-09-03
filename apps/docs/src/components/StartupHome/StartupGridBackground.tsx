@@ -75,13 +75,20 @@ export const StartupGridBackground = ({ gridRef }: StartupGridBackgroundProps) =
     >
       {transition ? (
         <>
-          <div
+          <motion.div
             key={`${patterns[transition.from]!.key}-outgoing`}
             className="startup-grid-background__layer startup-grid-background__layer--static"
             data-pattern={patterns[transition.from]!.key}
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: [1, 1, 0], scale: [1, 1, 1.01] }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : (REVEAL_DURATION_MS * 0.9) / 1000,
+              times: [0, 0.8, 1],
+              ease: [0.65, 0, 0.35, 1],
+            }}
           >
             {renderPattern(transition.from)}
-          </div>
+          </motion.div>
           <motion.div
             key={`${patterns[transition.to]!.key}-incoming`}
             className="startup-grid-background__layer startup-grid-background__layer--incoming"
