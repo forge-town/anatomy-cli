@@ -104,7 +104,7 @@ button, input { font: inherit; }
   background-repeat: repeat;
   opacity: 0;
   transform-origin: center;
-  animation: startup-grid-pattern-cycle 80s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: startup-grid-pattern-cycle 100s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   will-change: transform;
 }
 
@@ -176,10 +176,36 @@ button, input { font: inherit; }
   background-size: 224px 224px;
 }
 
+.startup-grid-background__rhombus {
+  --pattern-enter-x: 14px;
+  --pattern-enter-y: 12px;
+  --pattern-exit-x: -14px;
+  --pattern-exit-y: -12px;
+  position: absolute;
+  z-index: 2;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  overflow: visible;
+  opacity: 0;
+  transform-origin: center;
+  animation: startup-grid-pattern-cycle 100s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation-delay: -81.25s;
+  pointer-events: none;
+}
+
+.startup-grid-background__rhombus polygon {
+  fill: none;
+  stroke: rgba(35, 35, 31, 0.12);
+  stroke-linejoin: round;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
 @keyframes startup-grid-pattern-cycle {
   0% { opacity: 0; transform: translate3d(var(--pattern-enter-x), var(--pattern-enter-y), 0); }
-  1.25%, 23.75% { opacity: 1; transform: translate3d(0, 0, 0); }
-  25%, 100% { opacity: 0; transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
+  1.25%, 18.75% { opacity: 1; transform: translate3d(0, 0, 0); }
+  20%, 100% { opacity: 0; transform: translate3d(var(--pattern-exit-x), var(--pattern-exit-y), 0); }
 }
 
 @keyframes startup-grid-breathe {
@@ -238,6 +264,7 @@ button, input { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .startup-grid-background__pattern { animation: none !important; opacity: 0; transform: none; }
   .startup-grid-background__pattern--triangle { opacity: 1; }
+  .startup-grid-background__rhombus { animation: none !important; opacity: 0.9; transform: none; }
   .startup-grid-background::before { animation: none !important; opacity: 0.38; }
   .startup-grid-background__pattern::after { transition: none !important; }
   .hero-cover__glyph {
