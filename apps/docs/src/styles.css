@@ -201,16 +201,6 @@ button, input { font: inherit; }
   vector-effect: non-scaling-stroke;
 }
 
-.startup-grid-background__rhombus polygon[data-kind="thin"],
-.startup-grid-background__kite-dart polygon[data-kind="kite"] {
-  fill: rgba(35, 35, 31, 0.025);
-}
-
-.startup-grid-background__rhombus polygon[data-kind="thick"],
-.startup-grid-background__kite-dart polygon[data-kind="dart"] {
-  fill: rgba(35, 35, 31, 0.045);
-}
-
 .startup-grid-background__kite-dart {
   --pattern-enter-x: -12px;
   --pattern-enter-y: 14px;

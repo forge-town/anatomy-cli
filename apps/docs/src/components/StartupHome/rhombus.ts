@@ -196,9 +196,9 @@ export const pointsToSvg = (points: Point[], scaleFactor = 1, offset: Point = [4
 
 /** A deliberately simple 60°/120° edge-to-edge rhombus lattice for the hero. */
 export const createRhombusTiling = ({
-  columns = 36,
-  rows = 24,
-  size = 58,
+  columns = 28,
+  rows = 20,
+  size = 82,
 }: {
   columns?: number;
   rows?: number;
