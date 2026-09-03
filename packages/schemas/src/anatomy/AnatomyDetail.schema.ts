@@ -3,23 +3,23 @@ import { z } from "zod/v4";
 import { AnatomyDraftSchema } from "./AnatomyDraft.schema";
 import { AnatomyVersionSchema } from "./AnatomyVersion.schema";
 
-/** Anatomy 的完整聚合视图，包含草稿、历史版本和使用情况。 */
+/** Complete Anatomy aggregate view, including its draft, version history, and usage. */
 export const AnatomyDetailSchema = z.object({
-  /** Anatomy 的唯一标识。 */
+  /** Unique Anatomy identifier. */
   id: z.string(),
 
-  /** 归档时间；未归档时为 null。 */
+  /** Archive timestamp, or null when the Anatomy is active. */
   archivedAt: z.date().nullable(),
-  /** 当前可编辑草稿；没有草稿时为 null。 */
+  /** Current editable draft, or null when no draft exists. */
   draft: AnatomyDraftSchema.nullable(),
-  /** 按发布时间保存的不可变版本列表。 */
+  /** Immutable versions ordered by publication time. */
   versions: z.array(AnatomyVersionSchema),
-  /** 当前被 Crate 引用的次数。 */
+  /** Number of current Crate references. */
   usageCount: z.number().int().nonnegative(),
 
-  /** 首次创建时间。 */
+  /** Creation timestamp. */
   createdAt: z.date(),
-  /** 最近更新时间。 */
+  /** Most recent update timestamp. */
   updatedAt: z.date(),
 });
 

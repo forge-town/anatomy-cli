@@ -1,24 +1,24 @@
 import { z } from "zod/v4";
 
-/** 用于列表和选择器的精简 Anatomy 视图。 */
+/** Compact Anatomy view used by lists and selectors. */
 export const AnatomySummarySchema = z.object({
-  /** Anatomy 的唯一标识。 */
+  /** Unique Anatomy identifier. */
   id: z.string(),
-  /** Anatomy 的展示名称。 */
+  /** Display name of the Anatomy. */
   name: z.string(),
-  /** Anatomy 的设计目的。 */
+  /** Intended purpose of the Anatomy. */
   purpose: z.string(),
-  /** 归档时间；未归档时为 null。 */
+  /** Archive timestamp, or null when the Anatomy is active. */
   archivedAt: z.date().nullable(),
-  /** 首次创建时间。 */
+  /** Creation timestamp. */
   createdAt: z.date(),
-  /** 最近更新时间。 */
+  /** Most recent update timestamp. */
   updatedAt: z.date(),
-  /** 是否存在可继续编辑的草稿。 */
+  /** Whether an editable draft exists. */
   hasDraft: z.boolean(),
-  /** 最新发布版本号；从未发布时为 null。 */
+  /** Latest published version number, or null when never published. */
   latestVersion: z.number().int().positive().nullable(),
-  /** 当前被 Crate 引用的次数。 */
+  /** Number of current Crate references. */
   usageCount: z.number().int().nonnegative(),
 });
 

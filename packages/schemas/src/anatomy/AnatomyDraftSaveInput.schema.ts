@@ -2,9 +2,9 @@ import { z } from "zod/v4";
 
 import { AnatomyDraftInputSchema } from "./AnatomyDraftInput.schema";
 
-/** Anatomy 草稿保存操作的输入契约。 */
+/** Input contract for saving an Anatomy draft. */
 export const AnatomyDraftSaveInputSchema = AnatomyDraftInputSchema.extend({
-  /** 用于乐观并发控制的预期草稿修订号。 */
+  /** Expected draft revision used for optimistic concurrency control. */
   expectedRevision: z.number().int().positive(),
 });
 

@@ -1,15 +1,15 @@
 import { z } from "zod/v4";
 
-/** 单个结构条目相对于 Anatomy 默认策略的局部覆盖。 */
+/** Local overrides of the default Anatomy policies for one structure entry. */
 export const AnatomyPolicyOverridesSchema = z
   .object({
-    /** 缺少必需条目时的局部处置。 */
+    /** Local action when a required entry is missing. */
     missingRequired: z.enum(["block", "warn", "allow"]),
-    /** 出现未声明条目时的局部处置。 */
+    /** Local action when an undeclared entry is present. */
     unexpectedEntry: z.enum(["block", "warn", "allow"]),
-    /** 条目名称不匹配时的局部处置。 */
+    /** Local action when an entry name does not match. */
     nameMismatch: z.enum(["block", "warn", "allow"]),
-    /** 条目嵌套位置不匹配时的局部处置。 */
+    /** Local action when an entry is nested at the wrong location. */
     nestingMismatch: z.enum(["block", "warn", "allow"]),
   })
   .partial();

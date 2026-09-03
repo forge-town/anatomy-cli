@@ -2,15 +2,15 @@ import { z } from "zod/v4";
 
 import { AnatomyStatusSchema } from "./AnatomyStatus.schema";
 
-/** Anatomy 分页列表查询的输入契约。 */
+/** Input contract for paginated Anatomy list queries. */
 export const AnatomyListInputSchema = z.object({
-  /** 用于名称或说明模糊匹配的搜索词。 */
+  /** Search term used for fuzzy matching against names or descriptions. */
   search: z.string().trim().optional(),
-  /** Anatomy 生命周期状态过滤条件。 */
+  /** Anatomy lifecycle status filter. */
   status: AnatomyStatusSchema.optional(),
-  /** 从一开始计数的页码。 */
+  /** One-based page number. */
   page: z.number().int().positive().optional(),
-  /** 每页最多返回的记录数。 */
+  /** Maximum number of records returned per page. */
   pageSize: z.number().int().positive().max(100).optional(),
 });
 

@@ -4,11 +4,11 @@ import { AnatomyPoliciesSchema } from "./AnatomyPolicy.schema";
 import { AnatomyNodeSchema } from "./AnatomyNode.schema";
 import { AnatomyBindingSchema } from "./AnatomyBinding.schema";
 
-/** Anatomy 必须满足的递归文件系统结构契约。 */
+/** Recursive filesystem structure contract that an Anatomy must satisfy. */
 export const AnatomyStructureSchema = z.object({
-  /** 结构文档的格式版本，用于后续兼容迁移。 */
+  /** Structure document format version used for future-compatible migrations. */
   schemaVersion: z.literal(1),
-  /** 所有节点未单独覆盖时采用的默认策略。 */
+  /** Default policies used by nodes that do not provide local overrides. */
   defaultPolicies: AnatomyPoliciesSchema,
   /** Named placeholder constraints shared by matching descendants. */
   bindings: z
@@ -19,9 +19,9 @@ export const AnatomyStructureSchema = z.object({
       AnatomyBindingSchema,
     )
     .optional(),
-  /** 不代表真实目录的虚拟根节点。 */
+  /** Virtual root node that does not represent a real directory. */
   root: z.object({
-    /** 位于 Anatomy 顶层的结构节点。 */
+    /** Structure nodes at the top level of the Anatomy. */
     children: z.array(AnatomyNodeSchema),
   }),
 });

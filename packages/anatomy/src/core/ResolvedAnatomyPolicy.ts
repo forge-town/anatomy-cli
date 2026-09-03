@@ -1,11 +1,11 @@
 import type { AnatomyPolicies } from "@anatomy-cli/schemas";
 
-/** 某个策略键最终生效的值及其来源层级。 */
+/** Effective value of a policy key and the level that supplied it. */
 export type ResolvedAnatomyPolicy = {
-  /** 解析后实际执行的策略值。 */
+  /** Policy value applied after resolution. */
   value: AnatomyPolicies[keyof AnatomyPolicies];
-  /** 策略来自当前条目、父条目还是 Anatomy 默认值。 */
+  /** Whether the policy came from the current entry, a parent, or Anatomy defaults. */
   source: "entry" | "parent" | "anatomy";
-  /** 提供覆盖值的条目标识；使用默认值时不存在。 */
+  /** Identifier of the entry that supplied the override, absent for defaults. */
   sourceEntryId?: string;
 };

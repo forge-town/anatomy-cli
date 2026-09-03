@@ -1,11 +1,13 @@
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, Result, type Result as ResultType } from "neverthrow";
 import type { AnatomyDraftInput, AnatomyEntry, AnatomyNode } from "@anatomy-cli/schemas";
 
 export const AnatomyValidationCode = {
   duplicateId: "duplicate_id",
   duplicateLiteralName: "duplicate_literal_name",
   invalidPlaceholder: "invalid_placeholder",
+  invalidBinding: "invalid_binding",
   invalidBindingName: "invalid_binding_name",
+  invalidBindingFormat: "invalid_binding_format",
   invalidBindingPattern: "invalid_binding_pattern",
   absolutePath: "absolute_path",
   invalidOneOfRange: "invalid_one_of_range",
@@ -22,6 +24,17 @@ export type AnatomyValidationIssue = {
 
 const PlaceholderPattern = /^[^<>/\\]*<[^<>/\\]+>[^<>/\\]*$/;
 const BindingNamePattern = /^[A-Za-z][A-Za-z0-9_]*$/;
+const SupportedBindingFormats = new Set([
+  "PascalCase",
+  "camelCase",
+  "kebab-case",
+  "snake_case",
+  "SCREAMING_SNAKE_CASE",
+]);
+const compilePattern = Result.fromThrowable(
+  (pattern: string) => new RegExp(`^(?:${pattern})$`),
+  () => undefined,
+);
 const WindowsDrivePattern = /^[a-zA-Z]:[\\/]/;
 const UncPathPattern = /^\\\\/;
 
@@ -35,11 +48,21 @@ const isRealPathExpression = (value: string): boolean => {
 
 export const validateAnatomyForPublish = (
   input: AnatomyDraftInput,
-): Result<AnatomyDraftInput, AnatomyValidationIssue[]> => {
+): ResultType<AnatomyDraftInput, AnatomyValidationIssue[]> => {
   const issues: AnatomyValidationIssue[] = [];
   const seenIds = new Set<string>();
 
   for (const [bindingName, binding] of Object.entries(input.structure.bindings ?? {})) {
+    if (binding.format === undefined && binding.pattern === undefined) {
+      issues.push({
+        code: AnatomyValidationCode.invalidBinding,
+        nodeId: bindingName,
+        parentId: null,
+        field: "binding",
+        message: `Binding "${bindingName}" must define a format, a pattern, or both`,
+      });
+    }
+
     if (!BindingNamePattern.test(bindingName)) {
       issues.push({
         code: AnatomyValidationCode.invalidBindingName,
@@ -50,18 +73,32 @@ export const validateAnatomyForPublish = (
       });
     }
 
-    if (binding.pattern !== undefined) {
-      try {
-        new RegExp(`^(?:${binding.pattern})$`);
-      } catch {
-        issues.push({
-          code: AnatomyValidationCode.invalidBindingPattern,
-          nodeId: bindingName,
-          parentId: null,
-          field: "binding",
-          message: `Binding "${bindingName}" has an invalid regular expression pattern`,
-        });
-      }
+    if (binding.format !== undefined && !SupportedBindingFormats.has(binding.format)) {
+      issues.push({
+        code: AnatomyValidationCode.invalidBindingFormat,
+        nodeId: bindingName,
+        parentId: null,
+        field: "binding",
+        message: `Binding "${bindingName}" uses an unsupported format`,
+      });
+    }
+
+    if (binding.pattern !== undefined && binding.pattern.trim().length === 0) {
+      issues.push({
+        code: AnatomyValidationCode.invalidBindingPattern,
+        nodeId: bindingName,
+        parentId: null,
+        field: "binding",
+        message: `Binding "${bindingName}" must not use an empty pattern`,
+      });
+    } else if (binding.pattern !== undefined && compilePattern(binding.pattern).isErr()) {
+      issues.push({
+        code: AnatomyValidationCode.invalidBindingPattern,
+        nodeId: bindingName,
+        parentId: null,
+        field: "binding",
+        message: `Binding "${bindingName}" has an invalid regular expression pattern`,
+      });
     }
   }
 

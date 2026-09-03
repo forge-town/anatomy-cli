@@ -1,6 +1,12 @@
+import { Result } from "neverthrow";
 import { z } from "zod/v4";
 
 import { AnatomyBindingFormatSchema } from "./AnatomyBindingFormat.schema";
+
+const compilePattern = Result.fromThrowable(
+  (pattern: string) => new RegExp(`^(?:${pattern})$`),
+  () => undefined,
+);
 
 /** Constraints applied to values captured by a named Anatomy placeholder. */
 export const AnatomyBindingSchema = z
@@ -17,12 +23,7 @@ export const AnatomyBindingSchema = z
     (binding) => {
       if (binding.pattern === undefined) return true;
 
-      try {
-        new RegExp(`^(?:${binding.pattern})$`);
-        return true;
-      } catch {
-        return false;
-      }
+      return compilePattern(binding.pattern).isOk();
     },
     { path: ["pattern"], message: "Binding pattern must be a valid regular expression" },
   );

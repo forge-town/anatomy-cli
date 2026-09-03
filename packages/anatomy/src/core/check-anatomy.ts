@@ -1,4 +1,4 @@
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, Result, type Result as ResultType } from "neverthrow";
 import {
   type AnatomyDraftInput,
   type AnatomyBinding,
@@ -118,8 +118,17 @@ const bindingFormatPatterns: Record<AnatomyBindingFormat, RegExp> = {
   SCREAMING_SNAKE_CASE: /^[A-Z0-9]+(?:_[A-Z0-9]+)*$/,
 };
 
+const compilePattern = Result.fromThrowable(
+  (pattern: string) => new RegExp(`^(?:${pattern})$`),
+  () => undefined,
+);
+
 const matchesBinding = (binding: AnatomyBinding, value: string): BindingMismatch | undefined => {
-  if (binding.format !== undefined && !bindingFormatPatterns[binding.format].test(value)) {
+  if (
+    binding.format !== undefined &&
+    (bindingFormatPatterns[binding.format] === undefined ||
+      !bindingFormatPatterns[binding.format].test(value))
+  ) {
     return {
       kind: "binding_format_mismatch",
       name: "",
@@ -129,10 +138,8 @@ const matchesBinding = (binding: AnatomyBinding, value: string): BindingMismatch
   }
 
   if (binding.pattern !== undefined) {
-    let pattern: RegExp;
-    try {
-      pattern = new RegExp(`^(?:${binding.pattern})$`);
-    } catch {
+    const compiledPattern = compilePattern(binding.pattern);
+    if (compiledPattern.isErr()) {
       return {
         kind: "binding_pattern_mismatch",
         name: "",
@@ -141,7 +148,7 @@ const matchesBinding = (binding: AnatomyBinding, value: string): BindingMismatch
       };
     }
 
-    if (!pattern.test(value)) {
+    if (!compiledPattern.value.test(value)) {
       return {
         kind: "binding_pattern_mismatch",
         name: "",
@@ -253,7 +260,7 @@ const getEntryLabel = (entry: AnatomyEntry): string => {
 export const checkAnatomy = (
   definition: AnatomyDraftInput,
   entries: AnatomyFileTreeEntry[],
-): Result<AnatomyCheckResult, AnatomyValidationIssue[]> => {
+): ResultType<AnatomyCheckResult, AnatomyValidationIssue[]> => {
   const validated = validateAnatomyForPublish(definition);
   if (validated.isErr()) return err(validated.error);
 
