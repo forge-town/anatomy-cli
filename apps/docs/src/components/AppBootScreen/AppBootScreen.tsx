@@ -78,25 +78,13 @@ export const AppBootScreen = () => {
       data-phase={phase}
       role="status"
     >
-      <div aria-hidden="true" className="app-boot-screen__stage">
-        <svg className="app-boot-screen__diagram" viewBox="0 0 280 104">
-          <path className="app-boot-screen__track" d="M20 52H92L124 20H196L228 52H260" />
-          <path className="app-boot-screen__track" d="M92 52L124 84H196L228 52" />
-          <path className="app-boot-screen__trace" d="M20 52H92L124 20H196L228 52H260" />
-          <circle className="app-boot-screen__node" cx="20" cy="52" r="3" />
-          <circle className="app-boot-screen__node" cx="140" cy="20" r="3" />
-          <circle className="app-boot-screen__node" cx="140" cy="84" r="3" />
-          <circle className="app-boot-screen__node app-boot-screen__node--active" cx="260" cy="52" r="3" />
-        </svg>
-        <div className="app-boot-screen__wordmark">
-          <span>ANATOMY</span>
-          <span className="app-boot-screen__progress">
-            <i />
-            <i />
-            <i />
-          </span>
-        </div>
-      </div>
+      <svg
+        aria-hidden="true"
+        className="app-boot-screen__triangle"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 20L5.07 8H18.93Z" fill="none" stroke="currentColor" strokeWidth="2" />
+      </svg>
     </div>
   );
 };

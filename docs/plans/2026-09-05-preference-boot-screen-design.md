@@ -10,7 +10,8 @@ The server renders the product defaults (`zh` and light theme), while the browse
 - Keep the server and the first client i18n render on the same Chinese default to avoid a hydration mismatch.
 - Hide product content behind a root boot screen while the saved language, fonts, and React updates settle.
 - Reveal the page only after two paint frames; keep a short bounded opening duration so the transition reads intentionally.
-- Use an Anatomy line-tree mark, existing `--line-*` tokens, and reduced-motion fallbacks.
+- Show only one 2 px outlined inverted triangle whose geometric centroid is the rotation center. Give every 120-degree rotation a full 500 ms eased segment so it advances with a deliberate mechanical cadence, with no orbit, axes, nodes, wordmark, or supporting decoration.
+- Keep the existing `--line-*` tokens and reduced-motion fallback.
 - Preserve normal language and theme persistence after startup.
 
 ## Validation
