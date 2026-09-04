@@ -247,18 +247,21 @@ button, input { font: inherit; }
 
 .startup-grid-background__kite-dart-edge {
   fill: none;
-  stroke: var(--kite-edge-stroke, var(--line-grid));
+  stroke: var(--line-grid);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.55;
   vector-effect: non-scaling-stroke;
-  --kite-edge-opacity: 1;
-  opacity: var(--kite-edge-opacity);
-  transition: stroke 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.startup-grid-background__kite-dart-edge[data-kite-edge-visible="false"] {
-  --kite-edge-opacity: 0;
+.startup-grid-background__kite-dart-glow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.55;
+  vector-effect: non-scaling-stroke;
+  opacity: var(--grid-pointer-active);
+  transition: opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .startup-grid-background__layer {
