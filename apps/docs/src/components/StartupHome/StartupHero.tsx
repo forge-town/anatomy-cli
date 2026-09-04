@@ -17,8 +17,11 @@ const heroTitleKeys = [
   "startup.heroTitleLine1Alt",
   "startup.heroTitleLine1Alt2",
 ] as const;
-const HERO_GLYPH_STAGGER = 72;
+const HERO_GLYPH_STAGGER_MAX = 72;
 const HERO_GLYPH_DURATION = 420;
+const HERO_REFERENCE_GLYPH_COUNT = 4;
+const HERO_TRANSITION_WINDOW =
+  HERO_GLYPH_DURATION + (HERO_REFERENCE_GLYPH_COUNT - 1) * HERO_GLYPH_STAGGER_MAX;
 const HERO_ROTATION_INTERVAL = 5000;
 const installCommands: Record<PackageManager, string> = {
   npm: "npm install -g --ignore-scripts anatomy-cli",
@@ -28,7 +31,25 @@ const installCommands: Record<PackageManager, string> = {
 
 const countTitleGlyphs = (title: string) => Array.from(title).filter((character) => !/\s/.test(character)).length;
 
-const HeroTitleGlyphs = ({ title, titleIndex, phase }: { title: string; titleIndex: number; phase: HeroTitlePhase }) => {
+const getHeroGlyphStagger = (glyphCount: number) =>
+  glyphCount <= 1
+    ? 0
+    : Math.min(
+        HERO_GLYPH_STAGGER_MAX,
+        (HERO_TRANSITION_WINDOW - HERO_GLYPH_DURATION) / (glyphCount - 1),
+      );
+
+const HeroTitleGlyphs = ({
+  title,
+  titleIndex,
+  phase,
+  glyphStagger,
+}: {
+  title: string;
+  titleIndex: number;
+  phase: HeroTitlePhase;
+  glyphStagger: number;
+}) => {
   let glyphIndex = 0;
 
   return title.split(/(\s+)/).map((part, partIndex) => {
@@ -49,7 +70,7 @@ const HeroTitleGlyphs = ({ title, titleIndex, phase }: { title: string; titleInd
             <span
               className={`hero-cover__glyph hero-cover__glyph--${phase}`}
               key={`${titleIndex}-${currentGlyphIndex}`}
-              style={{ transitionDelay: `${currentGlyphIndex * HERO_GLYPH_STAGGER}ms` }}
+              style={{ transitionDelay: `${currentGlyphIndex * glyphStagger}ms` }}
             >
               {character}
             </span>
@@ -73,9 +94,11 @@ export const StartupHero = () => {
   const [heroTitleWidth, setHeroTitleWidth] = useState<number | null>(null);
   const [transitionRequest, setTransitionRequest] = useState<StartupGridTransitionRequest | null>(null);
   const command = installCommands[packageManager];
-  const maxHeroTitleLength = Math.max(...heroTitleKeys.map((key) => countTitleGlyphs(t(key))));
+  const heroTitle = t(heroTitleKeys[heroTitleIndex] ?? heroTitleKeys[0]);
+  const heroTitleGlyphCount = countTitleGlyphs(heroTitle);
+  const heroGlyphStagger = getHeroGlyphStagger(heroTitleGlyphCount);
   const heroExitDuration =
-    HERO_GLYPH_DURATION + Math.max(0, maxHeroTitleLength - 1) * HERO_GLYPH_STAGGER;
+    HERO_GLYPH_DURATION + Math.max(0, heroTitleGlyphCount - 1) * heroGlyphStagger;
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -170,8 +193,6 @@ export const StartupHero = () => {
     }
   };
 
-  const heroTitle = t(heroTitleKeys[heroTitleIndex] ?? heroTitleKeys[0]);
-
   useEffect(() => {
     const titleText = heroTitleTextRef.current;
     if (!titleText) return;
@@ -231,7 +252,12 @@ export const StartupHero = () => {
                   aria-live="polite"
                   className="hero-cover__text inline-flex whitespace-nowrap"
                 >
-                  <HeroTitleGlyphs title={heroTitle} titleIndex={heroTitleIndex} phase={heroTitlePhase} />
+                  <HeroTitleGlyphs
+                    glyphStagger={heroGlyphStagger}
+                    phase={heroTitlePhase}
+                    title={heroTitle}
+                    titleIndex={heroTitleIndex}
+                  />
                 </span>
               </span>
             </span>
