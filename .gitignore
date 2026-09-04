@@ -26,5 +26,6 @@ yarn-error.log*
 # Local agent/editor state
 .agents/
 .21st/
+docs/
 .github/
 .qodo/
