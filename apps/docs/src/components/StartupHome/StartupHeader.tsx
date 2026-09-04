@@ -48,7 +48,7 @@ export const StartupHeader = () => {
           >
             {dark ? <Sun size={16} /> : <Moon size={16} />}
           </Button>
-          <LanguageSwitcher startup />
+          <LanguageSwitcher iconOnly startup />
           <Link
             className="text-sm font-semibold text-[var(--line-foreground)] hover:text-[var(--line-muted)]"
             to={route("/docs/installation")}
@@ -78,21 +78,21 @@ export const StartupHeader = () => {
         <div className="mx-auto max-w-7xl border-x border-b border-[var(--line-border)] bg-[var(--line-background)] p-3 md:hidden">
           <a
             className="block border-b border-[var(--line-border)] px-3 py-3 text-sm text-[var(--line-muted)] hover:text-[var(--line-foreground)]"
-            href="#scan"
+            href="/#scan"
             onClick={() => setMenuOpen(false)}
           >
             {t("startup.scanNav")}
           </a>
           <a
             className="block border-b border-[var(--line-border)] px-3 py-3 text-sm text-[var(--line-muted)] hover:text-[var(--line-foreground)]"
-            href="#features"
+            href="/#features"
             onClick={() => setMenuOpen(false)}
           >
             {t("startup.capabilitiesNav")}
           </a>
           <a
             className="block border-b border-[var(--line-border)] px-3 py-3 text-sm text-[var(--line-muted)] hover:text-[var(--line-foreground)]"
-            href="#contact"
+            href="/#contact"
             onClick={() => setMenuOpen(false)}
           >
             {t("startup.contactNav")}

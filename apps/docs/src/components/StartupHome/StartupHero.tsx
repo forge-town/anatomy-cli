@@ -17,26 +17,63 @@ const heroTitleKeys = [
   "startup.heroTitleLine1Alt",
   "startup.heroTitleLine1Alt2",
 ] as const;
-const HERO_GLYPH_STAGGER = 50;
-const HERO_GLYPH_DURATION = 360;
+const HERO_GLYPH_STAGGER = 72;
+const HERO_GLYPH_DURATION = 420;
+const HERO_ROTATION_INTERVAL = 5000;
 const installCommands: Record<PackageManager, string> = {
   npm: "npm install -g --ignore-scripts anatomy-cli",
   pnpm: "pnpm add -g --ignore-scripts anatomy-cli",
   bun: "bun add -g --ignore-scripts anatomy-cli",
 };
 
+const countTitleGlyphs = (title: string) => Array.from(title).filter((character) => !/\s/.test(character)).length;
+
+const HeroTitleGlyphs = ({ title, titleIndex, phase }: { title: string; titleIndex: number; phase: HeroTitlePhase }) => {
+  let glyphIndex = 0;
+
+  return title.split(/(\s+)/).map((part, partIndex) => {
+    if (/^\s+$/.test(part)) {
+      return (
+        <span className="hero-cover__space" key={`${titleIndex}-space-${partIndex}`}>
+          {part}
+        </span>
+      );
+    }
+
+    return (
+      <span className="hero-cover__word" key={`${titleIndex}-word-${partIndex}`}>
+        {Array.from(part).map((character) => {
+          const currentGlyphIndex = glyphIndex;
+          glyphIndex += 1;
+          return (
+            <span
+              className={`hero-cover__glyph hero-cover__glyph--${phase}`}
+              key={`${titleIndex}-${currentGlyphIndex}`}
+              style={{ transitionDelay: `${currentGlyphIndex * HERO_GLYPH_STAGGER}ms` }}
+            >
+              {character}
+            </span>
+          );
+        })}
+      </span>
+    );
+  });
+};
+
 export const StartupHero = () => {
   const { t } = useTranslation();
   const heroRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const heroTitleTextRef = useRef<HTMLSpanElement>(null);
   const clickTokenRef = useRef(0);
   const [packageManager, setPackageManager] = useState<PackageManager>("npm");
   const [copied, setCopied] = useState(false);
   const [heroTitleIndex, setHeroTitleIndex] = useState(0);
   const [heroTitlePhase, setHeroTitlePhase] = useState<HeroTitlePhase>("present");
+  const [heroTitleWidth, setHeroTitleWidth] = useState<number | null>(null);
   const [transitionRequest, setTransitionRequest] = useState<StartupGridTransitionRequest | null>(null);
   const command = installCommands[packageManager];
-  const maxHeroTitleLength = Math.max(...heroTitleKeys.map((key) => Array.from(t(key)).length));
+  const maxHeroTitleLength = Math.max(...heroTitleKeys.map((key) => countTitleGlyphs(t(key))));
   const heroExitDuration =
     HERO_GLYPH_DURATION + Math.max(0, maxHeroTitleLength - 1) * HERO_GLYPH_STAGGER;
 
@@ -95,7 +132,7 @@ export const StartupHero = () => {
         setHeroTitlePhase("enter-start");
         enterFrame = window.requestAnimationFrame(() => setHeroTitlePhase("present"));
       }, heroExitDuration);
-    }, 3400);
+    }, HERO_ROTATION_INTERVAL);
     return () => {
       window.clearInterval(rotationTimer);
       window.clearTimeout(revealTimer);
@@ -135,6 +172,21 @@ export const StartupHero = () => {
 
   const heroTitle = t(heroTitleKeys[heroTitleIndex] ?? heroTitleKeys[0]);
 
+  useEffect(() => {
+    const titleText = heroTitleTextRef.current;
+    if (!titleText) return;
+
+    const measureTitle = () => {
+      const width = Math.ceil(titleText.getBoundingClientRect().width);
+      setHeroTitleWidth((current) => (current === width ? current : width));
+    };
+
+    measureTitle();
+    const observer = new ResizeObserver(measureTitle);
+    observer.observe(titleText);
+    return () => observer.disconnect();
+  }, [heroTitle]);
+
   const handleHeroClick = (event: MouseEvent<HTMLElement>) => {
     const target = event.target;
     if (target instanceof Element && target.closest("button, a, input, select, textarea")) {
@@ -162,35 +214,31 @@ export const StartupHero = () => {
     >
       <StartupGridBackground gridRef={gridRef} transitionRequest={transitionRequest} />
       <div className="relative z-10 flex w-full max-w-4xl flex-col items-center">
-        <h1 className="mb-7 w-full max-w-3xl text-balance font-[var(--font-display)] text-5xl font-semibold leading-[1.15] tracking-normal text-[var(--line-foreground)] lg:max-w-xl lg:text-[52px]">
+        <h1 className="mb-7 w-full max-w-3xl text-balance font-[var(--font-display)] text-5xl font-semibold leading-[1.15] tracking-normal text-[var(--line-foreground)] lg:max-w-3xl lg:text-[52px]">
           <span className="block">
             <span>
               {t("startup.heroTitlePrefix")}
               {t("startup.heroTitleJoiner")}
             </span>
             <span className="hero-cover hero-cover--active">
-              <span className="hero-cover__viewport">
+              <span
+                className="hero-cover__viewport"
+                style={heroTitleWidth === null ? undefined : { width: `${heroTitleWidth}px` }}
+              >
                 <span
+                  ref={heroTitleTextRef}
                   aria-atomic="true"
                   aria-live="polite"
                   className="hero-cover__text inline-flex whitespace-nowrap"
                 >
-                  {Array.from(heroTitle).map((character, index) => (
-                    <span
-                      className={`hero-cover__glyph hero-cover__glyph--${heroTitlePhase}`}
-                      key={`${heroTitleIndex}-${index}`}
-                      style={{ transitionDelay: `${index * HERO_GLYPH_STAGGER}ms` }}
-                    >
-                      {character}
-                    </span>
-                  ))}
+                  <HeroTitleGlyphs title={heroTitle} titleIndex={heroTitleIndex} phase={heroTitlePhase} />
                 </span>
               </span>
             </span>
           </span>
           <span className="block">{t("startup.heroTitleLine2")}</span>
         </h1>
-        <p className="mt-7 max-w-2xl text-pretty text-base leading-7 text-[var(--line-muted)] md:text-lg">
+        <p className="startup-hero__description mt-7 max-w-2xl text-pretty text-base leading-7 text-[var(--line-muted)] md:text-lg">
           {t("startup.heroDescription")}
         </p>
         <div className="mt-12 w-full max-w-3xl text-left">

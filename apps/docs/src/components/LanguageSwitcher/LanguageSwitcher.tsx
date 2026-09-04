@@ -9,12 +9,14 @@ const LANGUAGES = [
 ] as const;
 
 export type LanguageSwitcherProps = {
+  iconOnly?: boolean;
   immersive?: boolean;
   mono?: boolean;
   startup?: boolean;
 };
 
 export const LanguageSwitcher = ({
+  iconOnly = false,
   immersive = false,
   mono = false,
   startup = false,
@@ -25,8 +27,11 @@ export const LanguageSwitcher = ({
     : "zh";
   const triggerClassName = cn(
     "group inline-flex h-9 items-center gap-1.5 rounded-full border px-3 font-mono text-[10px] font-semibold tracking-[0.08em] outline-none transition-colors",
+    iconOnly && "w-10 justify-center gap-1 px-0",
     startup
-      ? "border-[var(--line-border)] bg-transparent text-[var(--line-muted)] hover:border-[var(--line-border-strong)] hover:bg-[var(--line-hover)] hover:text-[var(--line-foreground)]"
+      ? iconOnly
+        ? "border-0 bg-transparent text-[var(--line-muted)] hover:text-[var(--line-foreground)] focus-visible:ring-1 focus-visible:ring-[var(--line-border-strong)]"
+        : "border-[var(--line-border)] bg-transparent text-[var(--line-muted)] hover:border-[var(--line-border-strong)] hover:bg-[var(--line-hover)] hover:text-[var(--line-foreground)]"
       : immersive
         ? "border-white/15 bg-white/[0.04] text-white/70 hover:border-white/35 hover:bg-white/[0.08]"
         : mono
@@ -66,7 +71,7 @@ export const LanguageSwitcher = ({
     >
       <Select.Trigger aria-label={t("common.selectLanguage")} className={triggerClassName}>
         <Languages aria-hidden="true" className="size-3.5 opacity-65" />
-        <Select.Value />
+        {!iconOnly && <Select.Value />}
         <Select.Icon>
           <ChevronDown
             aria-hidden="true"

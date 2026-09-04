@@ -69,7 +69,7 @@ const pointToSvg = ([x, y]: Point) => ({
   y: (y * SVG_SCALE + SVG_OFFSET_Y).toFixed(2),
 });
 
-const renderEdge = (edge: Edge, gradientId: string) => {
+const renderEdge = (edge: Edge) => {
   const start = pointToSvg(edge.start);
   const end = pointToSvg(edge.end);
   return (
@@ -81,7 +81,10 @@ const renderEdge = (edge: Edge, gradientId: string) => {
       data-kite-hidden-centers={edge.hiddenTileCenters
         .map(({ x, y }) => `${x.toFixed(3)},${y.toFixed(3)}`)
         .join("|")}
-      stroke={`url(#${gradientId})`}
+      style={{
+        opacity: edge.visible ? 1 : 0,
+        visibility: edge.visible ? "visible" : "hidden",
+      }}
       x1={start.x}
       x2={end.x}
       y1={start.y}
@@ -104,6 +107,7 @@ export const updateKiteDartHover = (
       edge.style.removeProperty("opacity");
       edge.style.removeProperty("--kite-edge-stroke");
       edge.style.setProperty("--kite-edge-opacity", visible ? "1" : "0");
+      edge.style.setProperty("visibility", visible ? "visible" : "hidden");
     });
     return;
   }
@@ -146,7 +150,12 @@ export const updateKiteDartHover = (
       edge.removeAttribute("data-kite-glow");
       edge.style.removeProperty("stroke");
       edge.style.removeProperty("opacity");
-      edge.style.removeProperty("--kite-edge-stroke");
+      if (gradient && glowAmount > 0) {
+        edge.style.setProperty("--kite-edge-stroke", `url(#${gradient.id})`);
+      } else {
+        edge.style.removeProperty("--kite-edge-stroke");
+      }
+      edge.style.setProperty("visibility", visible || glowAmount > 0 ? "visible" : "hidden");
       edge.style.setProperty(
         "--kite-edge-opacity",
         visible ? "1" : glowAmount.toFixed(3),
@@ -199,7 +208,7 @@ export const KiteDartPattern = ({ className }: KiteDartPatternProps) => {
         </radialGradient>
       </defs>
       <g className="startup-grid-background__kite-dart-edges">
-        {edges.map((edge) => renderEdge(edge, gradientId))}
+        {edges.map((edge) => renderEdge(edge))}
       </g>
     </svg>
   );

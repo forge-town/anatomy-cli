@@ -1,4 +1,5 @@
 import { StartupCta } from "./StartupCta";
+import { StartupCiSection } from "./StartupCiSection";
 import { StartupFeatures } from "./StartupFeatures";
 import { StartupFooter } from "./StartupFooter";
 import { StartupHeader } from "./StartupHeader";
@@ -12,6 +13,7 @@ export const StartupHome = () => (
       <StartupHero />
       <StartupScanSection />
       <StartupFeatures />
+      <StartupCiSection />
       <StartupCta />
     </main>
     <StartupFooter />
