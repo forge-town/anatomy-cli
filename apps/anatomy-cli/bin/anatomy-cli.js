@@ -19,7 +19,7 @@ if (existsSync(distEntrypoint)) {
 
   if (result.error) {
     process.stderr.write(
-      `Unable to start Anatomy CLI. Build the package first or install Bun to run the workspace source: ${result.error.message}\n`,
+      `Unable to start Anatomy. Build the package first or install Bun to run the workspace source: ${result.error.message}\n`,
     );
     process.exitCode = 2;
   } else {

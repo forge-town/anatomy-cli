@@ -13,8 +13,8 @@ if (Get-Command npm -ErrorAction SilentlyContinue) {
 } elseif (Get-Command bun -ErrorAction SilentlyContinue) {
   & bun.exe add --global --ignore-scripts $packageSpec
 } else {
-  throw "Anatomy CLI needs npm, pnpm, or Bun. Install Node.js (npm) or Bun, then run this installer again."
+  throw "Anatomy needs npm, pnpm, or Bun. Install Node.js (npm) or Bun, then run this installer again."
 }
 
 Write-Host ""
-Write-Host "Anatomy CLI installed. Run: anatomy-cli --help"
+Write-Host "Anatomy installed. Run: anatomy --help"

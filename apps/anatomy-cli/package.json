@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/forge-town/anatomy-cli/issues"
   },
-  "homepage": "https://github.com/forge-town/anatomy-cli#readme",
+  "homepage": "https://anatomy.tools",
   "keywords": [
     "anatomy",
     "cli",
@@ -37,8 +37,8 @@
     "build": "bun build src/main.ts --target=node --outfile=dist/main.js && bun build src/index.ts --target=node --outfile=dist/index.js",
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
-    "scan:self": "bun src/main.ts --definition ../../packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json --target ../../packages/schemas/src/anatomy",
-    "scan:schemas": "bun src/main.ts --definition ../../packages/anatomy-cli-config/src/anatomies/schemas.anatomy.json --target ../../packages/schemas",
+    "scan:self": "bun src/main.ts ../../packages/schemas/src/anatomy --definition ../../packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json",
+    "scan:schemas": "bun src/main.ts ../../packages/schemas --definition ../../packages/anatomy-cli-config/src/anatomies/schemas.anatomy.json",
     "check-types": "tsc --noEmit",
     "lint": "oxlint src/",
     "test": "vitest run",

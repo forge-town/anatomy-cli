@@ -15,8 +15,8 @@ elif command -v pnpm >/dev/null 2>&1; then
 elif command -v bun >/dev/null 2>&1; then
   bun add --global --ignore-scripts "$package_spec"
 else
-  printf '%s\n' "Anatomy CLI needs npm, pnpm, or Bun. Install Node.js (npm) or Bun, then run this installer again." >&2
+  printf '%s\n' "Anatomy needs npm, pnpm, or Bun. Install Node.js (npm) or Bun, then run this installer again." >&2
   exit 1
 fi
 
-printf '\n%s\n' "Anatomy CLI installed. Run: anatomy-cli --help"
+printf '\n%s\n' "Anatomy installed. Run: anatomy --help"

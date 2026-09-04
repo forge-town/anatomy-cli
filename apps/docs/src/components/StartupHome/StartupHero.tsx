@@ -242,13 +242,10 @@ export const StartupHero = () => {
           {t("startup.heroDescription")}
         </p>
         <div className="mt-12 w-full max-w-3xl text-left">
-          <div className="mb-4 flex items-baseline justify-between gap-4">
+          <div className="mb-4">
             <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.1em] text-[var(--line-muted)]">
               {t("startup.quickStart")}
             </h2>
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--line-muted)]">
-              Anatomy CLI
-            </span>
           </div>
           <div className="overflow-hidden border border-[var(--line-border)] bg-[var(--line-surface)]">
             <div className="flex min-h-12 items-end gap-6 border-b border-[var(--line-border)] px-5">

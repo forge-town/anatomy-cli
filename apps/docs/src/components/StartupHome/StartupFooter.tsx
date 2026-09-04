@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 
 const route = (href: string) => href as never;
 
-const StartupLogo = () => <span className="inline-flex items-center text-sm font-semibold tracking-[0.12em] text-[var(--line-foreground)]">Anatomy CLI</span>;
+const StartupLogo = () => <span className="inline-flex items-center text-sm font-semibold tracking-[0.12em] text-[var(--line-foreground)]">Anatomy</span>;
 
 export const StartupFooter = () => {
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ export const StartupFooter = () => {
           <div><p className="mb-4 font-semibold text-[var(--line-foreground)]">{t("startup.footerRegister")}</p><Link className="block hover:text-[var(--line-foreground)]" to={route("/docs/installation")}>{t("startup.signup")}</Link><Link className="mt-3 block hover:text-[var(--line-foreground)]" to={route("/docs/installation")}>{t("startup.login")}</Link><Link className="mt-3 block hover:text-[var(--line-foreground)]" to={route("/docs/installation")}>{t("startup.bookDemo")}</Link></div>
         </div>
       </div>
-      <p aria-hidden="true" className="startup-footer__wordmark mt-16 text-center font-bold uppercase leading-none tracking-[0.02em] text-[var(--line-border-strong)]">ANATOMY CLI</p>
+      <p aria-hidden="true" className="startup-footer__wordmark mt-16 text-center font-bold uppercase leading-none tracking-[0.02em] text-[var(--line-border-strong)]">ANATOMY</p>
     </footer>
   );
 };

@@ -2,6 +2,7 @@
   "name": "@anatomy-cli/docs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://anatomy.tools",
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 5173",

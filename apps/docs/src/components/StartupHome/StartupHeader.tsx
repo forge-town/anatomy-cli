@@ -4,12 +4,13 @@ import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { applyTheme, getSavedTheme, saveTheme } from "@/lib/theme";
 
 const route = (href: string) => href as never;
 
 const StartupLogo = () => (
   <span className="inline-flex items-center text-sm font-semibold tracking-[0.12em] text-[var(--line-foreground)]">
-    Anatomy CLI
+    Anatomy
   </span>
 );
 
@@ -19,23 +20,21 @@ export const StartupHeader = () => {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("anatomy-theme");
-    const nextDark = stored === "dark";
+    const nextDark = getSavedTheme() === "dark";
     setDark(nextDark);
-    document.documentElement.dataset.theme = nextDark ? "dark" : "light";
+    applyTheme(nextDark ? "dark" : "light");
   }, []);
 
   const toggleTheme = () => {
     const next = !dark;
     setDark(next);
-    document.documentElement.dataset.theme = next ? "dark" : "light";
-    window.localStorage.setItem("anatomy-theme", next ? "dark" : "light");
+    saveTheme(next ? "dark" : "light");
   };
 
   return (
     <header className="sticky top-0 z-50 bg-[color-mix(in_srgb,var(--line-background)_92%,transparent)] px-4 backdrop-blur-xl sm:px-8">
       <div className="mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-4">
-        <Link aria-label="Anatomy CLI" className="shrink-0" to="/">
+        <Link aria-label="Anatomy" className="shrink-0" to="/">
           <StartupLogo />
         </Link>
         <div className="hidden items-center gap-4 md:flex">

@@ -1,6 +1,7 @@
-import { ArrowRight, Boxes, CircleDot, GitBranch, Workflow } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { StartupCiFileTree } from "./StartupCiFileTree";
 
 const route = (href: string) => href as never;
 
@@ -42,29 +43,8 @@ export const StartupCiSection = () => {
           </Link>
         </div>
 
-        <div className="min-w-0 border-t border-[var(--line-border)] py-10 md:border-t-0 md:border-l md:py-14 md:pl-12">
-          <div className="flex items-center justify-between border-b border-[var(--line-border)] pb-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--line-muted)]">
-            <span>CI / CD</span>
-            <span>Anatomy CLI</span>
-          </div>
-          <div className="grid min-h-72 grid-cols-2 border-b border-[var(--line-border)]">
-            <div className="flex min-h-36 flex-col justify-between border-r border-b border-[var(--line-border)] p-5 sm:p-6">
-              <Workflow aria-hidden="true" className="size-7 text-[var(--line-accent)]" strokeWidth={1.5} />
-              <span className="text-sm font-semibold text-[var(--line-foreground)]">GitHub Actions</span>
-            </div>
-            <div className="flex min-h-36 flex-col justify-between border-b border-[var(--line-border)] p-5 sm:p-6">
-              <GitBranch aria-hidden="true" className="size-7 text-[var(--line-accent)]" strokeWidth={1.5} />
-              <span className="text-sm font-semibold text-[var(--line-foreground)]">GitLab CI</span>
-            </div>
-            <div className="flex min-h-36 flex-col justify-between border-r border-[var(--line-border)] p-5 sm:p-6">
-              <CircleDot aria-hidden="true" className="size-7 text-[var(--line-accent)]" strokeWidth={1.5} />
-              <span className="text-sm font-semibold text-[var(--line-foreground)]">CircleCI</span>
-            </div>
-            <div className="flex min-h-36 flex-col justify-between p-5 sm:p-6">
-              <Boxes aria-hidden="true" className="size-7 text-[var(--line-accent)]" strokeWidth={1.5} />
-              <span className="text-sm font-semibold text-[var(--line-foreground)]">Jenkins</span>
-            </div>
-          </div>
+        <div className="flex min-w-0 self-stretch border-t border-[var(--line-border)] md:border-t-0 md:border-l">
+          <StartupCiFileTree />
         </div>
       </div>
     </section>

@@ -56,7 +56,7 @@ export const StartupFeatures = () => {
               <div className="font-mono text-xs text-[var(--line-foreground)]">
                 <div className="flex items-center gap-3 border-y border-[var(--line-border)] py-3">
                   <span className="text-[var(--line-muted)]">$</span>
-                  <code>anatomy check ./src</code>
+                  <code>anatomy ./src</code>
                   <ArrowRight className="ml-auto size-4 text-[var(--line-accent)]" />
                 </div>
                 <div className="flex items-center gap-3 border-b border-[var(--line-border)] py-3">

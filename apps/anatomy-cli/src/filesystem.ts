@@ -1,8 +1,10 @@
-import { readdir, readFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { access, readdir, readFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
 import { Result, ResultAsync, err, ok } from "neverthrow";
 import { AnatomyDraftInputSchema, type AnatomyDraftInput } from "@anatomy-cli/schemas";
 import type { AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
+
+export const DefaultAnatomyDefinitionFileName = "anatomy.json";
 
 export const DefaultIgnoredNames = [
   ".git",
@@ -13,6 +15,7 @@ export const DefaultIgnoredNames = [
   "coverage",
   "dist",
   "node_modules",
+  DefaultAnatomyDefinitionFileName,
 ] as const;
 
 export class AnatomyDefinitionFileError extends Error {
@@ -39,6 +42,33 @@ const parseJson = Result.fromThrowable(
   JSON.parse,
   () => new AnatomyDefinitionFileError("Definition is not valid JSON", ""),
 );
+
+export const findAnatomyDefinition = async (
+  targetPath: string,
+): Promise<Result<string, AnatomyDefinitionFileError>> => {
+  const resolvedTargetPath = resolve(targetPath);
+  let directory = resolvedTargetPath;
+
+  while (true) {
+    const candidatePath = join(directory, DefaultAnatomyDefinitionFileName);
+    const candidate = await ResultAsync.fromPromise(
+      access(candidatePath),
+      () => new AnatomyDefinitionFileError("Definition is not readable", candidatePath),
+    );
+    if (candidate.isOk()) return ok(candidatePath);
+
+    const parentDirectory = dirname(directory);
+    if (parentDirectory === directory) break;
+    directory = parentDirectory;
+  }
+
+  return err(
+    new AnatomyDefinitionFileError(
+      `Unable to find ${DefaultAnatomyDefinitionFileName} from ${resolvedTargetPath} or its parent directories`,
+      resolvedTargetPath,
+    ),
+  );
+};
 
 export const readAnatomyDefinition = (
   path: string,

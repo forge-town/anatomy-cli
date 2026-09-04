@@ -1,60 +1,15 @@
 import {
-  AlertCircle,
   Braces,
   CheckCircle2,
   FileCode2,
   Folder,
   FolderOpen,
-  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-
-type StructureTreeRowProps = {
-  icon: LucideIcon;
-  label: string;
-  indent?: 0 | 1 | 2;
-  status?: "pass" | "warn" | "error";
-};
-
-const StructureTreeRow = ({ icon: Icon, label, indent = 0, status }: StructureTreeRowProps) => {
-  const indentClass = indent === 2 ? "pl-12" : indent === 1 ? "pl-6" : "pl-0";
-  const iconTone =
-    status === "error"
-      ? "text-red-500"
-      : status === "warn"
-        ? "text-[var(--line-accent)]"
-        : "text-[var(--line-muted)]";
-  return (
-    <div
-      className={cn(
-        "flex min-h-10 items-center gap-3 border-b border-[var(--line-border)] px-2 text-sm last:border-b-0",
-        indentClass,
-        status === "warn" && "bg-[var(--line-warning-surface)]",
-      )}
-    >
-      <Icon aria-hidden="true" className={cn("size-3.5 shrink-0", iconTone)} />
-      <code className="font-mono text-[12px] text-[var(--line-foreground)]">{label}</code>
-      {status && (
-        <span className="ml-auto inline-flex items-center">
-          {status === "pass" ? (
-            <CheckCircle2 aria-hidden="true" className="size-3.5 text-[var(--line-success)]" />
-          ) : (
-            <AlertCircle
-              aria-hidden="true"
-              className={cn(
-                "size-3.5",
-                status === "warn" ? "text-[var(--line-accent)]" : "text-red-500",
-              )}
-            />
-          )}
-        </span>
-      )}
-    </div>
-  );
-};
+import { StructureTreeRow } from "./StructureTreeRow";
 
 export const scanRows = [
   { icon: FolderOpen, label: "src/", status: "pass" as const },
@@ -182,16 +137,21 @@ export const StructureScanPreview = ({ onStageChange }: { onStageChange?: (stage
             <p className="text-base font-medium leading-7 tracking-[-0.01em] text-[var(--line-foreground)]">{t("startup.definitionHumanIntro")}</p>
             <div className="mt-5 space-y-3 font-mono text-xs text-[var(--line-muted)]">
               {humanDefinitionRows.map((row, index) => (
-                <div className="flex items-center gap-3 border-b border-[var(--line-border)] pb-3 last:border-b-0" key={row.key}>
+                <div
+                  className="flex min-w-0 items-center gap-3 border-b border-[var(--line-border)] pb-3 last:border-b-0"
+                  key={row.key}
+                >
                   <span className="w-5 shrink-0 text-[10px] text-[var(--line-accent)]">0{index + 1}</span>
-                  <code className="text-[var(--line-foreground)]">{row.path}</code>
-                  <span>{t(`startup.${row.key}`)}</span>
+                  <code className="shrink-0 text-[var(--line-foreground)]">{row.path}</code>
+                  <span className="min-w-0 flex-1 truncate" title={t(`startup.${row.key}`)}>
+                    {t(`startup.${row.key}`)}
+                  </span>
                   <CheckCircle2 aria-hidden="true" className="ml-auto size-3.5 shrink-0 text-[var(--line-success)]" />
                 </div>
               ))}
             </div>
           </div>
-          <pre aria-hidden={!showJson} className={`absolute inset-0 overflow-y-auto overflow-x-hidden overscroll-contain whitespace-pre-wrap break-words pr-3 font-mono text-[11px] leading-5 transition-[opacity,transform] duration-300 ease-out sm:text-xs ${showJson ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}>
+          <pre aria-hidden={!showJson} className={`absolute inset-0 overflow-y-auto overscroll-contain whitespace-pre-wrap break-words pr-3 font-mono text-[11px] leading-5 transition-[opacity,transform] duration-300 ease-out sm:text-xs ${showJson ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"}`}>
             {definitionExample}
           </pre>
         </div>

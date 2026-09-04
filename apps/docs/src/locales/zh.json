@@ -97,9 +97,9 @@
     "heroDescription": "用 Anatomy 描述代码约定，在本地、Pull Request 与 CI 中快速核对真实文件树。",
     "heroPrimary": "创建定义",
     "heroSecondary": "查看文档",
-    "installHeroEyebrow": "ANATOMY CLI / 安装开始",
+    "installHeroEyebrow": "ANATOMY / 安装开始",
     "installHeroTitle": "先定义结构，再开始协作。",
-    "installHeroDescription": "安装 Anatomy CLI，用一份可版本化的定义描述目录约定，再扫描真实文件树。",
+    "installHeroDescription": "安装 Anatomy，用一份可版本化的定义描述目录约定，再扫描真实文件树。",
     "quickStart": "快速开始",
     "installCommandLabel": "安装",
     "copyInstall": "复制",
@@ -109,7 +109,7 @@
     "scanTitle": "一条命令，看清真实文件树。",
     "scanDescription": "输入检查命令，逐项对照定义，马上看到符合和未预期的目录。",
     "scanCommandLabel": "运行检查",
-    "previewCommand": "anatomy check ./src",
+    "previewCommand": "anatomy ./src",
     "previewReady": "待检查",
     "previewScanning": "扫描中",
     "previewComplete": "检查完成",
@@ -145,7 +145,7 @@
     "localResultCopy": "检查结果逐项列出符合项与警告，修改后可以立即再次运行。",
     "ciTitle": "让 CI/CD 自动检查仓库结构",
     "ciDescription": "将 Anatomy 命令接入任意 CI/CD 工具。稳定退出码决定流程通过或阻断，JSON 输出可用于留档或衔接后续步骤。",
-    "ciExitCodesLabel": "Anatomy CLI 退出码",
+    "ciExitCodesLabel": "Anatomy 退出码",
     "ciExitPass": "结构符合定义，流程继续",
     "ciExitBlocked": "存在阻断项，停止合并",
     "ciExitError": "定义或目标无法读取",
@@ -196,14 +196,103 @@
     "bookDemo": "查看快速开始"
   },
   "docsPage": {
-    "backHome": "Anatomy CLI",
+    "backHome": "Anatomy",
     "previous": "上一页",
     "next": "下一页",
     "onThisPage": "本页内容",
     "copyCode": "复制代码"
   },
   "docs": {
-    "sections": { "guide": "指南", "reference": "参考", "concepts": "概念", "development": "开发" }
+    "sections": { "guide": "指南", "reference": "参考", "concepts": "概念", "development": "开发" },
+    "installation": {
+      "title": "安装 Anatomy",
+      "summary": "从发布包开始，在一分钟内完成第一次结构检查。",
+      "blocks": {
+        "0": "npm 包名是 anatomy-cli；安装完成后统一使用 anatomy 命令。选择与你的环境匹配的安装方式即可。",
+        "1": "macOS / Linux",
+        "3": "Windows PowerShell",
+        "5": "包管理器",
+        "7": "安装完成后运行 anatomy --help 确认命令可用。发布包需要 Node.js 18+；从源码开发需要 Bun 1.3+。"
+      }
+    },
+    "quick-start": {
+      "title": "第一次检查",
+      "summary": "把目标目录交给 Anatomy，立即完成一次结构检查。",
+      "blocks": {
+        "0": "把 anatomy.json 放在目标目录或任一父目录中，再把要检查的目录直接传给 anatomy。省略目录时默认检查当前目录。",
+        "2": "忽略目录",
+        "4": "指定其他定义",
+        "6": "给脚本使用 JSON"
+      }
+    },
+    "ci": {
+      "title": "CI 集成",
+      "summary": "稳定的退出码和 JSON 输出，让结构检查自然进入 Pull Request。",
+      "blocks": {
+        "0": "退出码 0 表示符合定义，1 表示存在阻断项，2 表示运行错误或定义无效。"
+      }
+    },
+    "cli": {
+      "title": "命令与参数",
+      "summary": "CLI 的完整参数表和常用组合。",
+      "blocks": {
+        "1": [
+          "target：要检查的目录，默认当前目录。",
+          "--definition, -d：覆盖自动发现的 anatomy.json。",
+          "--target, -t：目标目录的位置参数替代写法。",
+          "--format：human 或 json，默认 human。",
+          "--ignore：逗号分隔的名称，可重复传入。",
+          "--help, -h：显示帮助。"
+        ]
+      }
+    },
+    "output": {
+      "title": "输出与退出码",
+      "summary": "Human 输出适合本地查看，JSON 输出适合归档和自动化。",
+      "blocks": {
+        "0": "Human 输出",
+        "1": "默认输出会展示检查是否符合、结果数量和每条结果的路径与消息。",
+        "3": "JSON 输出",
+        "5": [
+          "0：conforms 为 true，检查通过。",
+          "1：至少一条阻断结果，阻止合并。",
+          "2：运行错误或定义无效，修复配置后重试。"
+        ]
+      }
+    },
+    "anatomy": {
+      "title": "Anatomy 核心概念",
+      "summary": "用可版本化的 JSON 定义描述仓库结构。",
+      "blocks": {
+        "0": "Anatomy 会将结构定义与目标目录的确定性文件树对照，检查名称、层级、数量、one-of 和策略。",
+        "1": [
+          "名称：文件或目录是否命名正确。",
+          "层级：条目是否位于期望的父目录下。",
+          "数量：必需、可选或限定数量的条目是否满足。",
+          "one-of：多个候选结构中是否恰好选择允许的一种。",
+          "策略：结果可以标记为 block、warn 或 allow。"
+        ]
+      }
+    },
+    "definition": {
+      "title": "定义示例",
+      "summary": "从一个最小的服务目录定义开始。",
+      "blocks": {
+        "1": "默认定义文件名为 anatomy.json。把它放在目标目录或任一父目录中，Anatomy 会自动选择离目标最近的一份；其他文件名可通过 --definition 显式指定。"
+      }
+    },
+    "contributing": {
+      "title": "仓库布局与开发",
+      "summary": "了解 monorepo 中 CLI、引擎、schema 和定义配置的职责。",
+      "blocks": {
+        "0": [
+          "apps/anatomy-cli：CLI 入口、参数解析与文件系统适配。",
+          "packages/anatomy：Anatomy 树工具与 conformance engine。",
+          "packages/schemas：Anatomy Draft 的运行时 schema。",
+          "packages/anatomy-cli-config：可复用的示例定义。"
+        ]
+      }
+    }
   },
   "footer": {
     "tagline": "值得信赖的结构。",

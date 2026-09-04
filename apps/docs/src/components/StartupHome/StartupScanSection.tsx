@@ -12,10 +12,10 @@ export const StartupScanSection = () => {
   const scanComplete = scanStage >= scanRows.length;
 
   return (
-    <section id="scan" className="relative w-full border-y border-[var(--line-border)] bg-[var(--line-background)] px-4 pb-2 pt-0 md:px-8 md:pb-3">
+    <section id="scan" className="relative w-full border-y border-[var(--line-border)] bg-[var(--line-background)] px-4 pt-0 md:px-8">
       <div className="mx-auto max-w-6xl">
         <StructureScanPreview onStageChange={setScanStage} />
-        <div className={cn("grid gap-5 border-t border-[var(--line-border)] px-5 py-4 transition-[opacity,transform] duration-700 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-8 md:px-8", scanComplete ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0")}>
+        <div className={cn("grid gap-5 border-t border-[var(--line-border)] px-5 py-4 transition-[opacity,transform] duration-500 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-8 md:px-8", scanComplete ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0")}>
           <div className="min-w-0">
             <p className="max-w-xl text-base font-medium leading-7 tracking-[-0.01em] text-[var(--line-foreground)]">{t("startup.scanResultDescription")}</p>
           </div>

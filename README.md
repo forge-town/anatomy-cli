@@ -1,6 +1,6 @@
-# Anatomy CLI
+# Anatomy
 
-An open-source Bun monorepo for validating a repository file tree against a versioned Anatomy Draft definition.
+[anatomy.tools](https://anatomy.tools) is an open-source tool for validating a repository file tree against a versioned Anatomy definition. Read the full guide at [anatomy.tools/docs](https://anatomy.tools/docs).
 
 ## Workspace layout
 
@@ -37,9 +37,9 @@ as a standalone Node.js entry point, so registry installs do not need Bun.
 
 ## Install a published release
 
-The commands below install the global `anatomy-cli` command from npm. They are
-the five supported installation styles; the package must first be published as
-`anatomy-cli` for the registry-based commands to resolve.
+The commands below install the npm package named `anatomy-cli` and expose the
+global `anatomy` command. The package must first be published for the
+registry-based commands to resolve.
 
 ### macOS / Linux (curl)
 
@@ -74,28 +74,41 @@ bun add -g --ignore-scripts anatomy-cli
 After any installation method, verify the command with:
 
 ```bash
-anatomy-cli --help
+anatomy --help
 ```
 
 ## Quick start
+
+Place an `anatomy.json` in the directory you want to check or one of its parent
+directories, then pass the target directly to Anatomy:
+
+```bash
+anatomy ./src
+```
+
+Run `anatomy` with no target to check the current directory. Anatomy walks up
+from the target and uses the closest `anatomy.json`. Use `--definition` only
+when the definition has another name or location:
+
+```bash
+anatomy ./src --definition ./config/service.anatomy.json
+```
 
 To work from the open-source repository instead of a published release:
 
 ```bash
 bun install --frozen-lockfile
 bun run anatomy --help
-bunx --no-install anatomy-cli --help
-bun run anatomy \
-  --definition ./packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json \
-  --target ./packages/schemas/src/anatomy
+bun run anatomy ./packages/schemas/src/anatomy \
+  --definition ./packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json
 ```
 
-The example above checks one of the bundled definitions against this repository and
-returns a passing result. The definitions under `apps/anatomy-cli/anatomies/` are
-also available as concrete cases for projects that follow the CLI, service-file, or
-Drizzle-table layouts.
+The example above checks one of the bundled definitions against this repository;
+its exit code reflects whether the current tree still matches that definition. The
+definitions under `apps/anatomy-cli/anatomies/` are also available as concrete
+cases for projects that follow the CLI, service-file, or Drizzle-table layouts.
 The old Daedalus-only shortcuts for its private models, services, and application
-packages were intentionally not carried over; pass your own target with `--target`.
+packages were intentionally not carried over; pass your target as the first argument.
 
 Use `--format json` for CI integrations and repeat `--ignore` for additional directory names. Exit codes are stable:
 
@@ -163,7 +176,7 @@ bun run build
 ```
 
 The workspace is self-contained: it has no path or workspace dependency on
-Daedalus. The implementation was copied from the Daedalus Anatomy CLI and its
+Daedalus. The implementation was copied from the original Daedalus tooling and its
 direct Anatomy dependencies. The schemas package contains the complete Anatomy
 schema surface required by the CLI; unrelated Daedalus product domains are not
 part of this standalone project. The original Daedalus repository is kept

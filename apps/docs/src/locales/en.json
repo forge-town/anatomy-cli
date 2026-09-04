@@ -97,9 +97,9 @@
     "heroDescription": "Use Anatomy to describe code conventions, then verify the real file tree locally, in pull requests, and in CI.",
     "heroPrimary": "Create a definition",
     "heroSecondary": "View docs",
-    "installHeroEyebrow": "ANATOMY CLI / GET STARTED",
+    "installHeroEyebrow": "ANATOMY / GET STARTED",
     "installHeroTitle": "Define the shape before the work begins.",
-    "installHeroDescription": "Install Anatomy CLI, describe your folder contract once, then scan the real tree with a deterministic check.",
+    "installHeroDescription": "Install Anatomy, describe your folder contract once, then scan the real tree with a deterministic check.",
     "quickStart": "Quick Start",
     "installCommandLabel": "INSTALL",
     "copyInstall": "Copy",
@@ -109,7 +109,7 @@
     "scanTitle": "One command to see the real tree.",
     "scanDescription": "Run the check and compare every entry with the structure you declared.",
     "scanCommandLabel": "RUN CHECK",
-    "previewCommand": "anatomy check ./src",
+    "previewCommand": "anatomy ./src",
     "previewReady": "READY",
     "previewScanning": "SCANNING",
     "previewComplete": "CHECKED",
@@ -145,7 +145,7 @@
     "localResultCopy": "See matching entries and warnings one by one, make the changes, and run the check again immediately.",
     "ciTitle": "Automate repository structure checks in CI/CD",
     "ciDescription": "Add the Anatomy command to any CI/CD tool. Stable exit codes pass or block the workflow, while JSON output supports archives and downstream steps.",
-    "ciExitCodesLabel": "Anatomy CLI exit codes",
+    "ciExitCodesLabel": "Anatomy exit codes",
     "ciExitPass": "Structure conforms; continue the workflow",
     "ciExitBlocked": "Blocking findings exist; stop the merge",
     "ciExitError": "The definition or target could not be read",
@@ -196,7 +196,7 @@
     "bookDemo": "View quick start"
   },
   "docsPage": {
-    "backHome": "Anatomy CLI",
+    "backHome": "Anatomy",
     "previous": "Previous",
     "next": "Next",
     "onThisPage": "ON THIS PAGE",
@@ -205,23 +205,24 @@
   "docs": {
     "sections": { "guide": "Guide", "reference": "Reference", "concepts": "Concepts", "development": "Development" },
     "installation": {
-      "title": "Install Anatomy CLI",
+      "title": "Install Anatomy",
       "summary": "Start from a release package and run your first structure check in under a minute.",
       "blocks": {
-        "0": "Anatomy CLI provides the anatomy-cli and anatomy command aliases. Choose the installation method that matches your environment.",
+        "0": "The npm package is named anatomy-cli; after installation, use the anatomy command everywhere. Choose the installation method that matches your environment.",
         "1": "macOS / Linux",
         "3": "Windows PowerShell",
         "5": "Package managers",
-        "7": "After installation, run anatomy-cli --help to confirm the command is available. Release packages require Node.js 18+; source development requires Bun 1.3+."
+        "7": "After installation, run anatomy --help to confirm the command is available. Release packages require Node.js 18+; source development requires Bun 1.3+."
       }
     },
     "quick-start": {
       "title": "Your first check",
-      "summary": "Run a complete check with one definition file and one target directory.",
+      "summary": "Give Anatomy a target directory and run a structure check immediately.",
       "blocks": {
-        "0": "The minimum Anatomy CLI invocation needs a definition file and a target directory. --target defaults to the current directory.",
+        "0": "Place anatomy.json in the target directory or any parent, then pass the directory directly to anatomy. With no target, Anatomy checks the current directory.",
         "2": "Ignore directories",
-        "4": "Use JSON in scripts"
+        "4": "Use another definition",
+        "6": "Use JSON in scripts"
       }
     },
     "ci": {
@@ -236,8 +237,9 @@
       "summary": "The complete CLI option reference and common combinations.",
       "blocks": {
         "1": [
-          "--definition, -d: Anatomy Draft or Version JSON file, required.",
-          "--target, -t: Directory to check, defaults to the current directory.",
+          "target: Directory to check, defaults to the current directory.",
+          "--definition, -d: Override the automatically discovered anatomy.json.",
+          "--target, -t: Alternative to the positional target argument.",
           "--format: human or json, defaults to human.",
           "--ignore: Comma-separated names; can be passed more than once.",
           "--help, -h: Show help."
@@ -262,7 +264,7 @@
       "title": "Anatomy concepts",
       "summary": "Describe repository structure with a versioned JSON definition.",
       "blocks": {
-        "0": "The CLI compares an Anatomy definition with the deterministic file tree of the target directory, checking names, nesting, quantities, one-of rules, and policies.",
+        "0": "Anatomy compares a structure definition with the deterministic file tree of the target directory, checking names, nesting, quantities, one-of rules, and policies.",
         "1": [
           "Names: whether a file or directory is named correctly.",
           "Nesting: whether an entry sits under the expected parent directory.",
@@ -276,7 +278,7 @@
       "title": "Definition example",
       "summary": "Start with a minimal definition for a service directory.",
       "blocks": {
-        "1": "Keep definition files in a visible location such as anatomy/ or config/anatomies/, then reference them with an explicit relative path in CI."
+        "1": "The default definition file is anatomy.json. Place it in the target directory or any parent and Anatomy selects the closest one; use --definition to name a different file explicitly."
       }
     },
     "contributing": {
