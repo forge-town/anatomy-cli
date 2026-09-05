@@ -7,18 +7,33 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+import { docsEntries } from "./src/content";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(
   withPayload(
-    ({ pluginOptions }) => ({
+    ({ pluginOptions, env }) => ({
       plugins: [
         tailwindcss(),
         rsc(pluginOptions.rsc),
-        tanstackStart(pluginOptions.tanstackStart),
+        tanstackStart({
+          ...pluginOptions.tanstackStart,
+          ...(env.mode === "cloudflare" && {
+            pages: [{ path: "/" }, ...docsEntries.map(({ slug }) => ({ path: `/docs/${slug}` }))],
+            prerender: {
+              enabled: true,
+              autoStaticPathsDiscovery: false,
+              crawlLinks: false,
+              failOnError: true,
+            },
+          }),
+        }),
         react(pluginOptions.react),
-        nitro(pluginOptions.nitro),
+        nitro({
+          ...pluginOptions.nitro,
+          ...(env.mode === "cloudflare" && { preset: "node-server" }),
+        }),
       ],
       resolve: {
         alias: [{ find: /^@\//, replacement: `${path.resolve(dirname, "src")}/` }],

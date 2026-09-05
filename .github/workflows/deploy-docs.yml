@@ -1,0 +1,99 @@
+name: Deploy anatomy.tools
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/docs/**"
+      - "packages/**"
+      - "package.json"
+      - "bun.lock"
+      - "tsconfig.json"
+      - ".github/workflows/deploy-docs.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/docs/**"
+      - "packages/**"
+      - "package.json"
+      - "bun.lock"
+      - "tsconfig.json"
+      - ".github/workflows/deploy-docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-docs-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Check documentation app
+        run: |
+          bun run docs:check-types
+          bun run docs:lint
+          bun --cwd apps/docs test
+      - name: Build public pages
+        run: bun run docs:build:cloudflare
+      - name: Validate Cloudflare upload
+        run: bun run docs:deploy:cloudflare --dry-run
+      - uses: actions/upload-artifact@v4
+        with:
+          name: anatomy-tools-public
+          path: apps/docs/.output/public
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://anatomy.tools
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: anatomy-tools-public
+          path: apps/docs/.output/public
+      - name: Verify published installer supports the homepage commands
+        run: |
+          npm view anatomy-cli@latest bin --json > "$RUNNER_TEMP/anatomy-registry-bin.json"
+          if ! jq -e '.anatomy | ltrimstr("./") == "bin/anatomy.js"' "$RUNNER_TEMP/anatomy-registry-bin.json"; then
+            echo "::error::Publish the new anatomy-cli installer release before deploying the homepage. See README.md: Publishing."
+            exit 1
+          fi
+      - name: Deploy public pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          : "${CLOUDFLARE_API_TOKEN:?Set the CLOUDFLARE_API_TOKEN secret}"
+          : "${CLOUDFLARE_ACCOUNT_ID:?Set the CLOUDFLARE_ACCOUNT_ID secret}"
+          bun run docs:deploy:cloudflare
+      - name: Verify live homepage and installation page
+        run: |
+          curl --fail --silent --show-error --retry 6 --retry-all-errors --retry-delay 10 --max-time 20 https://anatomy.tools/ -o /dev/null
+          curl --fail --silent --show-error --retry 6 --retry-all-errors --retry-delay 10 --max-time 20 https://anatomy.tools/docs/installation -o /dev/null

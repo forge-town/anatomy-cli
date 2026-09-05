@@ -5,6 +5,9 @@ apps/docs/.vitepress/dist/
 apps/docs/.output/
 coverage/
 .turbo/
+.wrangler/
+.dev.vars
+.dev.vars.*
 .anatomy-cli-test/
 .DS_Store
 *.log
