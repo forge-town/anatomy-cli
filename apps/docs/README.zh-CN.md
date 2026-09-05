@@ -33,7 +33,7 @@ bun run docs:preview:cloudflare
 
 1. 将 `anatomy.tools` 添加到目标 Cloudflare 账户，完成 DNS 接入，确认域名状态为 Active。`wrangler.jsonc` 会将此域名绑定至 `anatomy-tools` Worker。
 2. 在 GitHub 仓库的 Actions secrets（或 `production` environment secrets）中配置 `CLOUDFLARE_ACCOUNT_ID` 与 `CLOUDFLARE_API_TOKEN`。按 Cloudflare 官方 GitHub Actions 指南创建部署 token，并将账户和域名权限限定在本项目；不要把 token 写入仓库。
-3. 先发布包含一键安装器的新 `anatomy-cli` 版本。现有 npm `0.0.2` 的两个命令仍指向同一个入口，不支持官网的一键安装说明；自动部署会检查已发布的 `anatomy` 命令入口，未更新时停止发布。参见[根目录中文 README 的发布说明](../../README.zh-CN.md#发布)。
+3. 使用已包含一键安装器的 `anatomy-cli` 0.0.3 或更新版本。npm `0.0.2` 的两个命令指向同一个入口，不支持官网的一键安装说明；自动部署会在部署前检查已发布的 `anatomy` 命令入口。参见[根目录中文 README 的发布说明](../../README.zh-CN.md#发布)。
 4. 合并部署配置到 `main`。`.github/workflows/deploy-docs.yml` 会在相关页面、共享包或构建配置更新后执行检查、构建、部署。PR 只验证构建，不读取部署凭据、不发布。也可在 Actions 中选择 `main` 手动运行 **Deploy anatomy.tools**，例如 CLI 发布后重试。
 
 构建成功的静态文件作为 GitHub artifact 保留 7 天，生产部署使用同一次运行生成的文件，发布后检查首页和安装页的 HTTP 状态。没有配置 Cloudflare 凭据或域名尚未接入时，仓库配置本身不会使网站上线。

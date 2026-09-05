@@ -211,9 +211,8 @@ outside this workspace and is not modified by this project.
 
 ## Publishing
 
-The one-shot installer must be published in a new `anatomy-cli` release before
-the registry commands above gain this behavior; the existing 0.0.2 release
-predates it. Do not deploy homepage installer instructions ahead of that release.
+The one-shot installer is available in `anatomy-cli` 0.0.3 and later. Version
+0.0.2 predates it and does not support the installation commands above.
 
 The root package is intentionally private. To publish a CLI release, authenticate
 with npm and publish the app workspace with Bun; Bun replaces local `workspace:`
