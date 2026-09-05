@@ -9,6 +9,7 @@
     "build": "vite build",
     "serve": "vite preview --port 5173",
     "check-types": "tsc --noEmit",
+    "test": "vitest run",
     "lint": "oxlint src/",
     "payload": "payload",
     "payload:generate-types": "payload generate:types",

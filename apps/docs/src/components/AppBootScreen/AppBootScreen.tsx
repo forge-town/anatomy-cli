@@ -1,89 +1,132 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applySavedLanguage } from "@/lib/i18n";
 import { applyTheme, getSavedTheme } from "@/lib/theme";
-
-type BootPhase = "entering" | "leaving" | "complete";
+import { createBootGeometry, polygonPoints, TRIANGLE_VERTICES } from "./boot-geometry";
+import { createBootMotion, waitForBoot } from "./boot-motion";
 
 const MINIMUM_OPENING_MS = 640;
 const MAXIMUM_FONT_WAIT_MS = 900;
-const EXIT_MS = 360;
-
-const wait = (duration: number) => new Promise<void>((resolve) => window.setTimeout(resolve, duration));
 
 const waitForPaint = () =>
   new Promise<void>((resolve) => {
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => resolve()));
   });
 
-const waitForFonts = async () => {
-  if (!("fonts" in document)) return;
-  await Promise.race([document.fonts.ready.then(() => undefined), wait(MAXIMUM_FONT_WAIT_MS)]);
-};
-
 export const AppBootScreen = () => {
-  const [phase, setPhase] = useState<BootPhase>("entering");
+  const screenRef = useRef<HTMLDivElement>(null);
+  const [complete, setComplete] = useState(false);
+  const [geometry, setGeometry] = useState(() => createBootGeometry(1920, 1080));
 
   useEffect(() => {
-    let active = true;
-    let exitTimer: number | undefined;
+    const screen = screenRef.current;
+    if (!screen) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
     const startedAt = performance.now();
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const root = document.documentElement;
+    delete root.dataset.appReady;
+    delete root.dataset.appRevealing;
+    const content = document.querySelector<HTMLElement>(".app-boot-content");
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const motion = !preference.matches && typeof screen.animate === "function"
+      ? createBootMotion(screen, signal)
+      : undefined;
+    let prepared = false;
 
-    const revealApp = () => {
-      if (!active) return;
+    if (content) content.inert = true;
 
-      document.documentElement.dataset.appReady = "true";
-      setPhase("leaving");
+    const resize = () => setGeometry(createBootGeometry(window.innerWidth, window.innerHeight));
+    resize();
+    window.addEventListener("resize", resize);
 
-      if (reduceMotion) {
-        setPhase("complete");
-        return;
-      }
-
-      exitTimer = window.setTimeout(() => {
-        if (active) setPhase("complete");
-      }, EXIT_MS);
+    const finish = () => {
+      if (signal.aborted) return;
+      root.dataset.appReady = "true";
+      delete root.dataset.appRevealing;
+      if (content) content.inert = false;
+      screen.dataset.phase = "complete";
+      setComplete(true);
+      motion?.dispose();
     };
+
+    const onMotionPreferenceChange = () => {
+      if (preference.matches) {
+        motion?.dispose();
+        if (prepared) finish();
+      }
+    };
+    preference.addEventListener("change", onMotionPreferenceChange);
 
     const prepareApp = async () => {
       applyTheme(getSavedTheme());
       const language = await applySavedLanguage();
-      document.documentElement.lang = language === "en" ? "en" : "zh-CN";
+      if (signal.aborted) return;
+      root.lang = language === "en" ? "en" : "zh-CN";
 
-      await waitForFonts();
-      await waitForPaint();
-
-      if (!reduceMotion) {
-        const remaining = Math.max(0, MINIMUM_OPENING_MS - (performance.now() - startedAt));
-        if (remaining > 0) await wait(remaining);
+      if ("fonts" in document) {
+        await Promise.race([document.fonts.ready, waitForBoot(MAXIMUM_FONT_WAIT_MS, signal)]);
       }
+      await waitForPaint();
+      if (signal.aborted) return;
+      prepared = true;
 
-      revealApp();
+      if (motion && !preference.matches) {
+        const remaining = Math.max(0, MINIMUM_OPENING_MS - (performance.now() - startedAt));
+        if (remaining > 0) await waitForBoot(remaining, signal);
+        if (preference.matches) return finish();
+        await motion.reveal(() => { root.dataset.appRevealing = "true"; });
+      }
+      finish();
     };
 
-    void prepareApp().catch(revealApp);
+    void prepareApp().catch(finish);
 
     return () => {
-      active = false;
-      if (exitTimer !== undefined) window.clearTimeout(exitTimer);
+      controller.abort();
+      window.removeEventListener("resize", resize);
+      preference.removeEventListener("change", onMotionPreferenceChange);
+      if (content) content.inert = false;
+      root.dataset.appReady = "true";
+      delete root.dataset.appRevealing;
     };
-  }, []);
+  }, [complete]);
 
-  if (phase === "complete") return null;
+  if (complete) return null;
 
   return (
     <div
+      ref={screenRef}
       aria-label="Anatomy"
       className="app-boot-screen"
-      data-phase={phase}
+      data-phase="loading"
       role="status"
     >
       <svg
         aria-hidden="true"
-        className="app-boot-screen__triangle"
-        viewBox="0 0 24 24"
+        className="app-boot-screen__geometry"
+        viewBox="-20 -20 40 40"
       >
-        <path d="M12 20L5.07 8H18.93Z" fill="none" stroke="currentColor" strokeWidth="2" />
+        <g className="app-boot-screen__aperture">
+          <g className="app-boot-screen__panels">
+            {geometry.panels.map((points, index) => (
+              <polygon key={index} points={polygonPoints(points)} vectorEffect="non-scaling-stroke" />
+            ))}
+          </g>
+          {geometry.rays.map(({ start, end }, index) => (
+            <line
+              key={index}
+              className="app-boot-screen__ray"
+              x1={start.x} y1={start.y} x2={end.x} y2={end.y}
+              pathLength="1" vectorEffect="non-scaling-stroke"
+            />
+          ))}
+          <polygon
+            className="app-boot-screen__triangle"
+            points={polygonPoints(TRIANGLE_VERTICES)}
+            vectorEffect="non-scaling-stroke"
+          />
+        </g>
       </svg>
     </div>
   );

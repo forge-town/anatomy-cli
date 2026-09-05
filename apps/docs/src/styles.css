@@ -85,10 +85,10 @@ html:not([data-app-ready="true"]) {
   opacity: 0;
 }
 
-html[data-app-ready="true"] .app-boot-content {
+html[data-app-ready="true"] .app-boot-content,
+html[data-app-revealing="true"] .app-boot-content {
   visibility: visible;
   opacity: 1;
-  transition: opacity 280ms ease 80ms;
 }
 
 .app-boot-screen {
@@ -100,28 +100,53 @@ html[data-app-ready="true"] .app-boot-content {
   overflow: hidden;
   background: var(--line-background);
   color: var(--line-foreground);
-  transition: opacity 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  touch-action: none;
 }
 
-.app-boot-screen[data-phase="leaving"] {
-  opacity: 0;
-  transform: scale(1.015);
-  pointer-events: none;
+.app-boot-screen[data-phase="opening"] {
+  background: transparent;
+}
+
+.app-boot-screen[data-phase="complete"] {
+  display: none;
+}
+
+.app-boot-screen__geometry {
+  display: block;
+  width: 40px;
+  height: 40px;
+  overflow: visible;
+}
+
+.app-boot-screen__aperture,
+.app-boot-screen__triangle {
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+
+.app-boot-screen__panels {
+  fill: var(--line-background);
+  stroke: var(--line-background);
+  stroke-width: 1;
+}
+
+.app-boot-screen[data-phase="loading"] .app-boot-screen__panels {
+  visibility: hidden;
 }
 
 .app-boot-screen__triangle {
-  display: block;
-  width: 2.5rem;
-  height: 2.5rem;
-  transform-origin: 50% 50%;
-  animation: app-boot-triangle-step 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
 }
 
-@keyframes app-boot-triangle-step {
-  0% { transform: rotate(0deg); }
-  33.333% { transform: rotate(120deg); }
-  66.666% { transform: rotate(240deg); }
-  100% { transform: rotate(360deg); }
+.app-boot-screen__ray {
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.55;
 }
 
 .startup-grid-background {
