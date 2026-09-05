@@ -35,12 +35,13 @@ export const CodePathMapIcon = ({ progress = 1, ...props }: CodePathMapIconProps
       </defs>
       <g fill="var(--line-muted)">{dots}</g>
       <g stroke="var(--line-border-strong)" strokeWidth="1">
-        <path d="M 218 60 Q 325 -8 454 154" />
-        <path d="M 454 154 Q 596 142 551 282" />
-        <path d="M 454 154 Q 497 326 351 343" />
+        <path d="M 218 84 Q 325 -11 454 216" />
+        <path d="M 454 216 Q 596 199 551 395" />
+        <path d="M 454 216 Q 497 456 351 480" />
       </g>
-      <path d={CODE_PATH_ROUTE} stroke="var(--line-border-strong)" strokeWidth="1.25" strokeDasharray="2 5" />
+      <path className="code-path-map__route" d={CODE_PATH_ROUTE} stroke="var(--line-border-strong)" strokeWidth="1.25" strokeDasharray="2 5" />
       <path
+        className="code-path-map__route"
         d={CODE_PATH_ROUTE}
         stroke={`url(#${gradientId})`}
         strokeWidth="1.75"

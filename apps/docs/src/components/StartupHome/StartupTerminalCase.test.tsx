@@ -35,15 +35,15 @@ describe("terminal and open code path map", () => {
     expect(html).not.toContain("<button");
   });
 
-  it("has no external vertical gaps or mirrored subgrid", () => {
+  it("uses section spacing and top-aligned terminal content", () => {
     const html = renderToStaticMarkup(createElement(StartupTerminalCase));
     const sectionClass = html.match(/<section[^>]*class="([^"]*)"/)?.[1];
     expect(sectionClass).toBeDefined();
-    expect(sectionClass).not.toMatch(/(?:^|\s)(?:\w+:)*(?:py|pt|pb|my|mt|mb)-/);
+    expect(sectionClass).toContain("md:py-24");
     expect(html).toContain("terminal-case__layout");
     expect(html).not.toContain("md:grid-cols-2");
     expect(html).not.toContain("grid-rows-subgrid");
-    expect(html).toContain("flex-col justify-end");
+    expect(html).toContain("flex-col justify-start");
   });
 
   it("shows the complete example without animation for reduced motion", () => {

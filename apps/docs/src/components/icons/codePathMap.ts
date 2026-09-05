@@ -1,27 +1,27 @@
 export const CODE_PATH_MAP = {
   width: 640,
-  height: 400,
-  start: { x: 112, y: 286 },
-  control: { x: 225, y: -30 },
-  end: { x: 454, y: 154 },
+  height: 560,
+  start: { x: 112, y: 400 },
+  control: { x: 250, y: 112 },
+  end: { x: 454, y: 216 },
 } as const;
 
 export const CODE_PATH_ROUTE = `M ${CODE_PATH_MAP.start.x} ${CODE_PATH_MAP.start.y} Q ${CODE_PATH_MAP.control.x} ${CODE_PATH_MAP.control.y} ${CODE_PATH_MAP.end.x} ${CODE_PATH_MAP.end.y}`;
 
 export const CODE_PATH_LABELS = [
-  { label: "src/legacy/", x: 112, y: 286, kind: "source" },
-  { label: "src/components/ui/", x: 454, y: 154, kind: "destination" },
-  { label: "routes/", x: 218, y: 60, kind: "context" },
-  { label: "lib/", x: 551, y: 282, kind: "context" },
-  { label: "tests/", x: 351, y: 343, kind: "context" },
+  { label: "src/legacy/", x: 112, y: 400, kind: "source" },
+  { label: "src/components/ui/", x: 454, y: 216, kind: "destination" },
+  { label: "routes/", x: 218, y: 84, kind: "context" },
+  { label: "lib/", x: 551, y: 395, kind: "context" },
+  { label: "tests/", x: 351, y: 480, kind: "context" },
 ] as const;
 
 const islands = [
-  { x: 110, y: 283, rx: 76, ry: 53 },
-  { x: 215, y: 64, rx: 82, ry: 38 },
-  { x: 452, y: 156, rx: 118, ry: 76 },
-  { x: 552, y: 280, rx: 59, ry: 43 },
-  { x: 350, y: 345, rx: 90, ry: 37 },
+  { x: 110, y: 396, rx: 76, ry: 74 },
+  { x: 215, y: 90, rx: 82, ry: 53 },
+  { x: 452, y: 218, rx: 118, ry: 106 },
+  { x: 552, y: 392, rx: 59, ry: 60 },
+  { x: 350, y: 483, rx: 90, ry: 52 },
 ];
 
 export const createCodePathDots = () => {

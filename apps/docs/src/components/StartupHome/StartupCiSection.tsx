@@ -10,8 +10,8 @@ export const StartupCiSection = () => {
 
   return (
     <section className="w-full border-t border-[var(--line-border)] bg-[var(--line-surface)] px-4 py-20 md:px-8 md:py-24" id="ci">
-      <div className="mx-auto grid min-w-0 max-w-7xl border-y border-[var(--line-border)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <div className="min-w-0 py-10 md:order-2 md:py-14 md:pl-12">
+      <div className="mx-auto grid min-w-0 max-w-7xl md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div className="min-w-0 pb-10 md:order-2 md:pb-0 md:pl-12">
           <h2 className="max-w-xl text-balance font-[var(--font-display)] text-3xl font-semibold leading-tight tracking-[-0.04em] text-[var(--line-foreground)] md:text-4xl">
             {t("startup.ciTitle")}
           </h2>
@@ -43,7 +43,7 @@ export const StartupCiSection = () => {
           </Link>
         </div>
 
-        <div className="flex min-w-0 self-stretch border-t border-[var(--line-border)] md:order-1 md:border-t-0 md:border-r">
+        <div className="flex min-w-0 self-stretch md:order-1">
           <StartupCiFileTree />
         </div>
       </div>

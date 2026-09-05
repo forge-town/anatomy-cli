@@ -8,28 +8,29 @@ import "./StartupTerminalCase.css";
 
 export const StartupTerminalCase = () => {
   const { t } = useTranslation();
-  const { ref, frame } = useTerminalDemo();
+  const { ref, frame, isInView } = useTerminalDemo();
 
   return (
     <section
       aria-labelledby="terminal-case-title"
-      className="w-full scroll-mt-14 bg-[var(--line-surface)] px-4 md:px-8"
+      className="w-full scroll-mt-14 border-t border-[var(--line-border)] bg-[var(--line-surface)] px-4 py-20 md:px-8 md:py-24"
       data-demo-phase={frame.phase}
+      data-demo-visible={isInView}
       id="features"
       ref={ref}
     >
       <p className="sr-only">{t("startup.terminalCaseAccessibleResult")}</p>
       <div className="terminal-case__layout mx-auto min-w-0 max-w-7xl">
-        <header className="col-span-full py-9 sm:py-11">
-          <h2 id="terminal-case-title" className="font-[var(--font-display)] text-3xl font-semibold leading-tight tracking-[-0.04em] text-[var(--line-foreground)] md:text-4xl">
-            {t("startup.terminalCaseTitle")}
-          </h2>
-          <p className="mt-5 max-w-xl text-pretty text-base leading-7 text-[var(--line-muted)]">
-            {t("startup.terminalCaseDescription")}
-          </p>
-        </header>
-        <article className="flex min-w-0 flex-col">
-          <figure className="flex min-w-0 flex-1 flex-col border border-[var(--line-border)] bg-[var(--line-surface-raised)] md:border-b-0">
+        <article className="flex min-w-0 flex-col md:pr-12">
+          <header className="mb-8">
+            <h2 id="terminal-case-title" className="font-[var(--font-display)] text-3xl font-semibold leading-tight tracking-[-0.04em] text-[var(--line-foreground)] md:text-4xl">
+              {t("startup.terminalCaseTitle")}
+            </h2>
+            <p className="mt-5 max-w-xl text-pretty text-base leading-7 text-[var(--line-muted)]">
+              {t("startup.terminalCaseDescription")}
+            </p>
+          </header>
+          <figure className="flex min-w-0 flex-1 flex-col border border-[var(--line-border)] bg-[var(--line-surface-raised)]">
             <figcaption className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-[var(--line-border)] px-5 text-[var(--line-muted)] sm:px-8">
               <span className="inline-flex items-center gap-2.5 font-mono text-[11px]">
                 <Terminal aria-hidden="true" className="size-3.5" />
@@ -37,7 +38,7 @@ export const StartupTerminalCase = () => {
               </span>
             </figcaption>
 
-            <div aria-hidden="true" className="flex min-h-80 flex-1 flex-col justify-end gap-6 px-5 py-7 font-mono text-xs leading-6 sm:px-8 lg:text-sm">
+            <div aria-hidden="true" className="flex min-h-80 flex-1 flex-col justify-start gap-6 px-5 py-7 font-mono text-xs leading-6 sm:px-8 lg:text-sm">
               <div>
                 <p className="whitespace-nowrap text-[var(--line-foreground)]">
                   <span className="mr-3 text-[var(--line-accent)]">$</span>

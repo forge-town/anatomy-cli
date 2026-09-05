@@ -31,6 +31,7 @@ export const useTerminalDemo = () => {
 
   return {
     ref,
+    isInView,
     frame: getTerminalDemoFrame(reducedMotion ? TERMINAL_DEMO_TIMING.end : elapsed),
   };
 };

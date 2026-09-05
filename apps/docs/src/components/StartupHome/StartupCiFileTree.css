@@ -1,0 +1,7 @@
+.ci-file-tree__canvas {
+  --ci-grid-color: color-mix(in srgb, var(--line-grid) 25%, transparent);
+  background-image:
+    linear-gradient(to right, var(--ci-grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ci-grid-color) 1px, transparent 1px);
+  background-size: 28px 28px;
+}

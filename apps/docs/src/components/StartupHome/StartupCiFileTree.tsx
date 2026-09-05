@@ -2,6 +2,7 @@ import { File, Folder, FolderOpen } from "lucide-react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import "./StartupCiFileTree.css";
 
 type CiTreeNode = {
   fullPath: string;
@@ -142,15 +143,7 @@ export const StartupCiFileTree = () => {
       ref={treeRef}
       role="img"
     >
-      <svg aria-hidden="true" className="min-h-0 w-full flex-1" viewBox="0 0 670 380">
-        <defs>
-          <pattern height="28" id="ci-file-tree-grid" patternUnits="userSpaceOnUse" width="28">
-            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="var(--line-grid)" strokeWidth="1" />
-          </pattern>
-        </defs>
-
-        <rect fill="url(#ci-file-tree-grid)" height="380" width="670" />
-
+      <svg aria-hidden="true" className="ci-file-tree__canvas min-h-0 w-full flex-1" viewBox="0 0 670 380">
         {treeNodes.map((node) => {
           const parent = node.parentId ? treeNodeById.get(node.parentId) : undefined;
           if (!parent) return null;
