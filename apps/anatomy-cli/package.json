@@ -1,6 +1,6 @@
 {
   "name": "anatomy-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Scan repository file trees against Anatomy Draft definitions.",
   "license": "MIT",
   "repository": {
