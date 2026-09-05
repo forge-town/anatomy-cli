@@ -24,9 +24,9 @@ const HERO_TRANSITION_WINDOW =
   HERO_GLYPH_DURATION + (HERO_REFERENCE_GLYPH_COUNT - 1) * HERO_GLYPH_STAGGER_MAX;
 const HERO_ROTATION_INTERVAL = 5000;
 const installCommands: Record<PackageManager, string> = {
-  npm: "npm install -g --ignore-scripts anatomy-cli",
-  pnpm: "pnpm add -g --ignore-scripts anatomy-cli",
-  bun: "bun add -g --ignore-scripts anatomy-cli",
+  npm: "npx anatomy-cli",
+  pnpm: "pnpm dlx anatomy-cli",
+  bun: "bunx anatomy-cli",
 };
 
 const countTitleGlyphs = (title: string) => Array.from(title).filter((character) => !/\s/.test(character)).length;

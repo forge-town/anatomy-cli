@@ -28,13 +28,13 @@
   ],
   "bin": {
     "anatomy-cli": "./bin/anatomy-cli.js",
-    "anatomy": "./bin/anatomy-cli.js"
+    "anatomy": "./bin/anatomy.js"
   },
   "exports": {
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "bun build src/main.ts --target=node --outfile=dist/main.js && bun build src/index.ts --target=node --outfile=dist/index.js",
+    "build": "bun build src/main.ts --target=node --outfile=dist/main.js && bun build src/index.ts --target=node --outfile=dist/index.js && bun build src/install-main.ts --target=node --outfile=dist/install-main.js",
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
     "scan:self": "bun src/main.ts ../../packages/schemas/src/anatomy --definition ../../packages/anatomy-cli-config/src/anatomies/zod-schema.anatomy.json",

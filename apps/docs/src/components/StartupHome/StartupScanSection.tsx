@@ -13,7 +13,7 @@ export const StartupScanSection = () => {
 
   return (
     <section id="scan" className="relative w-full border-y border-[var(--line-border)] bg-[var(--line-background)] px-4 pt-0 md:px-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <StructureScanPreview onStageChange={setScanStage} />
         <div className={cn("grid gap-5 border-t border-[var(--line-border)] px-5 py-4 transition-[opacity,transform] duration-500 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-8 md:px-8", scanComplete ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0")}>
           <div className="min-w-0">

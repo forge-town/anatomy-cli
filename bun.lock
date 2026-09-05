@@ -21,7 +21,7 @@
       "version": "0.0.2",
       "bin": {
         "anatomy-cli": "./bin/anatomy-cli.js",
-        "anatomy": "./bin/anatomy-cli.js",
+        "anatomy": "./bin/anatomy.js",
       },
       "devDependencies": {
         "@anatomy-cli/anatomy": "workspace:*",

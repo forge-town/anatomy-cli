@@ -35,47 +35,72 @@ block · warn · allow result
 The repository is Bun-first for development. Published CLI releases are bundled
 as a standalone Node.js entry point, so registry installs do not need Bun.
 
-## Install a published release
+## Install Anatomy
 
-The commands below install the npm package named `anatomy-cli` and expose the
-global `anatomy` command. The package must first be published for the
-registry-based commands to resolve.
-
-### macOS / Linux (curl)
+Run **one** of these commands once, then use `anatomy` directly:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/forge-town/anatomy-cli/main/install.sh | sh
+npx anatomy-cli
+pnpm dlx anatomy-cli
+bunx anatomy-cli
 ```
 
-### Windows (PowerShell)
+The one-shot installer requires Node.js 18+ on macOS, Linux or Windows. It
+copies the standalone CLI bundled in the downloaded `anatomy-cli` release to
+`~/.anatomy`, so it keeps working after the package manager clears its cache.
+No second package download, administrator privileges, or project dependency
+changes are needed. The package name stays `anatomy-cli`; the everyday command
+is `anatomy`.
 
-```powershell
-powershell -c "irm https://raw.githubusercontent.com/forge-town/anatomy-cli/main/install.ps1 | iex"
-```
-
-### npm
-
-```bash
-npm install -g --ignore-scripts anatomy-cli
-```
-
-### pnpm
-
-```bash
-pnpm add -g --ignore-scripts anatomy-cli
-```
-
-### Bun
-
-```bash
-bun add -g --ignore-scripts anatomy-cli
-```
-
-After any installation method, verify the command with:
+The installer adds its `bin` directory to a supported shell profile or Windows
+user PATH. Existing profile content is preserved, with a `.anatomy-backup`
+before the first edit. **Open a new terminal** after installation, then run:
 
 ```bash
 anatomy --help
+anatomy ./src
 ```
+
+Installation does not generate `anatomy.json`; keep your definition in the
+repository as described below. Unknown shells and read-only profiles receive
+manual PATH instructions instead of a silent setup failure.
+
+### Upgrade, customize or uninstall
+
+```bash
+# Install the latest published release
+pnpm dlx anatomy-cli@latest
+
+# Inspect installer options without changing anything
+pnpm dlx anatomy-cli --help
+
+# Let your environment manage PATH (use an absolute prefix)
+pnpm dlx anatomy-cli --prefix /absolute/path/to/anatomy --no-modify-path
+
+# Remove this installer's CLI; leaves projects, PATH settings and backups alone
+pnpm dlx anatomy-cli --uninstall
+```
+
+Use the same `--prefix` when upgrading or uninstalling a custom installation.
+`ANATOMY_INSTALL_DIR` also sets the prefix, and `ANATOMY_NO_MODIFY_PATH=1`
+disables profile edits. The installer rejects non-empty, unowned directories.
+After uninstall, optionally remove the Anatomy PATH entry from your shell
+profile or Windows user PATH. An installation marker is retained so the
+dedicated directory can safely be reused.
+
+If you prefer package-manager-managed global installs, these still work:
+
+```bash
+npm install -g --ignore-scripts anatomy-cli
+pnpm add -g --ignore-scripts anatomy-cli
+bun add -g --ignore-scripts anatomy-cli
+```
+
+These installs use the package manager's global directory and should be
+removed with that package manager, not the one-shot installer's `--uninstall`.
+Passing a target to `anatomy-cli` still runs a temporary check:
+`pnpm dlx anatomy-cli ./src`. The `anatomy` command always runs a check, including
+when no target is provided.
 
 ## Quick start
 
@@ -184,6 +209,10 @@ outside this workspace and is not modified by this project.
 
 ## Publishing
 
+The one-shot installer must be published in a new `anatomy-cli` release before
+the registry commands above gain this behavior; the existing 0.0.2 release
+predates it. Do not deploy homepage installer instructions ahead of that release.
+
 The root package is intentionally private. To publish a CLI release, authenticate
 with npm and publish the app workspace with Bun; Bun replaces local `workspace:`
 references while packing and the prepack hook creates the Node.js bundle:
@@ -192,3 +221,8 @@ references while packing and the prepack hook creates the Node.js bundle:
 cd apps/anatomy-cli
 bun publish --access public
 ```
+
+The package's `bin` entries must stay distinct: `anatomy-cli` dispatches to the
+installer by default; `anatomy` dispatches to the checker. Publish the three
+bundles (`main.js`, `index.js`, `install-main.js`) and the `bin/` launchers
+together. No separate installer package or install lifecycle script is needed.
