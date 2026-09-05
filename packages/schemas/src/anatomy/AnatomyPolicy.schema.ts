@@ -1,17 +1,17 @@
 import { z } from "zod/v4";
 import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValue.schema";
 
-/** Crate 与 Anatomy 结构不一致时的默认处置策略。 */
+/** Default policies applied when a Crate does not conform to an Anatomy. */
 export const AnatomyPoliciesSchema = z.object({
-  /** 缺少必需条目时的默认处置。 */
+  /** Default action when a required entry is missing. */
   missingRequired: AnatomyPolicyValueSchema,
-  /** 出现未声明条目时的默认处置。 */
+  /** Default action when an undeclared entry is present. */
   unexpectedEntry: AnatomyPolicyValueSchema,
-  /** 条目名称不匹配时的默认处置。 */
+  /** Default action when an entry name does not match. */
   nameMismatch: AnatomyPolicyValueSchema,
-  /** 条目嵌套位置不匹配时的默认处置。 */
+  /** Default action when an entry is nested at the wrong location. */
   nestingMismatch: AnatomyPolicyValueSchema,
 });
 
-/** Anatomy 默认策略的类型。 */
+/** Default Anatomy policy values. */
 export type AnatomyPolicies = z.infer<typeof AnatomyPoliciesSchema>;

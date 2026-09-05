@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-/** Anatomy 文件或目录条目允许采用的数量约束。 */
+/** Quantity constraint available to Anatomy file or directory entries. */
 export const AnatomyQuantitySchema = z.enum([
   "optional",
   "exactly_one",

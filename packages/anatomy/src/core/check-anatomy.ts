@@ -1,6 +1,8 @@
-import { err, ok, type Result } from "neverthrow";
+import { err, ok, Result, type Result as ResultType } from "neverthrow";
 import {
   type AnatomyDraftInput,
+  type AnatomyBinding,
+  type AnatomyBindingFormat,
   type AnatomyEntry,
   type AnatomyNode,
   type AnatomyPolicies,
@@ -20,6 +22,9 @@ export const AnatomyCheckCode = {
   missingRequired: "missing_required",
   unexpectedEntry: "unexpected_entry",
   nameMismatch: "name_mismatch",
+  bindingFormatMismatch: "binding_format_mismatch",
+  bindingPatternMismatch: "binding_pattern_mismatch",
+  bindingConsistencyMismatch: "binding_consistency_mismatch",
   nestingMismatch: "nesting_mismatch",
   quantityExceeded: "quantity_exceeded",
   oneOfMismatch: "one_of_mismatch",
@@ -44,6 +49,26 @@ export type AnatomyCheckResult = {
 };
 
 type PolicyAncestor = { id: string; overrides: AnatomyPolicyOverrides };
+type BindingScope = Readonly<Record<string, string>>;
+
+type NameMatch =
+  | { kind: "match"; captures: Record<string, string> }
+  | { kind: "binding_format_mismatch"; name: string; value: string; format: AnatomyBindingFormat }
+  | { kind: "binding_pattern_mismatch"; name: string; value: string; pattern: string }
+  | { kind: "binding_consistency_mismatch"; name: string; expected: string; actual: string }
+  | { kind: "none" };
+
+type NameMatchCandidate = {
+  index: number;
+  match: Exclude<NameMatch, { kind: "none" }>;
+};
+
+type SuccessfulNameMatchCandidate = {
+  index: number;
+  match: { kind: "match"; captures: Record<string, string> };
+};
+
+type BindingMismatch = Exclude<NameMatch, { kind: "none" } | { kind: "match" }>;
 
 const escapeRegularExpression = (value: string): string => {
   return value.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -69,8 +94,124 @@ const createNamePattern = (entry: AnatomyEntry, ignoreCase = false): RegExp => {
   );
 };
 
-const matchesName = (entry: AnatomyEntry, actualName: string, ignoreCase = false): boolean => {
-  return createNamePattern(entry, ignoreCase).test(actualName);
+const parsePlaceholder = (
+  entry: AnatomyEntry,
+): { name: string; prefix: string; suffix: string } | undefined => {
+  if (entry.name.type !== "placeholder") return undefined;
+
+  const openingBracket = entry.name.value.indexOf("<");
+  const closingBracket = entry.name.value.indexOf(">", openingBracket + 1);
+  if (openingBracket < 0 || closingBracket < 0) return undefined;
+
+  return {
+    name: entry.name.value.slice(openingBracket + 1, closingBracket),
+    prefix: entry.name.value.slice(0, openingBracket),
+    suffix: entry.name.value.slice(closingBracket + 1),
+  };
+};
+
+const bindingFormatPatterns: Record<AnatomyBindingFormat, RegExp> = {
+  PascalCase: /^[A-Z][A-Za-z0-9]*$/,
+  camelCase: /^[a-z][A-Za-z0-9]*$/,
+  "kebab-case": /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+  snake_case: /^[a-z0-9]+(?:_[a-z0-9]+)*$/,
+  SCREAMING_SNAKE_CASE: /^[A-Z0-9]+(?:_[A-Z0-9]+)*$/,
+};
+
+const compilePattern = Result.fromThrowable(
+  (pattern: string) => new RegExp(`^(?:${pattern})$`),
+  () => undefined,
+);
+
+const matchesBinding = (binding: AnatomyBinding, value: string): BindingMismatch | undefined => {
+  if (
+    binding.format !== undefined &&
+    (bindingFormatPatterns[binding.format] === undefined ||
+      !bindingFormatPatterns[binding.format].test(value))
+  ) {
+    return {
+      kind: "binding_format_mismatch",
+      name: "",
+      value,
+      format: binding.format,
+    };
+  }
+
+  if (binding.pattern !== undefined) {
+    const compiledPattern = compilePattern(binding.pattern);
+    if (compiledPattern.isErr()) {
+      return {
+        kind: "binding_pattern_mismatch",
+        name: "",
+        value,
+        pattern: binding.pattern,
+      };
+    }
+
+    if (!compiledPattern.value.test(value)) {
+      return {
+        kind: "binding_pattern_mismatch",
+        name: "",
+        value,
+        pattern: binding.pattern,
+      };
+    }
+  }
+
+  return undefined;
+};
+
+const evaluateName = (
+  entry: AnatomyEntry,
+  actualName: string,
+  scope: BindingScope,
+  bindings: Readonly<Record<string, AnatomyBinding>>,
+  ignoreCase = false,
+): NameMatch => {
+  if (entry.name.type === "literal") {
+    return createNamePattern(entry, ignoreCase).test(actualName)
+      ? { kind: "match", captures: {} }
+      : { kind: "none" };
+  }
+
+  const placeholder = parsePlaceholder(entry);
+  if (!placeholder) return { kind: "none" };
+
+  const placeholderExpression = placeholder.suffix.includes(".")
+    ? "[^./\\\\]+"
+    : "[^/\\\\]+";
+  const pattern = new RegExp(
+    `^${escapeRegularExpression(placeholder.prefix)}(${placeholderExpression})${escapeRegularExpression(placeholder.suffix)}$`,
+    ignoreCase ? "i" : undefined,
+  );
+  const match = pattern.exec(actualName);
+  if (!match) return { kind: "none" };
+
+  const capturedValue = match[1];
+  if (capturedValue === undefined) return { kind: "none" };
+
+  const boundValue = scope[placeholder.name];
+  if (boundValue !== undefined && boundValue !== capturedValue) {
+    return {
+      kind: "binding_consistency_mismatch",
+      name: placeholder.name,
+      expected: boundValue,
+      actual: capturedValue,
+    };
+  }
+
+  const binding = bindings[placeholder.name];
+  if (binding !== undefined) {
+    const bindingMismatch = matchesBinding(binding, capturedValue);
+    if (bindingMismatch !== undefined) {
+      return { ...bindingMismatch, name: placeholder.name };
+    }
+  }
+
+  return {
+    kind: "match",
+    captures: boundValue === undefined ? { [placeholder.name]: capturedValue } : {},
+  };
 };
 
 const joinPath = (parentPath: string, name: string): string => {
@@ -119,12 +260,13 @@ const getEntryLabel = (entry: AnatomyEntry): string => {
 export const checkAnatomy = (
   definition: AnatomyDraftInput,
   entries: AnatomyFileTreeEntry[],
-): Result<AnatomyCheckResult, AnatomyValidationIssue[]> => {
+): ResultType<AnatomyCheckResult, AnatomyValidationIssue[]> => {
   const validated = validateAnatomyForPublish(definition);
   if (validated.isErr()) return err(validated.error);
 
   const issues: AnatomyCheckIssue[] = [];
   const defaults = definition.structure.defaultPolicies;
+  const bindings = definition.structure.bindings ?? {};
 
   const addIssue = (issue: AnatomyCheckIssue): void => {
     issues.push(issue);
@@ -135,6 +277,7 @@ export const checkAnatomy = (
     actualEntries: AnatomyFileTreeEntry[],
     parentPath: string,
     ancestors: PolicyAncestor[],
+    scope: BindingScope,
   ): void => {
     const consumed = new Set<number>();
 
@@ -145,29 +288,30 @@ export const checkAnatomy = (
     const findMatches = (
       entry: AnatomyEntry,
       options: { ignoreCase?: boolean; requireKind?: boolean } = {},
-    ): number[] => {
-      return availableIndexes().filter((index) => {
+    ): NameMatchCandidate[] => {
+      return availableIndexes().flatMap((index) => {
         const actual = actualEntries[index];
-        if (!actual) return false;
+        if (!actual) return [];
         if (options.requireKind !== false && actual.kind !== entry.kind) {
-          return false;
+          return [];
         }
 
-        return matchesName(entry, actual.name, options.ignoreCase);
+        const match = evaluateName(entry, actual.name, scope, bindings, options.ignoreCase);
+        return match.kind === "none" ? [] : [{ index, match }];
       });
     };
 
     const checkEntry = (entry: AnatomyEntry, suppressMissing: boolean): number => {
-      const exactNameIndexes = findMatches(entry, { requireKind: false });
-      const nestingMismatchIndexes = exactNameIndexes.filter((index) => {
-        const actual = actualEntries[index];
+      const structuralCandidates = findMatches(entry, { requireKind: false });
+      const nestingMismatchCandidates = structuralCandidates.filter((candidate) => {
+        const actual = actualEntries[candidate.index];
 
         return actual !== undefined && actual.kind !== entry.kind;
       });
-      for (const index of nestingMismatchIndexes) {
-        const actual = actualEntries[index];
+      for (const candidate of nestingMismatchCandidates) {
+        const actual = actualEntries[candidate.index];
         if (!actual) continue;
-        consumed.add(index);
+        consumed.add(candidate.index);
         addIssue({
           code: AnatomyCheckCode.nestingMismatch,
           severity: getPolicy(defaults, ancestors, "nestingMismatch", entry),
@@ -177,8 +321,54 @@ export const checkAnatomy = (
         });
       }
 
-      const correctIndexes = findMatches(entry);
-      const caseInsensitiveIndexes = findMatches(entry, { ignoreCase: true });
+      const correctCandidates = structuralCandidates.filter(
+        (candidate): candidate is SuccessfulNameMatchCandidate => {
+          const actual = actualEntries[candidate.index];
+
+          return actual?.kind === entry.kind && candidate.match.kind === "match";
+        },
+      );
+      const bindingMismatchCandidates = structuralCandidates.filter((candidate): candidate is NameMatchCandidate & { match: BindingMismatch } => {
+        const actual = actualEntries[candidate.index];
+
+        return actual?.kind === entry.kind && candidate.match.kind !== "match";
+      });
+      for (const candidate of bindingMismatchCandidates) {
+        const actual = actualEntries[candidate.index];
+        if (!actual) continue;
+        consumed.add(candidate.index);
+
+        const match = candidate.match;
+        if (match.kind === "binding_format_mismatch") {
+          addIssue({
+            code: AnatomyCheckCode.bindingFormatMismatch,
+            severity: getPolicy(defaults, ancestors, "nameMismatch", entry),
+            path: joinPath(parentPath, actual.name),
+            constraintId: entry.id,
+            message: `Placeholder <${match.name}> captured "${match.value}" which does not match ${match.format}`,
+          });
+        } else if (match.kind === "binding_pattern_mismatch") {
+          addIssue({
+            code: AnatomyCheckCode.bindingPatternMismatch,
+            severity: getPolicy(defaults, ancestors, "nameMismatch", entry),
+            path: joinPath(parentPath, actual.name),
+            constraintId: entry.id,
+            message: `Placeholder <${match.name}> captured "${match.value}" which does not match pattern /${match.pattern}/`,
+          });
+        } else {
+          addIssue({
+            code: AnatomyCheckCode.bindingConsistencyMismatch,
+            severity: getPolicy(defaults, ancestors, "nameMismatch", entry),
+            path: joinPath(parentPath, actual.name),
+            constraintId: entry.id,
+            message: `Placeholder <${match.name}> expected "${match.expected}" but found "${match.actual}"`,
+          });
+        }
+      }
+
+      const correctIndexes = correctCandidates.map((candidate) => candidate.index);
+      const caseInsensitiveCandidates = findMatches(entry, { ignoreCase: true });
+      const caseInsensitiveIndexes = caseInsensitiveCandidates.map((candidate) => candidate.index);
       const nameMismatchIndexes = caseInsensitiveIndexes.filter(
         (index) => !correctIndexes.includes(index),
       );
@@ -199,8 +389,9 @@ export const checkAnatomy = (
       if (
         !suppressMissing &&
         correctIndexes.length < minimum &&
-        nestingMismatchIndexes.length === 0 &&
-        nameMismatchIndexes.length === 0
+        nestingMismatchCandidates.length === 0 &&
+        nameMismatchIndexes.length === 0 &&
+        bindingMismatchCandidates.length === 0
       ) {
         addIssue({
           code: AnatomyCheckCode.missingRequired,
@@ -211,10 +402,10 @@ export const checkAnatomy = (
         });
       }
 
-      for (const [position, index] of correctIndexes.entries()) {
-        const actual = actualEntries[index];
+      for (const [position, candidate] of correctCandidates.entries()) {
+        const actual = actualEntries[candidate.index];
         if (!actual) continue;
-        consumed.add(index);
+        consumed.add(candidate.index);
         if (position >= maximum) {
           addIssue({
             code: AnatomyCheckCode.quantityExceeded,
@@ -229,7 +420,10 @@ export const checkAnatomy = (
           checkNodes(entry.children, actual.children, joinPath(parentPath, actual.name), [
             ...ancestors,
             { id: entry.id, overrides: entry.policyOverrides },
-          ]);
+          ], {
+            ...scope,
+            ...candidate.match.captures,
+          });
         }
       }
 
@@ -278,7 +472,7 @@ export const checkAnatomy = (
     }
   };
 
-  checkNodes(definition.structure.root.children, entries, ".", []);
+  checkNodes(definition.structure.root.children, entries, ".", [], {});
 
   const summary = issues.reduce(
     (counts, issue) => ({

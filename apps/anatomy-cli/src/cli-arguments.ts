@@ -3,7 +3,7 @@ import { err, ok, type Result } from "neverthrow";
 export const AnatomyCliFormatValues = ["human", "json"] as const;
 
 export type AnatomyCliOptions = {
-  definitionPath: string;
+  definitionPath: string | null;
   targetPath: string;
   format: (typeof AnatomyCliFormatValues)[number];
   ignore: string[];
@@ -33,13 +33,14 @@ export const parseCliArguments = (
   args: string[],
 ): Result<AnatomyCliOptions, AnatomyCliArgumentError> => {
   const options: AnatomyCliOptions = {
-    definitionPath: "",
+    definitionPath: null,
     targetPath: ".",
     format: "human",
     ignore: [],
     help: false,
   };
   const consumedIndexes = new Set<number>();
+  let targetSpecified = false;
 
   for (const [index, argument] of args.entries()) {
     if (consumedIndexes.has(index)) continue;
@@ -59,9 +60,13 @@ export const parseCliArguments = (
     }
 
     if (argument === "--target" || argument === "-t") {
+      if (targetSpecified) {
+        return err(new AnatomyCliArgumentError("Target directory may only be specified once"));
+      }
       const value = getOptionValue(args, index, argument);
       if (value.isErr()) return err(value.error);
       options.targetPath = value.value;
+      targetSpecified = true;
       consumedIndexes.add(index + 1);
       continue;
     }
@@ -94,31 +99,27 @@ export const parseCliArguments = (
       continue;
     }
 
-    if (!argument.startsWith("-") && !options.definitionPath) {
-      options.definitionPath = argument;
+    if (!argument.startsWith("-") && !targetSpecified) {
+      options.targetPath = argument;
+      targetSpecified = true;
       continue;
     }
 
     return err(new AnatomyCliArgumentError(`Unknown argument "${argument}"`));
   }
 
-  if (!options.help && !options.definitionPath) {
-    return err(
-      new AnatomyCliArgumentError(
-        "An Anatomy definition is required via --definition or the first positional argument",
-      ),
-    );
-  }
-
   return ok(options);
 };
 
 export const AnatomyCliUsage = [
-  "Usage: anatomy-cli --definition <file> [options]",
+  "Usage: anatomy [target] [options]",
+  "",
+  "Arguments:",
+  "  target                   Directory to check (default: current directory)",
   "",
   "Options:",
-  "  -d, --definition <file>  Anatomy Draft or Version JSON",
-  "  -t, --target <directory> Target directory (default: current directory)",
+  "  -d, --definition <file>  Anatomy JSON (default: nearest anatomy.json)",
+  "  -t, --target <directory> Alternate form of the target argument",
   "      --format <format>    human or json (default: human)",
   "      --ignore <paths>     Comma-separated names; may be repeated",
   "  -h, --help               Show this help",

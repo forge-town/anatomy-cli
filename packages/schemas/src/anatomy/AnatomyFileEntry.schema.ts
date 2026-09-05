@@ -4,17 +4,17 @@ import { AnatomyNameExpressionSchema } from "./AnatomyNameExpression.schema";
 import { AnatomyPolicyOverridesSchema } from "./AnatomyPolicyOverrides.schema";
 import { AnatomyQuantitySchema } from "./AnatomyQuantity.schema";
 
-/** Anatomy 树中的文件要求，包含命名、数量和策略约束。 */
+/** File requirement with naming, quantity, and policy constraints. */
 export const AnatomyFileEntrySchema = z.object({
-  /** 文件条目的唯一标识。 */
-  id: z.string().uuid(),
-  /** 文件名的固定值或占位表达式。 */
+  /** Unique file-entry identifier, generated during schema parsing when omitted. */
+  id: z.string().uuid().default(() => crypto.randomUUID()),
+  /** Literal filename or placeholder expression. */
   name: AnatomyNameExpressionSchema,
-  /** 允许该文件出现的数量范围。 */
+  /** Allowed number of occurrences for the file. */
   quantity: AnatomyQuantitySchema,
-  /** 相对于 Anatomy 默认策略的局部覆盖。 */
+  /** Local overrides for the default Anatomy policies. */
   policyOverrides: AnatomyPolicyOverridesSchema.default({}),
-  /** 节点判别字段，固定为文件。 */
+  /** Node discriminant, fixed to file. */
   kind: z.literal("file"),
 });
 

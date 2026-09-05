@@ -1,6 +1,8 @@
 node_modules/
 .bun/
 dist/
+apps/docs/.vitepress/dist/
+apps/docs/.output/
 coverage/
 .turbo/
 .anatomy-cli-test/
@@ -9,6 +11,7 @@ coverage/
 *.tgz
 *.tsbuildinfo
 *.pem
+.vitepress
 
 # Local environment and credentials
 .env
@@ -22,5 +25,6 @@ yarn-error.log*
 
 # Local agent/editor state
 .agents/
+/docs/
 .github/
 .qodo/

@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 
 import { AnatomyEntrySchema, type AnatomyEntry } from "./AnatomyEntry.schema";
 
-/** Anatomy 树中要求在多个候选条目间满足数量约束的互斥组。 */
+/** One-of group requiring a match count across multiple candidate entries. */
 export const AnatomyOneOfGroupSchema: z.ZodType<{
   id: string;
   kind: "one_of";
@@ -10,15 +10,15 @@ export const AnatomyOneOfGroupSchema: z.ZodType<{
   maximumMatches: number;
   alternatives: AnatomyEntry[];
 }> = z.object({
-  /** 互斥组的唯一标识。 */
-  id: z.string().uuid(),
-  /** 节点判别字段，固定为候选组。 */
+  /** Unique group identifier, generated during schema parsing when omitted. */
+  id: z.string().uuid().default(() => crypto.randomUUID()),
+  /** Node discriminant, fixed to one_of. */
   kind: z.literal("one_of"),
-  /** 至少需要匹配的候选数量。 */
+  /** Minimum number of alternatives that must match. */
   minimumMatches: z.number().int().min(1),
-  /** 最多允许匹配的候选数量。 */
+  /** Maximum number of alternatives allowed to match. */
   maximumMatches: z.number().int().min(1),
-  /** 可供匹配的文件或目录候选项。 */
+  /** Candidate file or directory entries available for matching. */
   alternatives: z.array(z.lazy(() => AnatomyEntrySchema)).min(2),
 });
 

@@ -1,19 +1,19 @@
 import type { AnatomyPolicies, AnatomyPolicyOverrides } from "@anatomy-cli/schemas";
 import type { ResolvedAnatomyPolicy } from "./ResolvedAnatomyPolicy";
 
-/** 按“当前条目、最近父条目、Anatomy 默认值”的优先级解析策略。 */
+/** Resolve policies in current-entry, nearest-parent, then Anatomy-default order. */
 export const resolveAnatomyPolicies = (
   defaults: AnatomyPolicies,
   ancestors: Array<{
-    /** 父级条目的唯一标识，用于记录策略来源。 */
+    /** Unique parent-entry identifier used to record the policy source. */
     id: string;
-    /** 父级条目对 Anatomy 默认策略的局部覆盖。 */
+    /** Parent entry's local overrides of the default Anatomy policies. */
     overrides: AnatomyPolicyOverrides;
   }>,
   entry?: {
-    /** 当前条目的唯一标识，用于记录策略来源。 */
+    /** Unique current-entry identifier used to record the policy source. */
     id: string;
-    /** 当前条目对继承策略的局部覆盖。 */
+    /** Current entry's local overrides of inherited policies. */
     overrides: AnatomyPolicyOverrides;
   },
 ): Record<keyof AnatomyPolicies, ResolvedAnatomyPolicy> => {

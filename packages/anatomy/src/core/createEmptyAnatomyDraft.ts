@@ -1,6 +1,6 @@
 import type { AnatomyDraftInput } from "@anatomy-cli/schemas";
 
-/** 使用标准默认策略创建可直接编辑的空白 Anatomy 草稿。 */
+/** Create an editable blank Anatomy draft with the standard default policies. */
 export const createEmptyAnatomyDraft = (name: string, purpose: string): AnatomyDraftInput => ({
   name,
   purpose,
@@ -12,6 +12,7 @@ export const createEmptyAnatomyDraft = (name: string, purpose: string): AnatomyD
       nameMismatch: "warn",
       nestingMismatch: "block",
     },
+    bindings: {},
     root: { children: [] },
   },
 });

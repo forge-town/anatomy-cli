@@ -10,6 +10,7 @@ const createDependencies = (
   entries: Awaited<ReturnType<AnatomyCliDependencies["collectTree"]>>,
 ) => {
   return {
+    findDefinition: vi.fn(async () => ok("/project/anatomy.json")),
     readDefinition: vi.fn<AnatomyCliDependencies["readDefinition"]>(async () => ok(definition)),
     collectTree: vi.fn<AnatomyCliDependencies["collectTree"]>(async () => entries),
     writeOutput: vi.fn(),
@@ -19,12 +20,24 @@ const createDependencies = (
 describe("runAnatomyCli", () => {
   it("returns success and human output for a conforming project", async () => {
     const dependencies = createDependencies(ok([]));
-    const result = await runAnatomyCli(["anatomy.json"], dependencies);
+    const result = await runAnatomyCli(["--definition", "anatomy.json"], dependencies);
 
     expect(result._unsafeUnwrap()).toBe(AnatomyCliExitCode.success);
+    expect(dependencies.findDefinition).not.toHaveBeenCalled();
     expect(dependencies.writeOutput).toHaveBeenCalledWith(
       expect.stringContaining("Anatomy check: PASS"),
     );
+  });
+
+  it("discovers anatomy.json when no definition is provided", async () => {
+    const dependencies = createDependencies(ok([]));
+
+    const result = await runAnatomyCli(["src/services"], dependencies);
+
+    expect(result._unsafeUnwrap()).toBe(AnatomyCliExitCode.success);
+    expect(dependencies.findDefinition).toHaveBeenCalledWith("src/services");
+    expect(dependencies.readDefinition).toHaveBeenCalledWith("/project/anatomy.json");
+    expect(dependencies.collectTree).toHaveBeenCalledWith("src/services", []);
   });
 
   it("returns the blocked exit code and stable JSON output", async () => {
@@ -48,7 +61,10 @@ describe("runAnatomyCli", () => {
     const dependencies = createDependencies(ok([]));
     dependencies.readDefinition.mockResolvedValue(ok(requiredDefinition));
 
-    const result = await runAnatomyCli(["anatomy.json", "--format", "json"], dependencies);
+    const result = await runAnatomyCli(
+      ["--definition", "anatomy.json", "--format", "json"],
+      dependencies,
+    );
 
     expect(result._unsafeUnwrap()).toBe(AnatomyCliExitCode.blocked);
     expect(JSON.parse(dependencies.writeOutput.mock.calls[0]?.[0] ?? "")).toMatchObject({
@@ -63,7 +79,7 @@ describe("runAnatomyCli", () => {
       err(new AnatomyDefinitionFileError("invalid", "anatomy.json")),
     );
 
-    const result = await runAnatomyCli(["anatomy.json"], dependencies);
+    const result = await runAnatomyCli(["--definition", "anatomy.json"], dependencies);
 
     expect(result.isErr()).toBe(true);
     expect(result._unsafeUnwrapErr()).toBeInstanceOf(AnatomyDefinitionFileError);

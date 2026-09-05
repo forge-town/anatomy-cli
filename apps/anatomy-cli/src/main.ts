@@ -10,7 +10,7 @@ result.match(
     process.exitCode = exitCode;
   },
   (error) => {
-    process.stderr.write(`Anatomy CLI error: ${error.message}\n\n${AnatomyCliUsage}\n`);
+    process.stderr.write(`Anatomy error: ${error.message}\n\n${AnatomyCliUsage}\n`);
     process.exitCode = AnatomyCliExitCode.operationalError;
   },
 );

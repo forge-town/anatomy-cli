@@ -16,6 +16,7 @@
     "quality": "bun run check-types && bun run lint && bun run test"
   },
   "dependencies": {
+    "neverthrow": "^8.2.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

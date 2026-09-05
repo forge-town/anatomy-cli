@@ -2,21 +2,21 @@ import { z } from "zod/v4";
 
 import { AnatomyDraftInputSchema } from "./AnatomyDraftInput.schema";
 
-/** Anatomy 发布前可持续编辑的工作草稿。 */
+/** Editable working draft of an Anatomy before publication. */
 export const AnatomyDraftSchema = AnatomyDraftInputSchema.extend({
-  /** 草稿记录的唯一标识。 */
+  /** Unique draft record identifier. */
   id: z.string(),
 
-  /** 草稿所属 Anatomy 的标识。 */
+  /** Identifier of the Anatomy that owns the draft. */
   anatomyId: z.string(),
-  /** 草稿基于的历史版本；从空白创建时为 null。 */
+  /** Historical version the draft is based on, or null when created from scratch. */
   basedOnVersionId: z.string().nullable(),
-  /** 用于乐观并发控制的草稿修订号。 */
+  /** Draft revision used for optimistic concurrency control. */
   revision: z.number().int().positive(),
 
-  /** 草稿创建时间。 */
+  /** Draft creation timestamp. */
   createdAt: z.date(),
-  /** 草稿最近保存时间。 */
+  /** Most recent draft save timestamp. */
   updatedAt: z.date(),
 });
 

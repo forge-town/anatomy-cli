@@ -4,6 +4,7 @@ import type { AnatomyDraftInput } from "@anatomy-cli/schemas";
 import { AnatomyCliUsage, parseCliArguments, type AnatomyCliOptions } from "./cli-arguments";
 import {
   collectFileTree,
+  findAnatomyDefinition,
   readAnatomyDefinition,
   type AnatomyDefinitionFileError,
   type AnatomyFileTreeError,
@@ -19,6 +20,9 @@ export const AnatomyCliExitCode = {
 export type AnatomyCliError = Error | AnatomyDefinitionFileError | AnatomyFileTreeError;
 
 export type AnatomyCliDependencies = {
+  findDefinition: (
+    targetPath: string,
+  ) => Promise<Result<string, AnatomyDefinitionFileError>>;
   readDefinition: (path: string) => Promise<Result<AnatomyDraftInput, AnatomyDefinitionFileError>>;
   collectTree: (
     targetPath: string,
@@ -28,6 +32,7 @@ export type AnatomyCliDependencies = {
 };
 
 const defaultDependencies: AnatomyCliDependencies = {
+  findDefinition: findAnatomyDefinition,
   readDefinition: async (path) => readAnatomyDefinition(path),
   collectTree: collectFileTree,
   writeOutput: (value) => process.stdout.write(`${value}\n`),
@@ -47,7 +52,12 @@ export const runAnatomyCli = async (
     return ok(AnatomyCliExitCode.success);
   }
 
-  const definition = await dependencies.readDefinition(options.definitionPath);
+  const definitionPath = options.definitionPath
+    ? ok(options.definitionPath)
+    : await dependencies.findDefinition(options.targetPath);
+  if (definitionPath.isErr()) return err(definitionPath.error);
+
+  const definition = await dependencies.readDefinition(definitionPath.value);
   if (definition.isErr()) return err(definition.error);
 
   const tree = await dependencies.collectTree(options.targetPath, options.ignore);

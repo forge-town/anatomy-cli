@@ -8,7 +8,7 @@ import { AnatomyFileEntrySchema, type AnatomyFileEntry } from "./AnatomyFileEntr
 
 type AnatomyEntryValue = AnatomyFileEntry | AnatomyDirectoryEntry;
 
-/** Anatomy 树中可直接落在文件系统上的文件或目录条目。 */
+/** File or directory entry that maps directly to the filesystem. */
 export const AnatomyEntrySchema: z.ZodType<AnatomyEntryValue> = z.lazy(() =>
   z.union([AnatomyFileEntrySchema, AnatomyDirectoryEntrySchema]),
 );

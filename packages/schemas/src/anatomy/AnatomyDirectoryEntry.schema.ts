@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 import { AnatomyFileEntrySchema, type AnatomyFileEntry } from "./AnatomyFileEntry.schema";
 import { AnatomyNodeSchema, type AnatomyNode } from "./AnatomyNode.schema";
 
-/** Anatomy 树中的目录节点及其递归子节点。 */
+/** Directory node and its recursive children in an Anatomy tree. */
 export const AnatomyDirectoryEntrySchema: z.ZodType<
   Omit<AnatomyFileEntry, "kind"> & {
     kind: "directory";
@@ -11,9 +11,9 @@ export const AnatomyDirectoryEntrySchema: z.ZodType<
   }
 > = z.lazy(() =>
   AnatomyFileEntrySchema.omit({ kind: true }).extend({
-    /** 节点判别字段，固定为目录。 */
+    /** Node discriminant, fixed to directory. */
     kind: z.literal("directory"),
-    /** 目录直接包含的结构节点。 */
+    /** Structure nodes directly contained by the directory. */
     children: z.array(AnatomyNodeSchema),
   }),
 );

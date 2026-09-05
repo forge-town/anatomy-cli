@@ -1,14 +1,14 @@
 import { z } from "zod/v4";
 
-/** Anatomy 已发布版本列表查询的输入契约。 */
+/** Input contract for querying a list of published Anatomy versions. */
 export const AnatomyPublishedVersionListInputSchema = z.object({
-  /** 用于版本名称或用途模糊匹配的搜索词。 */
+  /** Search term used for fuzzy matching against version names or purposes. */
   search: z.string().trim().optional(),
-  /** 限定所属 Anatomy 的标识。 */
+  /** Identifier of the owning Anatomy. */
   anatomyId: z.string().optional(),
-  /** 从一开始计数的页码。 */
+  /** One-based page number. */
   page: z.number().int().positive().optional(),
-  /** 每页最多返回的版本数。 */
+  /** Maximum number of versions returned per page. */
   pageSize: z.number().int().positive().max(100).optional(),
 });
 
