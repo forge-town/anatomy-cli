@@ -1,10 +1,10 @@
 import { StartupCta } from "./StartupCta";
 import { StartupCiSection } from "./StartupCiSection";
-import { StartupFeatures } from "./StartupFeatures";
 import { StartupFooter } from "./StartupFooter";
 import { StartupHeader } from "./StartupHeader";
 import { StartupHero } from "./StartupHero";
 import { StartupScanSection } from "./StartupScanSection";
+import { StartupTerminalCase } from "./StartupTerminalCase";
 
 export const StartupHome = () => (
   <div className="min-h-screen bg-[var(--line-background)] text-[var(--line-foreground)]">
@@ -12,7 +12,7 @@ export const StartupHome = () => (
     <main>
       <StartupHero />
       <StartupScanSection />
-      <StartupFeatures />
+      <StartupTerminalCase />
       <StartupCiSection />
       <StartupCta />
     </main>

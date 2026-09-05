@@ -333,74 +333,6 @@ html[data-app-ready="true"] .app-boot-content {
   50% { opacity: 0.52; }
 }
 
-.startup-feature-flow__track {
-  position: absolute;
-  z-index: 0;
-  top: 1.5rem;
-  right: 8.333%;
-  left: 8.333%;
-  height: 1px;
-  overflow: hidden;
-  background: var(--line-border);
-  pointer-events: none;
-}
-
-.startup-feature-flow__track::after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 22%;
-  height: 1px;
-  content: "";
-  background: linear-gradient(90deg, transparent, var(--line-accent), transparent);
-  animation: startup-feature-flow 5.5s linear infinite;
-  opacity: 0.82;
-}
-
-.startup-feature-flow__node {
-  position: relative;
-  width: 3rem;
-  height: 3rem;
-  border: 1px solid var(--line-border-strong);
-  background: var(--line-background);
-  color: var(--line-foreground);
-  transition: border-color 220ms ease, color 220ms ease, background-color 220ms ease;
-}
-
-.group:hover .startup-feature-flow__node {
-  border-color: var(--line-foreground);
-  background: var(--line-hover);
-  color: var(--line-foreground);
-}
-
-@keyframes startup-feature-flow {
-  from { transform: translateX(-140%); }
-  to { transform: translateX(560%); }
-}
-
-@keyframes startup-feature-flow-mobile {
-  from { transform: translateY(-140%); }
-  to { transform: translateY(560%); }
-}
-
-@media (max-width: 767px) {
-  .startup-feature-flow__track {
-    top: 1.5rem;
-    right: auto;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    width: 1px;
-    height: auto;
-  }
-
-  .startup-feature-flow__track::after {
-    width: 1px;
-    height: 22%;
-    background: linear-gradient(180deg, transparent, var(--line-accent), transparent);
-    animation-name: startup-feature-flow-mobile;
-  }
-}
-
 .hero-cover {
   position: relative;
   display: inline-block;
@@ -496,8 +428,6 @@ html[data-app-ready="true"] .app-boot-content {
   }
   .startup-grid-background::before { animation: none !important; opacity: 0.38; }
   .startup-grid-background__pattern::after { transition: none !important; }
-  .startup-feature-flow__track::after,
-  .startup-feature-flow__node { animation: none !important; transition: none !important; }
   .hero-cover__glyph {
     transition: none !important;
     transform: none !important;

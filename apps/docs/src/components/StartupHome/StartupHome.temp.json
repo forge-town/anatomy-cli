@@ -10,7 +10,7 @@
       { "path": "StartupGridBackground.tsx", "type": "component", "description": "首屏背景图案层及其 RhombusPattern 组合" },
       { "path": "StructureScanPreview.tsx", "type": "component", "description": "目录扫描预览、定义视图切换和扫描阶段动画" },
       { "path": "StartupScanSection.tsx", "type": "component", "description": "扫描结果区域及统计信息" },
-      { "path": "StartupFeatures.tsx", "type": "component", "description": "能力介绍区域及三张能力卡片" },
+      { "path": "StartupTerminalCase.tsx", "type": "component", "description": "真实终端命令、检查输出和修正提示" },
       { "path": "StartupCta.tsx", "type": "component", "description": "行动号召区域" },
       { "path": "StartupFooter.tsx", "type": "component", "description": "页脚品牌信息、站内导航和社交链接" },
       { "path": "RhombusPattern.tsx", "type": "component", "description": "60°/120° 菱形密铺 SVG 图层" }
@@ -18,5 +18,5 @@
     ],
     "folders": []
   },
-  "rationale": "StartupHome 原文件同时承担页面编排、导航状态、首屏动画、扫描预览、能力展示、CTA 和页脚渲染，职责边界清晰但集中在一个文件中。按视觉区块拆成独立组件，保留各区块自身的本地状态和副作用；父组件只负责组合，不新增无意义的 props 透传。扫描数据和行渲染继续靠近 StructureScanPreview，避免为了拆分引入额外的数据层。现有 RhombusPattern 作为独立背景组件保留并统一从 index.ts 导出。"
+  "rationale": "StartupHome 原文件同时承担页面编排、导航状态、首屏动画、终端案例、扫描预览、CTA 和页脚渲染，职责边界清晰但集中在一个文件中。按视觉区块拆成独立组件，保留各区块自身的本地状态和副作用；父组件只负责组合，不新增无意义的 props 透传。扫描数据和行渲染继续靠近 StructureScanPreview，避免为了拆分引入额外的数据层。现有 RhombusPattern 作为独立背景组件保留并统一从 index.ts 导出。"
 }
