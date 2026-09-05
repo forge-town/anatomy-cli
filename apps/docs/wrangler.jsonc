@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "anatomy-tools",
+  "compatibility_date": "2026-09-05",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "anatomy.tools", "custom_domain": true }],
+  "assets": {
+    "directory": "./.output/public",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "none"
+  }
+}

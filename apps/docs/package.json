@@ -7,10 +7,13 @@
   "scripts": {
     "dev": "vite dev --port 5173",
     "build": "vite build",
+    "build:cloudflare": "vite build --mode cloudflare",
+    "preview:cloudflare": "wrangler dev --config wrangler.jsonc --local",
+    "deploy:cloudflare": "bun scripts/check-cloudflare-build.ts && wrangler deploy --config wrangler.jsonc",
     "serve": "vite preview --port 5173",
     "check-types": "tsc --noEmit",
     "test": "vitest run",
-    "lint": "oxlint src/",
+    "lint": "oxlint src/ scripts/",
     "payload": "payload",
     "payload:generate-types": "payload generate:types",
     "payload:generate-importmap": "payload generate:importmap",
@@ -54,6 +57,7 @@
     "tailwindcss": "^4.2.2",
     "typescript": "5.9.2",
     "vite": "^8.0.0",
-    "vitest": "4.1.10"
+    "vitest": "4.1.10",
+    "wrangler": "4.129.0"
   }
 }

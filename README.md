@@ -1,5 +1,7 @@
 # Anatomy
 
+**English** | [简体中文](./README.zh-CN.md)
+
 [anatomy.tools](https://anatomy.tools) is an open-source tool for validating a repository file tree against a versioned Anatomy definition. Read the full guide at [anatomy.tools/docs](https://anatomy.tools/docs).
 
 ## Workspace layout

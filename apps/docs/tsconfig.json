@@ -7,5 +7,5 @@
     "baseUrl": ".",
     "paths": { "@/*": ["./src/*"], "@payload-config": ["./src/payload.config.ts"] }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "scripts", "vite.config.ts"]
 }
