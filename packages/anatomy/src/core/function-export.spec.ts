@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
 import { AnatomyDraftInputSchema, type AnatomySourceExports } from "@anatomy-cli/schemas";
-import { checkAnatomy, planAnatomyCheck } from "./check-anatomy";
-import { queryAnatomy } from "./query-anatomy";
+import { describe, expect, it } from "vitest";
+import { checkAnatomy } from "./checkAnatomy";
+import { planAnatomyCheck } from "./planAnatomyCheck";
+import { queryAnatomy } from "./queryAnatomy";
 
 const definition = () => AnatomyDraftInputSchema.parse({
   name: "Function files", purpose: "One named function per file",

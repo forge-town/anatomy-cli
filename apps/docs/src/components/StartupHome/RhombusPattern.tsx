@@ -1,4 +1,5 @@
-import { createRhombusTiling, pointsToSvg } from "./rhombus";
+import { createRhombusTiling } from "./createRhombusTiling";
+import { pointsToSvg } from "./pointsToSvg";
 
 const rhombi = createRhombusTiling();
 

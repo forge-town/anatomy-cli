@@ -1,9 +1,9 @@
+import { AppBootScreen } from "@/components/AppBootScreen/AppBootScreen";
+import "@/lib/i18n";
+import { THEME_PREPAINT_SCRIPT } from "@/lib/THEME_PREPAINT_SCRIPT";
 import { HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { AppBootScreen } from "@/components/AppBootScreen/AppBootScreen";
-import "@/lib/i18n";
-import { THEME_PREPAINT_SCRIPT } from "@/lib/theme";
 
 export const RootDocument = () => {
   const { i18n } = useTranslation();

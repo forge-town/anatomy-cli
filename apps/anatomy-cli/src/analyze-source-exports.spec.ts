@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analyzeSourceExports } from "./analyze-source-exports";
+import { analyzeSourceExports } from "./analyzeSourceExports";
 
 describe("JavaScript and TypeScript export analysis", () => {
   it.each([

@@ -1,8 +1,9 @@
+import { checkAnatomy, planAnatomyCheck } from "@anatomy-cli/anatomy/core";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { checkAnatomy, planAnatomyCheck } from "@anatomy-cli/anatomy/core";
-import { collectFileTree, readAnatomyDefinition } from "./filesystem";
-import { collectSourceExports } from "./collect-source-exports";
+import { collectSourceExports } from "./collectSourceExports";
+import { collectFileTree } from "./collectFileTree";
+import { readAnatomyDefinition } from "./readAnatomyDefinition";
 
 describe("CLI source contract", () => {
   it("checks the real source directory against the shipped example definition", async () => {
@@ -17,7 +18,7 @@ describe("CLI source contract", () => {
 
     expect(result.issues).toEqual([]);
     expect(result.conforms).toBe(true);
-    expect(checkAnatomy(definition, entries.filter((entry) => entry.name !== "cli.ts"), exports)
+    expect(checkAnatomy(definition, entries.filter((entry) => entry.name !== "runAnatomyCli.ts"), exports)
       ._unsafeUnwrap().conforms).toBe(false);
     expect(checkAnatomy(definition, [...entries, { kind: "file", name: "undeclared.ts" }], exports)
       ._unsafeUnwrap().conforms).toBe(false);

@@ -1,13 +1,13 @@
 import { withPayload } from "@payloadcms/tanstack-start";
+import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
 import rsc from "@vitejs/plugin-rsc";
 import { nitro } from "nitro/vite";
-import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
-import { docsEntries } from "./src/content";
+import { docsEntries } from "./src/docsEntries";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 

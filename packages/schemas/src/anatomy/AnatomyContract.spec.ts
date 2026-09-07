@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AnatomyDraftInputSchema } from "./AnatomyDraftInput.schema";
+import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema";
 
 const definition = () => ({
   name: "Contract", purpose: "Reject unsupported rules",

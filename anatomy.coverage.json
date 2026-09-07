@@ -1,0 +1,811 @@
+{
+  "schemaVersion": 1,
+  "exceptions": {
+    "apps/anatomy-cli/bin/anatomy-cli.js": {
+      "role": "entrypoint",
+      "reason": "Executable process entrypoint; intentionally has no public runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/bin/anatomy.js": {
+      "role": "entrypoint",
+      "reason": "Executable process entrypoint; intentionally has no public runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/AnatomyCliArgumentError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class; the exported class name must match its filename.",
+      "runtimeExports": [
+        "AnatomyCliArgumentError"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyCliExitCode.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "AnatomyCliExitCode"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyCliFormatValues.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "AnatomyCliFormatValues"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyCliUsage.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "AnatomyCliUsage"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyDefinitionFileError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class; the exported class name must match its filename.",
+      "runtimeExports": [
+        "AnatomyDefinitionFileError"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyFileTreeError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class; the exported class name must match its filename.",
+      "runtimeExports": [
+        "AnatomyFileTreeError"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyInstallError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class; the exported class name must match its filename.",
+      "runtimeExports": [
+        "AnatomyInstallError"
+      ]
+    },
+    "apps/anatomy-cli/src/DefaultAnatomyDefinitionFileName.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "DefaultAnatomyDefinitionFileName"
+      ]
+    },
+    "apps/anatomy-cli/src/DefaultIgnoredNames.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "DefaultIgnoredNames"
+      ]
+    },
+    "apps/anatomy-cli/src/agent-workflow.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/analyze-source-exports.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/cli-arguments.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/cli.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/filesystem.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/format-agent-result.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/function-export-workflow.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/git-files.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/install-main.ts": {
+      "role": "entrypoint",
+      "reason": "Executable process entrypoint; intentionally has no public runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/install.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/installUsage.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "installUsage"
+      ]
+    },
+    "apps/anatomy-cli/src/main.ts": {
+      "role": "entrypoint",
+      "reason": "Executable process entrypoint; intentionally has no public runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/posixLauncher.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "posixLauncher"
+      ]
+    },
+    "apps/anatomy-cli/src/repository-contract.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/source-contract.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/windowsLauncher.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "windowsLauncher"
+      ]
+    },
+    "apps/anatomy-cli/src/windowsPathScript.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "windowsPathScript"
+      ]
+    },
+    "apps/docs/scripts/check-cloudflare-build.ts": {
+      "role": "entrypoint",
+      "reason": "Executable process entrypoint; intentionally has no public runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/AppBootScreen/AppBootScreen.lifecycle.test.tsx": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/AppBootScreen/AppBootScreen.test.tsx": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/AppBootScreen/BOOT_MOTION.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "BOOT_MOTION"
+      ]
+    },
+    "apps/docs/src/components/AppBootScreen/OVERSCAN.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "OVERSCAN"
+      ]
+    },
+    "apps/docs/src/components/AppBootScreen/TRIANGLE_INRADIUS.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "TRIANGLE_INRADIUS"
+      ]
+    },
+    "apps/docs/src/components/AppBootScreen/TRIANGLE_RADIUS.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "TRIANGLE_RADIUS"
+      ]
+    },
+    "apps/docs/src/components/AppBootScreen/TRIANGLE_VERTICES.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "TRIANGLE_VERTICES"
+      ]
+    },
+    "apps/docs/src/components/AppBootScreen/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/LanguageSwitcher/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/MonoBlockCanvas/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/MonoLaunchHero/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/PublicLayout/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/StartupHome/StartupTerminalCase.test.tsx": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/StartupHome/TERMINAL_COMMAND.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "TERMINAL_COMMAND"
+      ]
+    },
+    "apps/docs/src/components/StartupHome/TERMINAL_DEMO_TIMING.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "TERMINAL_DEMO_TIMING"
+      ]
+    },
+    "apps/docs/src/components/StartupHome/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/StartupHome/scanRows.tsx": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "scanRows"
+      ]
+    },
+    "apps/docs/src/components/icons/CODE_PATH_LABELS.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "CODE_PATH_LABELS"
+      ]
+    },
+    "apps/docs/src/components/icons/CODE_PATH_MAP.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "CODE_PATH_MAP"
+      ]
+    },
+    "apps/docs/src/components/icons/CODE_PATH_ROUTE.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "CODE_PATH_ROUTE"
+      ]
+    },
+    "apps/docs/src/components/icons/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/ui/Badge/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/ui/Button/buttonVariants.tsx": {
+      "role": "framework",
+      "reason": "CVA returns a callable style variant factory; its implementation belongs to the framework.",
+      "runtimeExports": [
+        "buttonVariants"
+      ]
+    },
+    "apps/docs/src/components/ui/Button/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/ui/Card/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/components/ui/DropdownMenu/DropdownMenu.tsx": {
+      "role": "framework",
+      "reason": "Base UI component alias preserves the framework component identity and ref behavior.",
+      "runtimeExports": [
+        "DropdownMenu"
+      ]
+    },
+    "apps/docs/src/components/ui/DropdownMenu/DropdownMenuTrigger.tsx": {
+      "role": "framework",
+      "reason": "Base UI component alias preserves the framework component identity and ref behavior.",
+      "runtimeExports": [
+        "DropdownMenuTrigger"
+      ]
+    },
+    "apps/docs/src/components/ui/DropdownMenu/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/docsEntries.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "docsEntries"
+      ]
+    },
+    "apps/docs/src/lib/PERSISTENT_DETECTION_OPTIONS.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "PERSISTENT_DETECTION_OPTIONS"
+      ]
+    },
+    "apps/docs/src/lib/THEME_PREPAINT_SCRIPT.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "THEME_PREPAINT_SCRIPT"
+      ]
+    },
+    "apps/docs/src/lib/THEME_STORAGE_KEY.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "THEME_STORAGE_KEY"
+      ]
+    },
+    "apps/docs/src/lib/i18n.ts": {
+      "role": "framework",
+      "reason": "Shared initialized i18next instance; consumers depend on the default singleton export.",
+      "runtimeExports": [
+        "default"
+      ]
+    },
+    "apps/docs/src/lib/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/lib/languageDetector.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "languageDetector"
+      ]
+    },
+    "apps/docs/src/pages/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/payload-types.ts": {
+      "role": "generated",
+      "reason": "Framework-generated declarations or registrations; preserve the generator-owned export layout.",
+      "runtimeExports": []
+    },
+    "apps/docs/src/payload.config.ts": {
+      "role": "framework",
+      "reason": "Payload requires the default configuration factory result.",
+      "runtimeExports": [
+        "default"
+      ]
+    },
+    "apps/docs/src/routeTree.gen.ts": {
+      "role": "generated",
+      "reason": "Framework-generated declarations or registrations; preserve the generator-owned export layout.",
+      "runtimeExports": [
+        "routeTree"
+      ]
+    },
+    "apps/docs/src/routes/$.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/__root.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/_payload.admin.$.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/_payload.admin.index.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/_payload.api.$.ts": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/_payload.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/_payload/importMap.js": {
+      "role": "generated",
+      "reason": "Framework-generated declarations or registrations; preserve the generator-owned export layout.",
+      "runtimeExports": [
+        "importMap"
+      ]
+    },
+    "apps/docs/src/routes/_payload/server.functions.ts": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "getLayoutDataFn",
+        "loadAdminPageRSC",
+        "serverFunctionHandler"
+      ]
+    },
+    "apps/docs/src/routes/docs.$slug.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/docs.index.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/docs.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/src/routes/index.tsx": {
+      "role": "framework",
+      "reason": "TanStack/Payload route or server factory contract fixes the export names and module placement.",
+      "runtimeExports": [
+        "Route"
+      ]
+    },
+    "apps/docs/vite.config.ts": {
+      "role": "framework",
+      "reason": "Vite requires a default build configuration factory result.",
+      "runtimeExports": [
+        "default"
+      ]
+    },
+    "apps/docs/vitest.config.ts": {
+      "role": "framework",
+      "reason": "Vitest requires a default test configuration factory result.",
+      "runtimeExports": [
+        "default"
+      ]
+    },
+    "packages/anatomy-cli-config/src/anatomies.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/core/AnatomyCheckCode.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "AnatomyCheckCode"
+      ]
+    },
+    "packages/anatomy/src/core/AnatomyQueryPathError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class; the exported class name must match its filename.",
+      "runtimeExports": [
+        "AnatomyQueryPathError"
+      ]
+    },
+    "packages/anatomy/src/core/AnatomySourceAnalysisError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class; the exported class name must match its filename.",
+      "runtimeExports": [
+        "AnatomySourceAnalysisError"
+      ]
+    },
+    "packages/anatomy/src/core/AnatomyValidationCode.ts": {
+      "role": "data",
+      "reason": "Dedicated named constant or data definition matching the filename; direct function exports are forbidden.",
+      "runtimeExports": [
+        "AnatomyValidationCode"
+      ]
+    },
+    "packages/anatomy/src/core/ResolvedAnatomyPolicy.ts": {
+      "role": "types",
+      "reason": "Compile-time support contract; no runtime exports are permitted.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/core/anatomy-tree.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/core/check-anatomy.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/core/function-export.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/core/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/core/query-anatomy.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/anatomy/AnatomyBindingFormatSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyBindingFormatSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyBindingSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyBindingSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyCheckWithDiagnosticsSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyCheckWithDiagnosticsSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyContract.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/anatomy/AnatomyDetailSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyDetailSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDirectoryEntrySchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyDirectoryEntrySchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDraftCreateInputSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyDraftCreateInputSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDraftInput.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/anatomy/AnatomyDraftInputSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyDraftInputSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDraftSaveInputSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyDraftSaveInputSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDraftSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyDraftSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyEntrySchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyEntrySchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyFileEntrySchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyFileEntrySchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyFunctionExportCheckSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyFunctionExportCheckSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyFunctionExportRuleSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyFunctionExportRuleSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyListInputSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyListInputSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyNameExpressionSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyNameExpressionSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyNodeSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyNodeSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyOneOfGroupSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyOneOfGroupSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyPoliciesSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyPoliciesSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyPolicyOverridesSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyPolicyOverridesSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyPolicyValueSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyPolicyValueSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyPublishedVersionListInputSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyPublishedVersionListInputSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyQuantitySchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyQuantitySchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyQueryWithConstraintsSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyQueryWithConstraintsSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomySourceExportsSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomySourceExportsSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyStatusSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyStatusSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyStructureSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyStructureSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomySummarySchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomySummarySchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyVersionSchema.ts": {
+      "role": "schema",
+      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
+      "runtimeExports": [
+        "AnatomyVersionSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
+      "runtimeExports": []
+    },
+    "vitest.config.ts": {
+      "role": "framework",
+      "reason": "Vitest requires a default test configuration factory result.",
+      "runtimeExports": [
+        "default"
+      ]
+    }
+  }
+}

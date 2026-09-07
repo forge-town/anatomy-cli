@@ -40,7 +40,8 @@
     "check-types": "bunx --no-install tsc --noEmit && bun run --filter '*' check-types",
     "lint": "bun run --filter '*' lint",
     "test": "bun run --filter '*' test",
-    "quality": "bun run check-types && bun run lint && bun run test && bun run build"
+    "quality": "bun run anatomy:check && bun run check-types && bun run lint && bun run test && bun run build",
+    "anatomy:check": "bun run anatomy . --git-files"
   },
   "engines": {
     "bun": ">=1.3.0"

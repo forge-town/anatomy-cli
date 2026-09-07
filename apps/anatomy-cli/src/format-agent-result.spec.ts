@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
-import { AnatomyDraftInputSchema } from "@anatomy-cli/schemas";
 import { queryAnatomy } from "@anatomy-cli/anatomy/core";
-import { formatAgentQuery } from "./format-agent-result";
+import { AnatomyDraftInputSchema } from "@anatomy-cli/schemas";
+import { describe, expect, it } from "vitest";
+import { formatAgentQuery } from "./formatAgentQuery";
 
 const definition = AnatomyDraftInputSchema.parse({
   name: "Readable query", purpose: "Show constraints before editing",

@@ -1,8 +1,8 @@
 import { z } from "zod/v4";
-import { AnatomyNodeSchema } from "./AnatomyNode.schema";
-import { AnatomyPoliciesSchema } from "./AnatomyPolicy.schema";
-import { AnatomyBindingSchema } from "./AnatomyBinding.schema";
-import { AnatomyQuantitySchema } from "./AnatomyQuantity.schema";
+import { AnatomyNodeSchema } from "./AnatomyNodeSchema";
+import { AnatomyPoliciesSchema } from "./AnatomyPoliciesSchema";
+import { AnatomyBindingSchema } from "./AnatomyBindingSchema";
+import { AnatomyQuantitySchema } from "./AnatomyQuantitySchema";
 
 export const AnatomyQueryWithConstraintsSchema = z.object({
   contractVersion: z.literal(1),

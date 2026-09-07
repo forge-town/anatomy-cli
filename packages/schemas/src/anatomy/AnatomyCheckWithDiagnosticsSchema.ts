@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
-import { AnatomyNodeSchema } from "./AnatomyNode.schema";
-import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValue.schema";
+import { AnatomyNodeSchema } from "./AnatomyNodeSchema";
+import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema";
 import { AnatomySourceExportsSchema } from "./AnatomySourceExportsSchema";
 
 export const AnatomyCheckWithDiagnosticsSchema = z.object({
@@ -23,6 +23,7 @@ export const AnatomyCheckWithDiagnosticsSchema = z.object({
   definition: z.object({ path: z.string(), name: z.string(), schemaVersion: z.literal(1) }),
   targetPath: z.string(),
   ignoredNames: z.array(z.string()),
+  fileSelection: z.enum(["filesystem", "git"]).optional(),
 });
 
 export type AnatomyCheckWithDiagnostics = z.infer<typeof AnatomyCheckWithDiagnosticsSchema>;

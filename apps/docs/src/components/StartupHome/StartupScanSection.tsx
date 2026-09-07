@@ -1,8 +1,9 @@
+import { cn } from "@/lib/cn";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
-import { scanRows, StructureScanPreview } from "./StructureScanPreview";
+import { scanRows } from "./scanRows";
+import { StructureScanPreview } from "./StructureScanPreview";
 
 export const StartupScanSection = () => {
   const { t } = useTranslation();

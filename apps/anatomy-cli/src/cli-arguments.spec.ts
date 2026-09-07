@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseCliArguments } from "./cli-arguments";
+import { parseCliArguments } from "./parseCliArguments";
 
 describe("parseCliArguments", () => {
   it("supports query mode without reserving existing target directory names", () => {
@@ -29,6 +29,7 @@ describe("parseCliArguments", () => {
       ignore: ["generated", "temp", "fixtures"],
       help: false,
       queryPath: null,
+      gitFiles: false,
     });
   });
 

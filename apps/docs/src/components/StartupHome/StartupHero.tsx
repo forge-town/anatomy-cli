@@ -1,13 +1,10 @@
+import { Button } from "@/components/ui/Button";
 import { CheckCircle2, Copy } from "lucide-react";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/Button";
-import {
-  StartupGridBackground,
-  updateGridPatternHover,
-  type StartupGridTransitionRequest,
-} from "./StartupGridBackground";
-import { updateKiteDartHover } from "./KiteDartPattern";
+import { StartupGridBackground, type StartupGridTransitionRequest } from "./StartupGridBackground";
+import { updateGridPatternHover } from "./updateGridPatternHover";
+import { updateKiteDartHover } from "./updateKiteDartHover";
 
 type PackageManager = "npm" | "pnpm" | "bun";
 type HeroTitlePhase = "present" | "exit" | "enter-start";

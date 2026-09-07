@@ -1,10 +1,12 @@
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
-import { resolve, join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AnatomyCheckWithDiagnosticsSchema, AnatomyQueryWithConstraintsSchema } from "@anatomy-cli/schemas";
-import { runAnatomyCli, type AnatomyCliDependencies } from "./cli";
-import { collectFileTree, findAnatomyDefinition, readAnatomyDefinition } from "./filesystem";
-import { formatAgentError } from "./format-agent-result";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { collectFileTree } from "./collectFileTree";
+import { findAnatomyDefinition } from "./findAnatomyDefinition";
+import { formatAgentError } from "./formatAgentError";
+import { readAnatomyDefinition } from "./readAnatomyDefinition";
+import { runAnatomyCli, type AnatomyCliDependencies } from "./runAnatomyCli";
 
 const verificationRoot = resolve(import.meta.dirname, "../../../docs/verification/agent-workflow-tests");
 let directory: string;

@@ -1,29 +1,15 @@
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
 import {
-  Braces,
-  CheckCircle2,
-  FileCode2,
-  Folder,
-  FolderOpen,
+Braces,
+CheckCircle2,
+FileCode2,
+FolderOpen
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
 import { StructureTreeRow } from "./StructureTreeRow";
-
-export const scanRows = [
-  { icon: FolderOpen, label: "src/", status: "pass" as const },
-  { icon: Folder, label: "components/", indent: 1 as const, status: "pass" as const },
-  { icon: Folder, label: "ui/", indent: 2 as const, status: "pass" as const },
-  { icon: Folder, label: "routes/", indent: 1 as const, status: "pass" as const },
-  { icon: FileCode2, label: "home.tsx", indent: 2 as const, status: "pass" as const },
-  { icon: Folder, label: "lib/", indent: 1 as const, status: "pass" as const },
-  { icon: FileCode2, label: "utils.ts", indent: 2 as const, status: "pass" as const },
-  { icon: Folder, label: "hooks/", indent: 1 as const, status: "pass" as const },
-  { icon: Folder, label: "assets/", indent: 1 as const, status: "pass" as const },
-  { icon: Folder, label: "tests/", indent: 1 as const, status: "pass" as const },
-  { icon: Folder, label: "legacy/", indent: 1 as const, status: "warn" as const },
-];
+import { scanRows } from "./scanRows";
 
 const definitionExample = `{
   "root": {
@@ -233,5 +219,4 @@ export const StructureScanPreview = ({ onStageChange }: { onStageChange?: (stage
     </div>
   );
 };
-
 StructureScanPreview.displayName = "StructureScanPreview";

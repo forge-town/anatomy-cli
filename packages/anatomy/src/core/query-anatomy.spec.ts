@@ -1,8 +1,8 @@
 import { AnatomyDraftInputSchema, AnatomyQueryWithConstraintsSchema } from "@anatomy-cli/schemas";
 import { describe, expect, it } from "vitest";
-import { checkAnatomy } from "./check-anatomy";
-import { queryAnatomy } from "./query-anatomy";
-import { anatomyRulePaths } from "./anatomy-rule-paths";
+import { anatomyRulePaths } from "./anatomyRulePaths";
+import { checkAnatomy } from "./checkAnatomy";
+import { queryAnatomy } from "./queryAnatomy";
 
 const serviceDefinition = () => AnatomyDraftInputSchema.parse({
   name: "Services", purpose: "Agent workflow",

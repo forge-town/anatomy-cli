@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValue.schema";
+import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema";
 
 export const AnatomyFunctionExportCheckSchema = z.strictObject({
   path: z.string(),

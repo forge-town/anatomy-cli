@@ -221,14 +221,21 @@ bun run anatomy ./packages/services \
 
 查询完成时所有查询状态均返回退出码 `0`，Agent 应读取 `status` 再决定如何修改。检查仍以 `0` 表示没有阻断项、`1` 表示存在阻断项。运行错误返回 `2`；指定 `--format json` 时，stderr 输出 `operation: "error"` 的 JSON，stdout 不输出成功报告。定义缺失或无效、版本不支持、未知字段和目标不可读都属于错误，不能视为“没有约束”。未知定义字段现在会被拒绝，不再静默移除；需要修正拼写或使用已支持的版本 1 规则。原有人类可读检查输出和目标、定义参数保持可用。
 
-查询描述声明的结构，不应用扫描忽略规则，因此 `--ignore` 只接受于检查模式。检查仍跳过符号链接以及 `node_modules`、`dist` 等默认生成目录，报告会列出忽略名称。结构检查通过仅覆盖已采集文件树与已执行规则；类型和行为须另行验证。
+查询描述声明的结构，不应用扫描忽略规则，因此 `--ignore` 只接受于检查模式。默认检查跳过符号链接以及 `node_modules`、`dist` 等生成目录，报告会列出忽略名称。结构检查通过仅覆盖已采集文件树与已执行规则；类型和行为须另行验证。
+
+检查整个仓库可使用 `anatomy . --git-files`：需要 Git，包含所有已跟踪文件（即使被忽略规则匹配）及未被忽略的新文件。它读取当前工作区，已删除文件仍会报告缺失。此模式包含契约文件，不应用默认名称排除规则，拒绝与 `--ignore` 混用，遇到符号链接或子模块会报错。未跟踪且被忽略的本地产物、空目录不属于此文件清单。JSON 会标明 `fileSelection: "git"`，`ignoredNames` 为空。
 
 ## 开发
 
 ```bash
+bun run anatomy:check
 bun run quality
 bun run build
 ```
+
+本仓库通过 workspace 依赖使用自己的 CLI。根目录的 `anatomy.json` 逐项声明五个工作区及仓库基础设施的全部项目文件；函数和组件模块采用一文件一具名函数，导出名对应文件名。框架要求固定路径的 `router.tsx` 和 `-RootDocument.tsx` 使用显式名称映射。Schema 采用与导出同名的 `*Schema.ts` 文件，派生类型保留在同一文件。
+
+其他源码按 Schema、常量、类、测试、barrel、入口及框架生成模块区分；`anatomy.coverage.json` 记录其职责、理由和精确导出列表，仓库测试会验证，不能无说明地跳过约束。`quality` 首先执行全仓 Anatomy 检查，再执行类型、lint、测试和 CLI 构建，PR CI 使用同一入口。新增、移动、删除文件的步骤见 `CONTRIBUTING.md`。本地根目录 `docs/` 产物继续排除在 Git 和扫描范围外。
 
 工作区可以独立运行，不存在指向 Daedalus 的路径依赖或工作区依赖。实现复制自原 Daedalus 工具及其直接 Anatomy 依赖。Schema 包包含 CLI 所需的完整 Anatomy 接口，与 Anatomy 无关的 Daedalus 产品领域不属于此独立项目。原始 Daedalus 仓库位于本工作区之外，本项目不会修改它。
 

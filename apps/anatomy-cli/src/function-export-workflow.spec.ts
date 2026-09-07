@@ -1,10 +1,12 @@
+import { AnatomyCheckWithDiagnosticsSchema } from "@anatomy-cli/schemas";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { AnatomyCheckWithDiagnosticsSchema } from "@anatomy-cli/schemas";
-import { runAnatomyCli } from "./cli";
-import { collectFileTree, findAnatomyDefinition, readAnatomyDefinition } from "./filesystem";
-import { collectSourceExports } from "./collect-source-exports";
+import { collectSourceExports } from "./collectSourceExports";
+import { collectFileTree } from "./collectFileTree";
+import { findAnatomyDefinition } from "./findAnatomyDefinition";
+import { readAnatomyDefinition } from "./readAnatomyDefinition";
+import { runAnatomyCli } from "./runAnatomyCli";
 
 const verificationRoot = resolve(import.meta.dirname, "../../../docs/verification/function-export-tests");
 let directory: string;

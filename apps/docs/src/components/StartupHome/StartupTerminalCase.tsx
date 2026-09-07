@@ -1,10 +1,10 @@
+import { CODE_PATH_LABELS, CODE_PATH_MAP, CodePathMapIcon } from "@/components/icons";
+import { cn } from "@/lib/cn";
 import { CheckCircle2, Terminal } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { CODE_PATH_LABELS, CODE_PATH_MAP, CodePathMapIcon } from "@/components/icons";
-import { cn } from "@/lib/utils";
-import { TERMINAL_COMMAND } from "./terminalDemo";
-import { useTerminalDemo } from "./useTerminalDemo";
 import "./StartupTerminalCase.css";
+import { TERMINAL_COMMAND } from "./TERMINAL_COMMAND";
+import { useTerminalDemo } from "./useTerminalDemo";
 
 export const StartupTerminalCase = () => {
   const { t } = useTranslation();

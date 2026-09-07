@@ -308,17 +308,41 @@ now rejected instead of silently removed; fix spelling or use supported version-
 rules. Human check output and legacy target/definition flags remain supported.
 
 Queries describe declared structure independently of scan exclusions, so `--ignore`
-is only accepted for checks. Checks continue to skip symbolic links and default
+is only accepted for checks. By default, checks skip symbolic links and default
 generated directories, including `node_modules` and `dist`; the report lists
 ignored names. A structural pass only covers the collected tree and executed
 rules. Run type checks and behavior tests separately.
 
+For repository-wide checks, use `anatomy . --git-files`. This requires Git and
+selects tracked files (even when an ignore rule matches them) plus non-ignored
+untracked files. It reads the current working tree, so deleted files remain
+missing. Git mode includes definition files and does not apply the default
+name exclusions; it rejects `--ignore`, symlinks and submodules instead of
+silently omitting them. Ignored untracked artifacts and empty directories are
+outside this file-based inventory. JSON reports identify `fileSelection: "git"`
+and have an empty `ignoredNames` list.
+
 ## Development
 
 ```bash
+bun run anatomy:check
 bun run quality
 bun run build
 ```
+
+This repository uses its own workspace CLI. The root `anatomy.json` explicitly
+declares every project file across all five workspaces and repository
+infrastructure. Function and component modules have one named function export
+matching the filename; `router.tsx` and `-RootDocument.tsx` keep the naming
+required by the framework through explicit export-name mappings. Schema modules
+use `SchemaName.ts` and retain their inferred types beside the schema.
+
+`anatomy.coverage.json` records the exact exports and reasons for other source
+roles: schemas, data, classes, tests, barrels, entrypoints and framework-generated
+modules. Repository tests enforce those roles and reject unreviewed exceptions.
+`quality` runs the full Anatomy check before type checks, lint, tests and the CLI
+build; pull-request CI runs the same command. See `CONTRIBUTING.md` when adding,
+moving or removing a file. Local `docs/` artifacts stay outside Git and this scan.
 
 The workspace is self-contained: it has no path or workspace dependency on
 Daedalus. The implementation was copied from the original Daedalus tooling and its

@@ -1,5 +1,9 @@
 import { useId, type SVGProps } from "react";
-import { CODE_PATH_LABELS, CODE_PATH_MAP, CODE_PATH_ROUTE, createCodePathDots, getCodePathPoint } from "./codePathMap";
+import { CODE_PATH_LABELS } from "./CODE_PATH_LABELS";
+import { CODE_PATH_MAP } from "./CODE_PATH_MAP";
+import { CODE_PATH_ROUTE } from "./CODE_PATH_ROUTE";
+import { createCodePathDots } from "./createCodePathDots";
+import { getCodePathPoint } from "./getCodePathPoint";
 
 export interface CodePathMapIconProps extends SVGProps<SVGSVGElement> {
   progress?: number;

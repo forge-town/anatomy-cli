@@ -1,0 +1,206 @@
+{
+  "name": "Anatomy schemas package",
+  "purpose": "Focused copy of the repository contract for schemas; tests prevent divergence.",
+  "structure": {
+    "schemaVersion": 1,
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "anatomy.json" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "package.json" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "directory",
+          "name": { "type": "literal", "value": "src" },
+          "quantity": "exactly_one",
+          "children": [
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "anatomy" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyBindingFormatSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyBindingSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyCheckWithDiagnosticsSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyContract.spec.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDetailSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDirectoryEntrySchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDraftCreateInputSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDraftInput.spec.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDraftInputSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDraftSaveInputSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyDraftSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyEntrySchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyFileEntrySchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyFunctionExportCheckSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyFunctionExportRuleSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyListInputSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyNameExpressionSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyNodeSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyOneOfGroupSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyPoliciesSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyPolicyOverridesSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyPolicyValueSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyPublishedVersionListInputSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyQuantitySchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyQueryWithConstraintsSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomySourceExportsSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyStatusSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyStructureSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomySummarySchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "AnatomyVersionSchema.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "index.ts" },
+                  "quantity": "exactly_one"
+                }
+              ]
+            },
+            {
+              "kind": "file",
+              "name": { "type": "literal", "value": "index.ts" },
+              "quantity": "exactly_one"
+            }
+          ]
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "tsconfig.json" },
+          "quantity": "exactly_one"
+        }
+      ]
+    }
+  }
+}
