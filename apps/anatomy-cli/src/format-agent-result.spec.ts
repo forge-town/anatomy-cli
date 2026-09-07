@@ -23,6 +23,17 @@ const definition = AnatomyDraftInputSchema.parse({
 });
 
 describe("human query output", () => {
+  it("explains a file's export requirement with the resolved name", () => {
+    const input = AnatomyDraftInputSchema.parse({
+      ...definition, structure: { ...definition.structure, root: { children: [{
+        kind: "file", name: { type: "placeholder", value: "<Method>.ts" }, quantity: "one_or_more", exports: { name: "file_stem" },
+      }] } },
+    });
+    const query = queryAnatomy(input, "getUser.ts")._unsafeUnwrap();
+    const text = formatAgentQuery(query, input, "anatomy.json", ".", "human");
+    expect(text).toContain('Export: exactly one named function "getUser" (BLOCK)');
+    expect(text).toContain("type exports do not count; default exports are not allowed");
+  });
   it("explains inherited names, optional alternatives and policy overrides without a JSON dump", () => {
     const query = queryAnatomy(definition, "UserService")._unsafeUnwrap();
     const text = formatAgentQuery(query, definition, "anatomy.json", ".", "human");

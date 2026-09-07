@@ -12,13 +12,14 @@ export const AnatomyValidationCode = {
   absolutePath: "absolute_path",
   invalidOneOfRange: "invalid_one_of_range",
   impossibleOneOf: "impossible_one_of",
+  invalidExportName: "invalid_export_name",
 } as const;
 
 export type AnatomyValidationIssue = {
   code: (typeof AnatomyValidationCode)[keyof typeof AnatomyValidationCode];
   nodeId: string;
   parentId: string | null;
-  field: "id" | "name" | "binding" | "minimumMatches" | "maximumMatches";
+  field: "id" | "name" | "binding" | "minimumMatches" | "maximumMatches" | "exports";
   message: string;
 };
 
@@ -160,7 +161,7 @@ export const validateAnatomyForPublish = (
     }
   };
 
-  const visitNodes = (nodes: AnatomyNode[], parentId: string | null) => {
+  const visitNodes = (nodes: AnatomyNode[], parentId: string | null, inheritedBindings: string[] = []) => {
     validateDuplicateLiteralNames(nodes, parentId);
 
     for (const node of nodes) {
@@ -194,13 +195,26 @@ export const validateAnatomyForPublish = (
           });
         }
 
-        visitNodes(node.alternatives, node.id);
+        visitNodes(node.alternatives, node.id, inheritedBindings);
         continue;
       }
 
       validateName(node, parentId);
+      const captured = node.name.type === "placeholder" ? /<([^<>]+)>/.exec(node.name.value)?.[1] : undefined;
+      const availableBindings = captured ? [...inheritedBindings, captured] : inheritedBindings;
+      if (node.kind === "file" && node.exports && node.exports.name !== "file_stem") {
+        const name = node.exports.name;
+        const binding = /<([^<>]+)>/.exec(name.value)?.[1];
+        if (isRealPathExpression(name.value) ||
+            (name.type === "placeholder" && (!PlaceholderPattern.test(name.value) || !binding || !availableBindings.includes(binding)))) {
+          issues.push({
+            code: AnatomyValidationCode.invalidExportName, nodeId: node.id, parentId, field: "exports",
+            message: `Export name "${name.value}" must be a name expression whose placeholder is captured by this file or an ancestor directory`,
+          });
+        }
+      }
       if (node.kind === "directory") {
-        visitNodes(node.children, node.id);
+        visitNodes(node.children, node.id, availableBindings);
       }
     }
   };

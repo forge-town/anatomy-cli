@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { AnatomyCheckCode, anatomyRulePaths, type AnatomyCheckResult, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
+import { AnatomyCheckCode, anatomyRulePaths, resolveAnatomyExportName, type AnatomyCheckResult, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
 import type { AnatomyCheckWithDiagnostics, AnatomyDraftInput, AnatomyNode, AnatomyPolicies, AnatomyQueryWithConstraints, AnatomyQuantity } from "@anatomy-cli/schemas";
 import { DefaultIgnoredNames } from "./filesystem";
 
@@ -86,6 +86,9 @@ export const formatAgentQuery = (
     );
     return [
       `${indent}${node.kind} ${name} — ${quantities[node.quantity]}`,
+      ...(node.kind === "file" && node.exports ? [
+        `${indent}  Export: exactly one named function "${resolveAnatomyExportName(node.exports, name, result.captures)}" (${node.exports.policy.toUpperCase()}); type exports do not count; default exports are not allowed`,
+      ] : []),
       ...(overrides.length ? [`${indent}  Policies: ${policies(effective)}`] : []),
       ...(node.kind === "directory" ? node.children.flatMap((child) => ruleLines(child, effective, depth + 1)) : []),
     ];

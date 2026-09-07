@@ -1,5 +1,5 @@
 import { err, ok, type Result } from "neverthrow";
-import { checkAnatomy, queryAnatomy, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
+import { checkAnatomy, planAnatomyCheck, queryAnatomy, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
 import type { AnatomyDraftInput } from "@anatomy-cli/schemas";
 import { AnatomyCliUsage, parseCliArguments, type AnatomyCliOptions } from "./cli-arguments";
 import {
@@ -11,6 +11,7 @@ import {
 } from "./filesystem";
 import { formatHumanResult } from "./format-result";
 import { formatAgentCheck, formatAgentQuery } from "./format-agent-result";
+import { collectSourceExports } from "./collect-source-exports";
 
 export const AnatomyCliExitCode = {
   success: 0,
@@ -30,6 +31,7 @@ export type AnatomyCliDependencies = {
     ignoredNames: string[],
   ) => Promise<Result<AnatomyFileTreeEntry[], AnatomyFileTreeError>>;
   writeOutput: (value: string) => void;
+  collectExports?: typeof collectSourceExports;
 };
 
 const defaultDependencies: AnatomyCliDependencies = {
@@ -76,8 +78,14 @@ export const runAnatomyCli = async (
     return ok(AnatomyCliExitCode.success);
   }
 
-  const checked = checkAnatomy(definition.value, tree.value);
+  const plan = planAnatomyCheck(definition.value, tree.value);
+  if (plan.isErr()) return err(new AnatomyDefinitionFileError(
+    plan.error.map((issue) => issue.message).join("; "), definitionPath.value));
+  const sourceExports = await (dependencies.collectExports ?? collectSourceExports)(options.targetPath, plan.value.exportChecks);
+  if (sourceExports.isErr()) return err(sourceExports.error);
+  const checked = checkAnatomy(definition.value, tree.value, sourceExports.value);
   if (checked.isErr()) {
+    if (!Array.isArray(checked.error)) return err(checked.error);
     return err(
       new AnatomyDefinitionFileError(
         `Anatomy definition failed structural validation: ${checked.error.map((issue) => issue.message).join("; ")}`,

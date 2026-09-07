@@ -3,6 +3,7 @@ import { z } from "zod/v4";
 import { AnatomyNameExpressionSchema } from "./AnatomyNameExpression.schema";
 import { AnatomyPolicyOverridesSchema } from "./AnatomyPolicyOverrides.schema";
 import { AnatomyQuantitySchema } from "./AnatomyQuantity.schema";
+import { AnatomyFunctionExportRuleSchema } from "./AnatomyFunctionExportRuleSchema";
 
 /** File requirement with naming, quantity, and policy constraints. */
 export const AnatomyFileEntrySchema = z.strictObject({
@@ -16,6 +17,7 @@ export const AnatomyFileEntrySchema = z.strictObject({
   policyOverrides: AnatomyPolicyOverridesSchema.default({}),
   /** Node discriminant, fixed to file. */
   kind: z.literal("file"),
+  exports: AnatomyFunctionExportRuleSchema.optional(),
 });
 
 export type AnatomyFileEntry = z.infer<typeof AnatomyFileEntrySchema>;

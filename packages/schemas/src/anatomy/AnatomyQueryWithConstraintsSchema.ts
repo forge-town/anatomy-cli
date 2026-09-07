@@ -24,6 +24,7 @@ export const AnatomyQueryWithConstraintsSchema = z.object({
     rulePath: z.string(),
     node: AnatomyNodeSchema,
     expectedName: z.string().nullable(),
+    expectedExport: z.string().optional(),
     policies: AnatomyPoliciesSchema,
   })),
   matches: z.array(z.string()),

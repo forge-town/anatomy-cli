@@ -13,7 +13,7 @@
 
 迁移保留了原有模块边界：Daedalus CLI 成为应用，树操作与检查引擎归入 `packages/anatomy`，`packages/schemas` 仅保留 Anatomy Schema 及其依赖。Daedalus 内部工作区别名已替换为独立的 `@anatomy-cli/*` 作用域。
 
-实现基于结构化文件树，不依赖临时编写的源码扫描规则：
+结构规则使用确定性的文件树；可选的函数导出规则会对选中的 JavaScript / TypeScript 文件进行 AST 分析：
 
 ```text
 JSON Anatomy Draft
@@ -21,6 +21,8 @@ JSON Anatomy Draft
 deterministic filesystem tree
         ↓
 name / nesting / quantity / one-of checks
+        ↓
+optional function-export checks
         ↓
 block · warn · allow result
 ```
@@ -163,6 +165,27 @@ Anatomy JSON 定义只需包含供人阅读的元数据和结构约束。可以�
 支持的内置格式包括 `PascalCase`、`camelCase`、`kebab-case`、`snake_case` 和 `SCREAMING_SNAKE_CASE`。自定义正则表达式始终进行完整匹配，即使省略 `^` 和 `$` 也是如此。
 
 目录捕获的占位符值会被匹配到的后代节点复用；每个重复目录都有各自独立的捕获值。
+
+## 函数导出约束（源码运行）
+
+文件规则可以显式开启源码导出检查。例如下面的文件节点要求 `getUser.ts` 只能有一个运行时导出，而且必须是名为 `getUser` 的具名函数：
+
+```json
+{
+  "kind": "file",
+  "name": { "type": "placeholder", "value": "<Method>.ts" },
+  "quantity": "one_or_more",
+  "exports": { "name": "file_stem" }
+}
+```
+
+`file_stem` 仅去掉最后一个扩展名。如果文件规则是 `<Method>.method.ts`，改用 `"exports": { "name": { "type": "placeholder", "value": "<Method>" } }`。导出名的占位符必须已经由文件名或祖先目录捕获，不能另起一个无关绑定；也可使用 `{"type":"literal","value":"getUser"}` 明确指定导出名。导出规则的 `policy` 默认是 `block`，独立于结构策略。
+
+支持具名函数声明、async/generator 函数、箭头函数和函数表达式，也支持本地 `export { implementation as getUser }`，检查的是对外导出的名称。类型别名、接口和纯类型导出不计入数量。默认导出、没有导出、多余运行时导出、导出非函数值都会违反规则。无法在本文件确定函数性质的导入/转导出和动态包装、声明文件、CommonJS 导出修改、语法错误返回运行错误（退出码 `2`）。源码只解析，不导入、不执行；这属于静态导出声明检查，不证明运行时行为和类型正确。
+
+仅对匹配且声明了 `exports` 的文件读取源码，原有纯结构定义保持行为。查询模式返回 `expectedExport`，并在人类可读输出中展示要求，不分析源码。检查的导出诊断包含 `expectedExport`、`actualExports` 和原有 `rulePath`，错误码为 `export_count_mismatch`、`export_name_mismatch`、`export_kind_mismatch`。修改文件内容后重新运行同一条 `anatomy` 检查命令即可，无需额外开关。
+
+纯引擎的 `planAnatomyCheck` 返回 `structuralResult` 和待分析的 `exportChecks`，规划结果不代表完整验证通过。调用 `checkAnatomy` 时传入以相对文件路径为键的导出分析 Map，才能同时执行结构与导出检查；缺少必要分析时返回 `AnatomySourceAnalysisError`。CLI 自动完成这两个步骤。CLI 构建产物已包含 TypeScript 解析器，这项能力需要后续发布新版后才能通过包管理器安装使用。
 
 ## Agent 工作流（源码运行）
 

@@ -7,3 +7,4 @@ export * from "./validate-anatomy-for-publish";
 export * from "./anatomy-rule-paths";
 export * from "./query-anatomy";
 export * from "./match-anatomy-name";
+export * from "./anatomy-export-name";

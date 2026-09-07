@@ -100,6 +100,28 @@
           "kind": "file",
           "name": { "type": "literal", "value": "install.ts" },
           "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "analyze-source-exports.ts" },
+          "quantity": "exactly_one",
+          "exports": { "name": { "type": "literal", "value": "analyzeSourceExports" } }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "collect-source-exports.ts" },
+          "quantity": "exactly_one",
+          "exports": { "name": { "type": "literal", "value": "collectSourceExports" } }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "analyze-source-exports.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "function-export-workflow.spec.ts" },
+          "quantity": "exactly_one"
         }
       ]
     }

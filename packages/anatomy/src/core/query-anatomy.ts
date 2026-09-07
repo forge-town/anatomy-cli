@@ -3,6 +3,7 @@ import { AnatomyQueryWithConstraintsSchema, type AnatomyDraftInput, type Anatomy
 import { evaluateName } from "./match-anatomy-name";
 import { resolveAnatomyPolicies } from "./resolveAnatomyPolicies";
 import { anatomyRulePaths } from "./anatomy-rule-paths";
+import { resolveAnatomyExportName } from "./anatomy-export-name";
 import { validateAnatomyForPublish, type AnatomyValidationIssue } from "./validate-anatomy-for-publish";
 
 const QueryStatus = AnatomyQueryWithConstraintsSchema.shape.status.enum;
@@ -45,12 +46,17 @@ export const queryAnatomy = (
       nestingMismatch: resolved.nestingMismatch.value,
     };
   };
-  const describe = (nodes: AnatomyNode[]) => nodes.map((node) => ({
-    rulePath: registry.get(node.id)!.rulePath, node, policies: policiesFor(node),
-    expectedName: node.kind === "one_of" ? null : node.name.type === "literal" ? node.name.value : node.name.value.replace(
+  const describe = (nodes: AnatomyNode[]) => nodes.map((node) => {
+    const expectedName = node.kind === "one_of" ? null : node.name.type === "literal" ? node.name.value : node.name.value.replace(
       /<([^<>]+)>/, (placeholder, name: string) => result.captures[name] ?? placeholder,
-    ),
-  }));
+    );
+    return {
+      rulePath: registry.get(node.id)!.rulePath, node, policies: policiesFor(node), expectedName,
+      ...(node.kind === "file" && node.exports ? {
+        expectedExport: resolveAnatomyExportName(node.exports, expectedName!, result.captures),
+      } : {}),
+    };
+  });
   let nodes = definition.structure.root.children;
   result.rules = describe(nodes);
 

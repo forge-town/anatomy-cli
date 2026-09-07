@@ -11,6 +11,20 @@ const definition = () => ({
 });
 
 describe("Anatomy definition compatibility", () => {
+  it("allows an explicit function export rule only on files", () => {
+    const input = definition();
+    Object.assign(input.structure.root.children[0]!, { exports: { name: "file_stem" } });
+    const parsed = AnatomyDraftInputSchema.safeParse(input);
+    expect(parsed.success).toBe(true);
+    if (parsed.success) expect(parsed.data.structure.root.children[0]).toMatchObject({ exports: { policy: "block" } });
+    Object.assign(input.structure.root.children[0]!, { kind: "directory", children: [] });
+    expect(AnatomyDraftInputSchema.safeParse(input).success).toBe(false);
+  });
+  it("rejects unsupported export options", () => {
+    const input = definition();
+    Object.assign(input.structure.root.children[0]!, { exports: { name: "file_stem", allowDefault: true } });
+    expect(AnatomyDraftInputSchema.safeParse(input).success).toBe(false);
+  });
   it("accepts version one with omitted IDs and overrides", () => {
     expect(AnatomyDraftInputSchema.safeParse(definition()).success).toBe(true);
   });

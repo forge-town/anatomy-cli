@@ -23,3 +23,6 @@ export * from "./AnatomySummary.schema";
 export * from "./AnatomyVersion.schema";
 export * from "./AnatomyQueryWithConstraintsSchema";
 export * from "./AnatomyCheckWithDiagnosticsSchema";
+export * from "./AnatomyFunctionExportRuleSchema";
+export * from "./AnatomySourceExportsSchema";
+export * from "./AnatomyFunctionExportCheckSchema";

@@ -6,7 +6,10 @@ import {
   type AnatomyNode,
   type AnatomyPolicies,
   type AnatomyPolicyOverrides,
+  type AnatomyFunctionExportCheck,
+  type AnatomySourceExports,
 } from "@anatomy-cli/schemas";
+import { resolveAnatomyExportName } from "./anatomy-export-name";
 import { resolveAnatomyPolicies } from "./resolveAnatomyPolicies";
 import {
   validateAnatomyForPublish,
@@ -27,6 +30,9 @@ export const AnatomyCheckCode = {
   nestingMismatch: "nesting_mismatch",
   quantityExceeded: "quantity_exceeded",
   oneOfMismatch: "one_of_mismatch",
+  exportCountMismatch: "export_count_mismatch",
+  exportNameMismatch: "export_name_mismatch",
+  exportKindMismatch: "export_kind_mismatch",
 } as const;
 
 export type AnatomyCheckIssue = {
@@ -35,6 +41,8 @@ export type AnatomyCheckIssue = {
   path: string;
   constraintId: string | null;
   message: string;
+  expectedExport?: string;
+  actualExports?: AnatomySourceExports;
 };
 
 export type AnatomyCheckResult = {
@@ -103,14 +111,15 @@ const getEntryLabel = (entry: AnatomyEntry): string => {
   return entry.name.value;
 };
 
-export const checkAnatomy = (
+export const planAnatomyCheck = (
   definition: AnatomyDraftInput,
   entries: AnatomyFileTreeEntry[],
-): ResultType<AnatomyCheckResult, AnatomyValidationIssue[]> => {
+): ResultType<{ structuralResult: AnatomyCheckResult; exportChecks: AnatomyFunctionExportCheck[] }, AnatomyValidationIssue[]> => {
   const validated = validateAnatomyForPublish(definition);
   if (validated.isErr()) return err(validated.error);
 
   const issues: AnatomyCheckIssue[] = [];
+  const exportChecks: AnatomyFunctionExportCheck[] = [];
   const defaults = definition.structure.defaultPolicies;
   const bindings = definition.structure.bindings ?? {};
 
@@ -262,6 +271,14 @@ export const checkAnatomy = (
           });
         }
 
+        if (entry.kind === "file" && actual.kind === "file" && entry.exports) {
+          exportChecks.push({
+            path: joinPath(parentPath, actual.name), constraintId: entry.id,
+            expectedName: resolveAnatomyExportName(entry.exports, actual.name, { ...scope, ...candidate.match.captures }),
+            policy: entry.exports.policy,
+          });
+        }
+
         if (entry.kind === "directory" && actual.kind === "directory") {
           checkNodes(entry.children, actual.children, joinPath(parentPath, actual.name), [
             ...ancestors,
@@ -328,5 +345,47 @@ export const checkAnatomy = (
     { block: 0, warn: 0, allow: 0 },
   );
 
-  return ok({ issues, summary, conforms: summary.block === 0 });
+  return ok({ structuralResult: { issues, summary, conforms: summary.block === 0 }, exportChecks });
+};
+
+export class AnatomySourceAnalysisError extends Error {
+  constructor(public readonly path: string, message: string) {
+    super(message);
+    this.name = "AnatomySourceAnalysisError";
+  }
+}
+
+export const checkAnatomy = (
+  definition: AnatomyDraftInput,
+  entries: AnatomyFileTreeEntry[],
+  sourceExports: ReadonlyMap<string, AnatomySourceExports> = new Map(),
+): ResultType<AnatomyCheckResult, AnatomyValidationIssue[] | AnatomySourceAnalysisError> => {
+  const plan = planAnatomyCheck(definition, entries);
+  if (plan.isErr()) return err(plan.error);
+  const { structuralResult, exportChecks } = plan.value;
+  for (const check of exportChecks) {
+    const actual = sourceExports.get(check.path);
+    if (actual === undefined) return err(new AnatomySourceAnalysisError(check.path, `Exports were not analyzed for ${check.path}`));
+    const addIssue = (code: AnatomyCheckIssue["code"], message: string) => {
+      structuralResult.issues.push({
+        code, message, severity: check.policy, path: check.path, constraintId: check.constraintId,
+        expectedExport: check.expectedName, actualExports: actual,
+      });
+      structuralResult.summary[check.policy] += 1;
+    };
+    if (actual.length !== 1) {
+      addIssue(AnatomyCheckCode.exportCountMismatch,
+        `Expected exactly one named function export "${check.expectedName}" but found ${actual.length} runtime exports`);
+      continue;
+    }
+    const exported = actual[0]!;
+    if (exported.name === "default" || exported.name !== check.expectedName) {
+      addIssue(AnatomyCheckCode.exportNameMismatch, `Expected named export "${check.expectedName}" but found "${exported.name}"`);
+    }
+    if (exported.kind !== "function") {
+      addIssue(AnatomyCheckCode.exportKindMismatch, `Expected function export "${check.expectedName}" but found a non-function value`);
+    }
+  }
+  structuralResult.conforms = structuralResult.summary.block === 0;
+  return ok(structuralResult);
 };

@@ -5,12 +5,12 @@ import { AnatomyNodeSchema, type AnatomyNode } from "./AnatomyNode.schema";
 
 /** Directory node and its recursive children in an Anatomy tree. */
 export const AnatomyDirectoryEntrySchema: z.ZodType<
-  Omit<AnatomyFileEntry, "kind"> & {
+  Omit<AnatomyFileEntry, "kind" | "exports"> & {
     kind: "directory";
     children: AnatomyNode[];
   }
 > = z.lazy(() =>
-  AnatomyFileEntrySchema.omit({ kind: true }).extend({
+  AnatomyFileEntrySchema.omit({ kind: true, exports: true }).extend({
     /** Node discriminant, fixed to directory. */
     kind: z.literal("directory"),
     /** Structure nodes directly contained by the directory. */

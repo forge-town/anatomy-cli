@@ -17,7 +17,7 @@ the tree/checking engine becomes `packages/anatomy`, and only its Anatomy schema
 closure is kept in `packages/schemas`. Internal Daedalus workspace aliases are
 replaced with the standalone `@anatomy-cli/*` scope.
 
-The implementation is intentionally based on a structured file tree, not on ad-hoc source inspection:
+Structural rules use a deterministic file tree. Optional function-export rules add AST analysis for selected JavaScript and TypeScript files:
 
 ```text
 JSON Anatomy Draft
@@ -25,6 +25,8 @@ JSON Anatomy Draft
 deterministic filesystem tree
         ↓
 name / nesting / quantity / one-of checks
+        ↓
+optional function-export checks
         ↓
 block · warn · allow result
 ```
@@ -194,6 +196,53 @@ The supported built-ins are `PascalCase`, `camelCase`, `kebab-case`,
 `snake_case`, and `SCREAMING_SNAKE_CASE`. Custom patterns are full matches even
 when `^` and `$` are omitted. A placeholder captured by a directory is reused
 by matching descendants; each repeated directory gets its own captured value.
+
+## Function exports (source checkout)
+
+File rules can opt into source-level export checks. For example, this file node
+requires `getUser.ts` to have exactly one runtime export: a named function called
+`getUser`.
+
+```json
+{
+  "kind": "file",
+  "name": { "type": "placeholder", "value": "<Method>.ts" },
+  "quantity": "one_or_more",
+  "exports": { "name": "file_stem" }
+}
+```
+
+`file_stem` removes only the last extension. For `<Method>.method.ts`, use
+`"exports": { "name": { "type": "placeholder", "value": "<Method>" } }` instead.
+Export placeholders must already be captured by the file name or an ancestor
+directory; they cannot introduce an unrelated binding. Literal export names are
+also supported through `{"type":"literal","value":"getUser"}`. The export
+rule's `policy` defaults to `block`; it is independent of structural policies.
+
+Named function declarations, async/generator functions, arrow functions and
+function expressions are supported, including local `export { implementation as
+getUser }` aliases. The exported public name is checked. Type aliases, interfaces
+and type-only exports do not count. Default exports, missing exports, additional
+runtime exports and non-function exports violate the rule. Imports/re-exports or
+computed wrappers whose callable nature cannot be determined locally, declaration
+files, CommonJS export mutations and syntax errors produce operational errors
+(exit `2`). The source is parsed, never imported or executed. This is a static
+export-declaration check, not a proof of runtime behavior or type correctness.
+
+Only matched files with an `exports` rule are read for source analysis; existing
+structural-only definitions keep their behavior. Query mode reports `expectedExport`
+and shows the requirement in human output without analyzing source. Check JSON
+includes `expectedExport`, `actualExports`, and the existing `rulePath` on export
+findings, with codes `export_count_mismatch`, `export_name_mismatch` or
+`export_kind_mismatch`. Run the same `anatomy` check command after editing the
+file's contents; no extra CLI flag is needed.
+
+The pure engine's `planAnatomyCheck` returns `structuralResult` and `exportChecks`.
+That plan is not a complete conformance result. Call `checkAnatomy` with the analyzed
+exports map keyed by relative file path to enforce both structure and exports;
+it returns `AnatomySourceAnalysisError` if required analysis is absent. The CLI
+performs both steps automatically. The bundled CLI now includes the TypeScript
+parser; this feature needs a new CLI release before registry installs support it.
 
 ## Agent workflow (source checkout)
 
