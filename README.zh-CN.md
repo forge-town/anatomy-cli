@@ -164,6 +164,42 @@ Anatomy JSON 定义只需包含供人阅读的元数据和结构约束。可以�
 
 目录捕获的占位符值会被匹配到的后代节点复用；每个重复目录都有各自独立的捕获值。
 
+## Agent 工作流（源码运行）
+
+修改前查询定义，修改后检查文件树。以下命令使用当前源码；查询接口需要后续发布新版 CLI 才能通过包管理器安装使用。
+
+```bash
+# 两次操作使用相同的目标根目录和定义。
+# 查询路径相对于目标根目录，可以尚不存在。
+bun run anatomy ./packages/services --query src/UserService/UserService.ts \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+
+# Agent 创建或修改模块后：
+bun run anatomy ./packages/services \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+```
+
+将 `./packages/services` 替换为仓库中实际存在的目录。省略 `--definition` 时，仍向上查找最近的 `anatomy.json`。定义的根节点始终描述传入的目标目录；在父目录找到定义不会改变这个对应关系。`--query .` 返回根约束。查询路径支持 Windows 相对路径分隔符，拒绝绝对路径和 `..` 路径段。查询会读取目标以发现文件系统错误，不创建文件或改写定义。
+
+省略 `--format json` 时，直接显示文件要求、数量、继承名称、策略和 one-of 条件选择的可读摘要。摘要描述的是约束，不代表实际文件已通过检查。
+
+查询 JSON 使用 `contractVersion: 1`、`operation: "query"`，状态含义如下：
+
+| 状态 | 含义 |
+| --- | --- |
+| `resolved` | 找到声明的规则，或正在查询根约束；不代表验证通过。 |
+| `unmatched` | 在 `scopePath` 下没有匹配的节点规则；该父目录的 `unexpectedEntry` 策略仍然适用。未声明目录的后代不会被检查。 |
+| `mismatch` | 名称、占位符绑定或中间路径的节点类型与定义冲突。 |
+| `ambiguous` | 多条规则可能消费同一节点，需要查看 `matches` 和 `rules`；实际检查还取决于规则顺序、节点类型和同级条目。 |
+
+响应包含定义及目标的绝对路径、有效策略、占位符捕获值、绑定约束、祖先数量约束、相关规则和所属 one-of 组。目录规则保留子树；可用 `captures` 替换后代中的继承占位符。one-of 的候选项是条件选择，不是全部必须创建的文件。数量、同级候选项和实际节点类型仍须在修改后执行检查。
+
+检查 JSON 保留 `conforms`、`summary` 和原有诊断字段，新增 `contractVersion: 1`、`operation: "check"`、定义及目标信息、`ignoredNames`。每条诊断新增 `rulePath`（定义中的 JSON Pointer）、`expected`（声明的节点）和 `actual`（实际条目摘要）。缺失节点与 one-of 诊断的 `actual` 列出受影响目录下的同级条目；意外节点的 `rulePath`、`expected` 为 null。用 `rulePath` 关联同一版定义的查询与检查：省略的 ID 每次解析都会重新生成，编辑定义后数组下标也可能变化。
+
+查询完成时所有查询状态均返回退出码 `0`，Agent 应读取 `status` 再决定如何修改。检查仍以 `0` 表示没有阻断项、`1` 表示存在阻断项。运行错误返回 `2`；指定 `--format json` 时，stderr 输出 `operation: "error"` 的 JSON，stdout 不输出成功报告。定义缺失或无效、版本不支持、未知字段和目标不可读都属于错误，不能视为“没有约束”。未知定义字段现在会被拒绝，不再静默移除；需要修正拼写或使用已支持的版本 1 规则。原有人类可读检查输出和目标、定义参数保持可用。
+
+查询描述声明的结构，不应用扫描忽略规则，因此 `--ignore` 只接受于检查模式。检查仍跳过符号链接以及 `node_modules`、`dist` 等默认生成目录，报告会列出忽略名称。结构检查通过仅覆盖已采集文件树与已执行规则；类型和行为须另行验证。
+
 ## 开发
 
 ```bash

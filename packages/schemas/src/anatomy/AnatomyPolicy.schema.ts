@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValue.schema";
 
 /** Default policies applied when a Crate does not conform to an Anatomy. */
-export const AnatomyPoliciesSchema = z.object({
+export const AnatomyPoliciesSchema = z.strictObject({
   /** Default action when a required entry is missing. */
   missingRequired: AnatomyPolicyValueSchema,
   /** Default action when an undeclared entry is present. */

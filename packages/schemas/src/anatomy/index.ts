@@ -21,3 +21,5 @@ export * from "./AnatomyStatus.schema";
 export * from "./AnatomyStructure.schema";
 export * from "./AnatomySummary.schema";
 export * from "./AnatomyVersion.schema";
+export * from "./AnatomyQueryWithConstraintsSchema";
+export * from "./AnatomyCheckWithDiagnosticsSchema";

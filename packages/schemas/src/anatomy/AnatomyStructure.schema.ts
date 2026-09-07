@@ -5,7 +5,7 @@ import { AnatomyNodeSchema } from "./AnatomyNode.schema";
 import { AnatomyBindingSchema } from "./AnatomyBinding.schema";
 
 /** Recursive filesystem structure contract that an Anatomy must satisfy. */
-export const AnatomyStructureSchema = z.object({
+export const AnatomyStructureSchema = z.strictObject({
   /** Structure document format version used for future-compatible migrations. */
   schemaVersion: z.literal(1),
   /** Default policies used by nodes that do not provide local overrides. */
@@ -20,7 +20,7 @@ export const AnatomyStructureSchema = z.object({
     )
     .optional(),
   /** Virtual root node that does not represent a real directory. */
-  root: z.object({
+  root: z.strictObject({
     /** Structure nodes at the top level of the Anatomy. */
     children: z.array(AnatomyNodeSchema),
   }),

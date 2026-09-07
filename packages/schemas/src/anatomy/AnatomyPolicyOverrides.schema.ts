@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 
 /** Local overrides of the default Anatomy policies for one structure entry. */
 export const AnatomyPolicyOverridesSchema = z
-  .object({
+  .strictObject({
     /** Local action when a required entry is missing. */
     missingRequired: z.enum(["block", "warn", "allow"]),
     /** Local action when an undeclared entry is present. */

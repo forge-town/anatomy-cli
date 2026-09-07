@@ -9,7 +9,7 @@ export const AnatomyOneOfGroupSchema: z.ZodType<{
   minimumMatches: number;
   maximumMatches: number;
   alternatives: AnatomyEntry[];
-}> = z.object({
+}> = z.strictObject({
   /** Unique group identifier, generated during schema parsing when omitted. */
   id: z.string().uuid().default(() => crypto.randomUUID()),
   /** Node discriminant, fixed to one_of. */

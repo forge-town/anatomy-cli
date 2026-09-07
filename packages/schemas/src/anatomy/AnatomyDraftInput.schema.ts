@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 import { AnatomyStructureSchema } from "./AnatomyStructure.schema";
 
 /** Author-managed definition used to create or replace an Anatomy draft. */
-export const AnatomyDraftInputSchema = z.object({
+export const AnatomyDraftInputSchema = z.strictObject({
   /** Anatomy name displayed to users. */
   name: z.string().trim().min(1).max(120),
   /** Problem addressed by the structure contract and its intended purpose. */

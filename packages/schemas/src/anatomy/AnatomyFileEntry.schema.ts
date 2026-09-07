@@ -5,7 +5,7 @@ import { AnatomyPolicyOverridesSchema } from "./AnatomyPolicyOverrides.schema";
 import { AnatomyQuantitySchema } from "./AnatomyQuantity.schema";
 
 /** File requirement with naming, quantity, and policy constraints. */
-export const AnatomyFileEntrySchema = z.object({
+export const AnatomyFileEntrySchema = z.strictObject({
   /** Unique file-entry identifier, generated during schema parsing when omitted. */
   id: z.string().uuid().default(() => crypto.randomUUID()),
   /** Literal filename or placeholder expression. */

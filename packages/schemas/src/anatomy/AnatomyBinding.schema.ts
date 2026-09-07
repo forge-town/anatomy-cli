@@ -10,7 +10,7 @@ const compilePattern = Result.fromThrowable(
 
 /** Constraints applied to values captured by a named Anatomy placeholder. */
 export const AnatomyBindingSchema = z
-  .object({
+  .strictObject({
     /** Optional built-in naming convention. */
     format: AnatomyBindingFormatSchema.optional(),
     /** Optional JavaScript regular expression, evaluated as a full match. */

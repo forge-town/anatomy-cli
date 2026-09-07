@@ -55,6 +55,51 @@
           "kind": "file",
           "name": { "type": "literal", "value": "format-result.ts" },
           "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "agent-workflow.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "format-agent-result.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "format-agent-result.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "source-contract.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install-main.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install-options.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install-path.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install.ts" },
+          "quantity": "exactly_one"
         }
       ]
     }

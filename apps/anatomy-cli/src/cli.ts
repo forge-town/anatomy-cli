@@ -1,15 +1,16 @@
 import { err, ok, type Result } from "neverthrow";
-import { checkAnatomy, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
+import { checkAnatomy, queryAnatomy, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
 import type { AnatomyDraftInput } from "@anatomy-cli/schemas";
 import { AnatomyCliUsage, parseCliArguments, type AnatomyCliOptions } from "./cli-arguments";
 import {
   collectFileTree,
   findAnatomyDefinition,
   readAnatomyDefinition,
-  type AnatomyDefinitionFileError,
+  AnatomyDefinitionFileError,
   type AnatomyFileTreeError,
 } from "./filesystem";
-import { formatHumanResult, formatJsonResult } from "./format-result";
+import { formatHumanResult } from "./format-result";
+import { formatAgentCheck, formatAgentQuery } from "./format-agent-result";
 
 export const AnatomyCliExitCode = {
   success: 0,
@@ -63,17 +64,31 @@ export const runAnatomyCli = async (
   const tree = await dependencies.collectTree(options.targetPath, options.ignore);
   if (tree.isErr()) return err(tree.error);
 
+  if (options.queryPath !== null) {
+    const queried = queryAnatomy(definition.value, options.queryPath);
+    if (queried.isErr()) {
+      return err(Array.isArray(queried.error)
+        ? new AnatomyDefinitionFileError(queried.error.map((issue) => issue.message).join("; "), definitionPath.value)
+        : queried.error);
+    }
+    dependencies.writeOutput(formatAgentQuery(queried.value, definition.value,
+      definitionPath.value, options.targetPath, options.format));
+    return ok(AnatomyCliExitCode.success);
+  }
+
   const checked = checkAnatomy(definition.value, tree.value);
   if (checked.isErr()) {
     return err(
-      new Error(
+      new AnatomyDefinitionFileError(
         `Anatomy definition failed structural validation: ${checked.error.map((issue) => issue.message).join("; ")}`,
+        definitionPath.value,
       ),
     );
   }
 
   dependencies.writeOutput(
-    options.format === "json" ? formatJsonResult(checked.value) : formatHumanResult(checked.value),
+    options.format === "json" ? formatAgentCheck(checked.value, definition.value,
+      definitionPath.value, options.targetPath, tree.value, options.ignore) : formatHumanResult(checked.value),
   );
 
   return ok(checked.value.conforms ? AnatomyCliExitCode.success : AnatomyCliExitCode.blocked);

@@ -8,6 +8,7 @@ export type AnatomyCliOptions = {
   format: (typeof AnatomyCliFormatValues)[number];
   ignore: string[];
   help: boolean;
+  queryPath: string | null;
 };
 
 export class AnatomyCliArgumentError extends Error {
@@ -38,6 +39,7 @@ export const parseCliArguments = (
     format: "human",
     ignore: [],
     help: false,
+    queryPath: null,
   };
   const consumedIndexes = new Set<number>();
   let targetSpecified = false;
@@ -55,6 +57,15 @@ export const parseCliArguments = (
       const value = getOptionValue(args, index, argument);
       if (value.isErr()) return err(value.error);
       options.definitionPath = value.value;
+      consumedIndexes.add(index + 1);
+      continue;
+    }
+
+    if (argument === "--query") {
+      if (options.queryPath !== null) return err(new AnatomyCliArgumentError("Query path may only be specified once"));
+      const value = getOptionValue(args, index, argument);
+      if (value.isErr()) return err(value.error);
+      options.queryPath = value.value;
       consumedIndexes.add(index + 1);
       continue;
     }
@@ -108,6 +119,9 @@ export const parseCliArguments = (
     return err(new AnatomyCliArgumentError(`Unknown argument "${argument}"`));
   }
 
+  if (options.queryPath !== null && options.ignore.length > 0) {
+    return err(new AnatomyCliArgumentError("--ignore is only supported for checks; queries describe declared constraints"));
+  }
   return ok(options);
 };
 
@@ -121,6 +135,7 @@ export const AnatomyCliUsage = [
   "  -d, --definition <file>  Anatomy JSON (default: nearest anatomy.json)",
   "  -t, --target <directory> Alternate form of the target argument",
   "      --format <format>    human or json (default: human)",
+  "      --query <path>       Query constraints relative to target (path may not exist)",
   "      --ignore <paths>     Comma-separated names; may be repeated",
   "  -h, --help               Show this help",
 ].join("\n");

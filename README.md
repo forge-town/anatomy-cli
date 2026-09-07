@@ -195,6 +195,75 @@ The supported built-ins are `PascalCase`, `camelCase`, `kebab-case`,
 when `^` and `$` are omitted. A placeholder captured by a directory is reused
 by matching descendants; each repeated directory gets its own captured value.
 
+## Agent workflow (source checkout)
+
+Query the definition before editing, then check the resulting file tree. These
+commands use this checkout; the query interface requires a future CLI release
+before it is available in registry installs.
+
+```bash
+# Use the same target root and definition for both operations.
+# The queried path is relative to the target root and may not exist yet.
+bun run anatomy ./packages/services --query src/UserService/UserService.ts \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+
+# After the Agent creates or edits the module:
+bun run anatomy ./packages/services \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+```
+
+Replace `./packages/services` with an existing directory in your repository.
+Omit `--definition` to use the nearest `anatomy.json`, as with normal checks.
+The definition root always describes the directory passed as `target`; finding
+a definition in a parent does not change that root. `--query .` returns root
+constraints. Relative Windows separators are accepted; absolute paths and `..`
+segments in the query are rejected. Query mode reads the target to surface
+filesystem errors, but never creates files or changes the definition.
+
+Omit `--format json` for a readable summary of required files, quantities,
+inherited names, policies and conditional one-of alternatives. This summary
+describes constraints; it does not certify that the files pass validation.
+
+Query JSON uses `contractVersion: 1`, `operation: "query"`, and these statuses:
+
+| Status | Meaning |
+| --- | --- |
+| `resolved` | A declared rule was found, or root constraints were requested. This is not a validation pass. |
+| `unmatched` | No entry rule matched at `scopePath`; that parent's `unexpectedEntry` policy still applies. Undeclared directory descendants are not checked. |
+| `mismatch` | A name, binding, or intermediate entry kind conflicts with the declared structure. |
+| `ambiguous` | Multiple rules may consume the entry; inspect `matches` and `rules`. Validation uses definition order, entry kinds and siblings. |
+
+Responses include the absolute definition and target paths, effective policies,
+captured placeholder values, binding constraints, ancestor quantities, applicable
+rules and containing one-of groups. Directory rules retain their child structure.
+Use `captures` to substitute inherited placeholders in descendants; one-of
+alternatives are conditional, not a list of files that must all be created.
+Always run a check to evaluate quantities, sibling alternatives and actual kinds.
+
+Check JSON preserves `conforms`, `summary`, and the existing issue fields, adding
+`contractVersion: 1`, `operation: "check"`, definition/target metadata and
+`ignoredNames`. Each issue adds `rulePath` (a JSON Pointer into the definition),
+`expected` (the declared node), and `actual` (observed entry summaries). For
+missing-entry and one-of issues, `actual` lists siblings in the affected directory.
+Unexpected entries have null `rulePath` and `expected`. Use `rulePath` to correlate
+query and check results for the same definition revision: omitted IDs are generated
+anew when parsing, and array indices can change when the definition is edited.
+
+A completed query exits `0` for every query status; inspect `status` before
+editing. Checks retain `0` for no blocking findings and `1` for blocking findings.
+Operational errors exit `2`; with `--format json`, stderr contains an
+`operation: "error"` JSON object and stdout has no success report. Missing or
+invalid definitions, unsupported schema versions, unknown fields and unreadable
+targets are errors, not an absence of constraints. Unknown definition fields are
+now rejected instead of silently removed; fix spelling or use supported version-1
+rules. Human check output and legacy target/definition flags remain supported.
+
+Queries describe declared structure independently of scan exclusions, so `--ignore`
+is only accepted for checks. Checks continue to skip symbolic links and default
+generated directories, including `node_modules` and `dist`; the report lists
+ignored names. A structural pass only covers the collected tree and executed
+rules. Run type checks and behavior tests separately.
+
 ## Development
 
 ```bash

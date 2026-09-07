@@ -4,3 +4,6 @@ export * from "./createEmptyAnatomyDraft";
 export * from "./resolveAnatomyPolicies";
 export * from "./ResolvedAnatomyPolicy";
 export * from "./validate-anatomy-for-publish";
+export * from "./anatomy-rule-paths";
+export * from "./query-anatomy";
+export * from "./match-anatomy-name";
