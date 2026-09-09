@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createBootGeometry, getOpeningScale, TRIANGLE_VERTICES, type Point } from "./boot-geometry";
-import { BOOT_MOTION, createBootMotion, getTurnSettleMs, waitForBoot } from "./boot-motion";
+import { BOOT_MOTION } from "./BOOT_MOTION";
+import { createBootGeometry } from "./createBootGeometry";
+import { createBootMotion } from "./createBootMotion";
+import { getOpeningScale } from "./getOpeningScale";
+import { getTurnSettleMs } from "./getTurnSettleMs";
+import { TRIANGLE_VERTICES, type Point } from "./TRIANGLE_VERTICES";
+import { waitForBoot } from "./waitForBoot";
 
 const contains = (polygon: Point[], point: Point) => {
   let inside = false;

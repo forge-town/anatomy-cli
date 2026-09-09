@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { docsEntries } from "../src/content";
+import { docsEntries } from "../src/docsEntries";
 
 const publicDirectory = new URL("../.output/public/", import.meta.url);
 const pages = ["index.html", ...docsEntries.map(({ slug }) => `docs/${slug}/index.html`)];

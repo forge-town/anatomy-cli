@@ -13,7 +13,7 @@
 
 迁移保留了原有模块边界：Daedalus CLI 成为应用，树操作与检查引擎归入 `packages/anatomy`，`packages/schemas` 仅保留 Anatomy Schema 及其依赖。Daedalus 内部工作区别名已替换为独立的 `@anatomy-cli/*` 作用域。
 
-实现基于结构化文件树，不依赖临时编写的源码扫描规则：
+结构规则使用确定性的文件树；可选的函数导出规则会对选中的 JavaScript / TypeScript 文件进行 AST 分析：
 
 ```text
 JSON Anatomy Draft
@@ -21,6 +21,8 @@ JSON Anatomy Draft
 deterministic filesystem tree
         ↓
 name / nesting / quantity / one-of checks
+        ↓
+optional function-export checks
         ↓
 block · warn · allow result
 ```
@@ -164,12 +166,76 @@ Anatomy JSON 定义只需包含供人阅读的元数据和结构约束。可以�
 
 目录捕获的占位符值会被匹配到的后代节点复用；每个重复目录都有各自独立的捕获值。
 
+## 函数导出约束（源码运行）
+
+文件规则可以显式开启源码导出检查。例如下面的文件节点要求 `getUser.ts` 只能有一个运行时导出，而且必须是名为 `getUser` 的具名函数：
+
+```json
+{
+  "kind": "file",
+  "name": { "type": "placeholder", "value": "<Method>.ts" },
+  "quantity": "one_or_more",
+  "exports": { "name": "file_stem" }
+}
+```
+
+`file_stem` 仅去掉最后一个扩展名。如果文件规则是 `<Method>.method.ts`，改用 `"exports": { "name": { "type": "placeholder", "value": "<Method>" } }`。导出名的占位符必须已经由文件名或祖先目录捕获，不能另起一个无关绑定；也可使用 `{"type":"literal","value":"getUser"}` 明确指定导出名。导出规则的 `policy` 默认是 `block`，独立于结构策略。
+
+支持具名函数声明、async/generator 函数、箭头函数和函数表达式，也支持本地 `export { implementation as getUser }`，检查的是对外导出的名称。类型别名、接口和纯类型导出不计入数量。默认导出、没有导出、多余运行时导出、导出非函数值都会违反规则。无法在本文件确定函数性质的导入/转导出和动态包装、声明文件、CommonJS 导出修改、语法错误返回运行错误（退出码 `2`）。源码只解析，不导入、不执行；这属于静态导出声明检查，不证明运行时行为和类型正确。
+
+仅对匹配且声明了 `exports` 的文件读取源码，原有纯结构定义保持行为。查询模式返回 `expectedExport`，并在人类可读输出中展示要求，不分析源码。检查的导出诊断包含 `expectedExport`、`actualExports` 和原有 `rulePath`，错误码为 `export_count_mismatch`、`export_name_mismatch`、`export_kind_mismatch`。修改文件内容后重新运行同一条 `anatomy` 检查命令即可，无需额外开关。
+
+纯引擎的 `planAnatomyCheck` 返回 `structuralResult` 和待分析的 `exportChecks`，规划结果不代表完整验证通过。调用 `checkAnatomy` 时传入以相对文件路径为键的导出分析 Map，才能同时执行结构与导出检查；缺少必要分析时返回 `AnatomySourceAnalysisError`。CLI 自动完成这两个步骤。CLI 构建产物已包含 TypeScript 解析器，这项能力需要后续发布新版后才能通过包管理器安装使用。
+
+## Agent 工作流（源码运行）
+
+修改前查询定义，修改后检查文件树。以下命令使用当前源码；查询接口需要后续发布新版 CLI 才能通过包管理器安装使用。
+
+```bash
+# 两次操作使用相同的目标根目录和定义。
+# 查询路径相对于目标根目录，可以尚不存在。
+bun run anatomy ./packages/services --query src/UserService/UserService.ts \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+
+# Agent 创建或修改模块后：
+bun run anatomy ./packages/services \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+```
+
+将 `./packages/services` 替换为仓库中实际存在的目录。省略 `--definition` 时，仍向上查找最近的 `anatomy.json`。定义的根节点始终描述传入的目标目录；在父目录找到定义不会改变这个对应关系。`--query .` 返回根约束。查询路径支持 Windows 相对路径分隔符，拒绝绝对路径和 `..` 路径段。查询会读取目标以发现文件系统错误，不创建文件或改写定义。
+
+省略 `--format json` 时，直接显示文件要求、数量、继承名称、策略和 one-of 条件选择的可读摘要。摘要描述的是约束，不代表实际文件已通过检查。
+
+查询 JSON 使用 `contractVersion: 1`、`operation: "query"`，状态含义如下：
+
+| 状态 | 含义 |
+| --- | --- |
+| `resolved` | 找到声明的规则，或正在查询根约束；不代表验证通过。 |
+| `unmatched` | 在 `scopePath` 下没有匹配的节点规则；该父目录的 `unexpectedEntry` 策略仍然适用。未声明目录的后代不会被检查。 |
+| `mismatch` | 名称、占位符绑定或中间路径的节点类型与定义冲突。 |
+| `ambiguous` | 多条规则可能消费同一节点，需要查看 `matches` 和 `rules`；实际检查还取决于规则顺序、节点类型和同级条目。 |
+
+响应包含定义及目标的绝对路径、有效策略、占位符捕获值、绑定约束、祖先数量约束、相关规则和所属 one-of 组。目录规则保留子树；可用 `captures` 替换后代中的继承占位符。one-of 的候选项是条件选择，不是全部必须创建的文件。数量、同级候选项和实际节点类型仍须在修改后执行检查。
+
+检查 JSON 保留 `conforms`、`summary` 和原有诊断字段，新增 `contractVersion: 1`、`operation: "check"`、定义及目标信息、`ignoredNames`。每条诊断新增 `rulePath`（定义中的 JSON Pointer）、`expected`（声明的节点）和 `actual`（实际条目摘要）。缺失节点与 one-of 诊断的 `actual` 列出受影响目录下的同级条目；意外节点的 `rulePath`、`expected` 为 null。用 `rulePath` 关联同一版定义的查询与检查：省略的 ID 每次解析都会重新生成，编辑定义后数组下标也可能变化。
+
+查询完成时所有查询状态均返回退出码 `0`，Agent 应读取 `status` 再决定如何修改。检查仍以 `0` 表示没有阻断项、`1` 表示存在阻断项。运行错误返回 `2`；指定 `--format json` 时，stderr 输出 `operation: "error"` 的 JSON，stdout 不输出成功报告。定义缺失或无效、版本不支持、未知字段和目标不可读都属于错误，不能视为“没有约束”。未知定义字段现在会被拒绝，不再静默移除；需要修正拼写或使用已支持的版本 1 规则。原有人类可读检查输出和目标、定义参数保持可用。
+
+查询描述声明的结构，不应用扫描忽略规则，因此 `--ignore` 只接受于检查模式。默认检查跳过符号链接以及 `node_modules`、`dist` 等生成目录，报告会列出忽略名称。结构检查通过仅覆盖已采集文件树与已执行规则；类型和行为须另行验证。
+
+检查整个仓库可使用 `anatomy . --git-files`：需要 Git，包含所有已跟踪文件（即使被忽略规则匹配）及未被忽略的新文件。它读取当前工作区，已删除文件仍会报告缺失。此模式包含契约文件，不应用默认名称排除规则，拒绝与 `--ignore` 混用，遇到符号链接或子模块会报错。未跟踪且被忽略的本地产物、空目录不属于此文件清单。JSON 会标明 `fileSelection: "git"`，`ignoredNames` 为空。
+
 ## 开发
 
 ```bash
+bun run anatomy:check
 bun run quality
 bun run build
 ```
+
+本仓库通过 workspace 依赖使用自己的 CLI。根目录的 `anatomy.json` 逐项声明五个工作区及仓库基础设施的全部项目文件；函数和组件模块采用一文件一具名函数，导出名对应文件名。框架要求固定路径的 `router.tsx` 和 `-RootDocument.tsx` 使用显式名称映射。Schema 采用与导出同名的 `*Schema.ts` 文件，派生类型保留在同一文件。
+
+其他源码按 Schema、常量、类、测试、barrel、入口及框架生成模块区分；`anatomy.coverage.json` 记录其职责、理由和精确导出列表，仓库测试会验证，不能无说明地跳过约束。`quality` 首先执行全仓 Anatomy 检查，再执行类型、lint、测试和 CLI 构建，PR CI 使用同一入口。新增、移动、删除文件的步骤见 `CONTRIBUTING.md`。本地根目录 `docs/` 产物继续排除在 Git 和扫描范围外。
 
 工作区可以独立运行，不存在指向 Daedalus 的路径依赖或工作区依赖。实现复制自原 Daedalus 工具及其直接 Anatomy 依赖。Schema 包包含 CLI 所需的完整 Anatomy 接口，与 Anatomy 无关的 Daedalus 产品领域不属于此独立项目。原始 Daedalus 仓库位于本工作区之外，本项目不会修改它。
 

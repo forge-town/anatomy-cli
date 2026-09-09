@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { parseCliArguments } from "./cli-arguments";
+import { parseCliArguments } from "./parseCliArguments";
 
 describe("parseCliArguments", () => {
+  it("supports query mode without reserving existing target directory names", () => {
+    expect(parseCliArguments(["query", "--query", "new/file.ts"])._unsafeUnwrap())
+      .toMatchObject({ targetPath: "query", queryPath: "new/file.ts" });
+    expect(parseCliArguments(["--query"]).isErr()).toBe(true);
+    expect(parseCliArguments(["--query", ".", "--query", "src"]).isErr()).toBe(true);
+    expect(parseCliArguments(["--query", ".", "--ignore", "src"]).isErr()).toBe(true);
+  });
   it("parses the target, explicit definition, output format, and repeated ignores", () => {
     const result = parseCliArguments([
       "src",
@@ -21,6 +28,8 @@ describe("parseCliArguments", () => {
       format: "json",
       ignore: ["generated", "temp", "fixtures"],
       help: false,
+      queryPath: null,
+      gitFiles: false,
     });
   });
 

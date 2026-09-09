@@ -17,7 +17,7 @@ the tree/checking engine becomes `packages/anatomy`, and only its Anatomy schema
 closure is kept in `packages/schemas`. Internal Daedalus workspace aliases are
 replaced with the standalone `@anatomy-cli/*` scope.
 
-The implementation is intentionally based on a structured file tree, not on ad-hoc source inspection:
+Structural rules use a deterministic file tree. Optional function-export rules add AST analysis for selected JavaScript and TypeScript files:
 
 ```text
 JSON Anatomy Draft
@@ -25,6 +25,8 @@ JSON Anatomy Draft
 deterministic filesystem tree
         ↓
 name / nesting / quantity / one-of checks
+        ↓
+optional function-export checks
         ↓
 block · warn · allow result
 ```
@@ -195,12 +197,152 @@ The supported built-ins are `PascalCase`, `camelCase`, `kebab-case`,
 when `^` and `$` are omitted. A placeholder captured by a directory is reused
 by matching descendants; each repeated directory gets its own captured value.
 
+## Function exports (source checkout)
+
+File rules can opt into source-level export checks. For example, this file node
+requires `getUser.ts` to have exactly one runtime export: a named function called
+`getUser`.
+
+```json
+{
+  "kind": "file",
+  "name": { "type": "placeholder", "value": "<Method>.ts" },
+  "quantity": "one_or_more",
+  "exports": { "name": "file_stem" }
+}
+```
+
+`file_stem` removes only the last extension. For `<Method>.method.ts`, use
+`"exports": { "name": { "type": "placeholder", "value": "<Method>" } }` instead.
+Export placeholders must already be captured by the file name or an ancestor
+directory; they cannot introduce an unrelated binding. Literal export names are
+also supported through `{"type":"literal","value":"getUser"}`. The export
+rule's `policy` defaults to `block`; it is independent of structural policies.
+
+Named function declarations, async/generator functions, arrow functions and
+function expressions are supported, including local `export { implementation as
+getUser }` aliases. The exported public name is checked. Type aliases, interfaces
+and type-only exports do not count. Default exports, missing exports, additional
+runtime exports and non-function exports violate the rule. Imports/re-exports or
+computed wrappers whose callable nature cannot be determined locally, declaration
+files, CommonJS export mutations and syntax errors produce operational errors
+(exit `2`). The source is parsed, never imported or executed. This is a static
+export-declaration check, not a proof of runtime behavior or type correctness.
+
+Only matched files with an `exports` rule are read for source analysis; existing
+structural-only definitions keep their behavior. Query mode reports `expectedExport`
+and shows the requirement in human output without analyzing source. Check JSON
+includes `expectedExport`, `actualExports`, and the existing `rulePath` on export
+findings, with codes `export_count_mismatch`, `export_name_mismatch` or
+`export_kind_mismatch`. Run the same `anatomy` check command after editing the
+file's contents; no extra CLI flag is needed.
+
+The pure engine's `planAnatomyCheck` returns `structuralResult` and `exportChecks`.
+That plan is not a complete conformance result. Call `checkAnatomy` with the analyzed
+exports map keyed by relative file path to enforce both structure and exports;
+it returns `AnatomySourceAnalysisError` if required analysis is absent. The CLI
+performs both steps automatically. The bundled CLI now includes the TypeScript
+parser; this feature needs a new CLI release before registry installs support it.
+
+## Agent workflow (source checkout)
+
+Query the definition before editing, then check the resulting file tree. These
+commands use this checkout; the query interface requires a future CLI release
+before it is available in registry installs.
+
+```bash
+# Use the same target root and definition for both operations.
+# The queried path is relative to the target root and may not exist yet.
+bun run anatomy ./packages/services --query src/UserService/UserService.ts \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+
+# After the Agent creates or edits the module:
+bun run anatomy ./packages/services \
+  --definition ./apps/anatomy-cli/anatomies/service-files.anatomy.json --format json
+```
+
+Replace `./packages/services` with an existing directory in your repository.
+Omit `--definition` to use the nearest `anatomy.json`, as with normal checks.
+The definition root always describes the directory passed as `target`; finding
+a definition in a parent does not change that root. `--query .` returns root
+constraints. Relative Windows separators are accepted; absolute paths and `..`
+segments in the query are rejected. Query mode reads the target to surface
+filesystem errors, but never creates files or changes the definition.
+
+Omit `--format json` for a readable summary of required files, quantities,
+inherited names, policies and conditional one-of alternatives. This summary
+describes constraints; it does not certify that the files pass validation.
+
+Query JSON uses `contractVersion: 1`, `operation: "query"`, and these statuses:
+
+| Status | Meaning |
+| --- | --- |
+| `resolved` | A declared rule was found, or root constraints were requested. This is not a validation pass. |
+| `unmatched` | No entry rule matched at `scopePath`; that parent's `unexpectedEntry` policy still applies. Undeclared directory descendants are not checked. |
+| `mismatch` | A name, binding, or intermediate entry kind conflicts with the declared structure. |
+| `ambiguous` | Multiple rules may consume the entry; inspect `matches` and `rules`. Validation uses definition order, entry kinds and siblings. |
+
+Responses include the absolute definition and target paths, effective policies,
+captured placeholder values, binding constraints, ancestor quantities, applicable
+rules and containing one-of groups. Directory rules retain their child structure.
+Use `captures` to substitute inherited placeholders in descendants; one-of
+alternatives are conditional, not a list of files that must all be created.
+Always run a check to evaluate quantities, sibling alternatives and actual kinds.
+
+Check JSON preserves `conforms`, `summary`, and the existing issue fields, adding
+`contractVersion: 1`, `operation: "check"`, definition/target metadata and
+`ignoredNames`. Each issue adds `rulePath` (a JSON Pointer into the definition),
+`expected` (the declared node), and `actual` (observed entry summaries). For
+missing-entry and one-of issues, `actual` lists siblings in the affected directory.
+Unexpected entries have null `rulePath` and `expected`. Use `rulePath` to correlate
+query and check results for the same definition revision: omitted IDs are generated
+anew when parsing, and array indices can change when the definition is edited.
+
+A completed query exits `0` for every query status; inspect `status` before
+editing. Checks retain `0` for no blocking findings and `1` for blocking findings.
+Operational errors exit `2`; with `--format json`, stderr contains an
+`operation: "error"` JSON object and stdout has no success report. Missing or
+invalid definitions, unsupported schema versions, unknown fields and unreadable
+targets are errors, not an absence of constraints. Unknown definition fields are
+now rejected instead of silently removed; fix spelling or use supported version-1
+rules. Human check output and legacy target/definition flags remain supported.
+
+Queries describe declared structure independently of scan exclusions, so `--ignore`
+is only accepted for checks. By default, checks skip symbolic links and default
+generated directories, including `node_modules` and `dist`; the report lists
+ignored names. A structural pass only covers the collected tree and executed
+rules. Run type checks and behavior tests separately.
+
+For repository-wide checks, use `anatomy . --git-files`. This requires Git and
+selects tracked files (even when an ignore rule matches them) plus non-ignored
+untracked files. It reads the current working tree, so deleted files remain
+missing. Git mode includes definition files and does not apply the default
+name exclusions; it rejects `--ignore`, symlinks and submodules instead of
+silently omitting them. Ignored untracked artifacts and empty directories are
+outside this file-based inventory. JSON reports identify `fileSelection: "git"`
+and have an empty `ignoredNames` list.
+
 ## Development
 
 ```bash
+bun run anatomy:check
 bun run quality
 bun run build
 ```
+
+This repository uses its own workspace CLI. The root `anatomy.json` explicitly
+declares every project file across all five workspaces and repository
+infrastructure. Function and component modules have one named function export
+matching the filename; `router.tsx` and `-RootDocument.tsx` keep the naming
+required by the framework through explicit export-name mappings. Schema modules
+use `SchemaName.ts` and retain their inferred types beside the schema.
+
+`anatomy.coverage.json` records the exact exports and reasons for other source
+roles: schemas, data, classes, tests, barrels, entrypoints and framework-generated
+modules. Repository tests enforce those roles and reject unreviewed exceptions.
+`quality` runs the full Anatomy check before type checks, lint, tests and the CLI
+build; pull-request CI runs the same command. See `CONTRIBUTING.md` when adding,
+moving or removing a file. Local `docs/` artifacts stay outside Git and this scan.
 
 The workspace is self-contained: it has no path or workspace dependency on
 Daedalus. The implementation was copied from the original Daedalus tooling and its

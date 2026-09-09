@@ -1,14 +1,12 @@
-import { describe, it, expect } from "vitest";
-import {
-  createEmptyStructure,
-  createDirectoryEntry,
-  createFileEntry,
-  insertAnatomyNode,
-  removeAnatomyNode,
-  updateAnatomyNode,
-  locateNodeInTree,
-  groupSiblingEntries,
-} from "./anatomy-tree";
+import { describe, expect, it } from "vitest";
+import { createDirectoryEntry } from "./createDirectoryEntry";
+import { createEmptyStructure } from "./createEmptyStructure";
+import { createFileEntry } from "./createFileEntry";
+import { groupSiblingEntries } from "./groupSiblingEntries";
+import { insertAnatomyNode } from "./insertAnatomyNode";
+import { locateNodeInTree } from "./locateNodeInTree";
+import { removeAnatomyNode } from "./removeAnatomyNode";
+import { updateAnatomyNode } from "./updateAnatomyNode";
 
 describe("anatomy-tree", () => {
   describe("createEmptyStructure", () => {

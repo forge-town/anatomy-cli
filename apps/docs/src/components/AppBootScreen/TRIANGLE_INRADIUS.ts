@@ -1,0 +1,3 @@
+import { TRIANGLE_RADIUS } from "./TRIANGLE_RADIUS";
+
+export const TRIANGLE_INRADIUS = TRIANGLE_RADIUS / 2;

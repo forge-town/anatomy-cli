@@ -1,6 +1,6 @@
 {
   "name": "Anatomy CLI source modules",
-  "purpose": "A concrete Anatomy case for the apps/anatomy-cli/src directory. Keep the CLI entrypoint, adapters, formatters, and their tests explicit so structural changes are intentional.",
+  "purpose": "Focused copy of the repository contract for the CLI source directory; tests prevent divergence.",
   "structure": {
     "schemaVersion": 1,
     "defaultPolicies": {
@@ -13,17 +13,70 @@
       "children": [
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "index.ts" },
+          "name": { "type": "literal", "value": "AnatomyCliArgumentError.ts" },
           "quantity": "exactly_one"
         },
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "main.ts" },
+          "name": { "type": "literal", "value": "AnatomyCliExitCode.ts" },
           "quantity": "exactly_one"
         },
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "cli.ts" },
+          "name": { "type": "literal", "value": "AnatomyCliFormatValues.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "AnatomyCliUsage.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "AnatomyDefinitionFileError.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "AnatomyFileTreeError.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "AnatomyInstallError.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "DefaultAnatomyDefinitionFileName.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "DefaultIgnoredNames.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "agent-workflow.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "analyze-source-exports.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "analyzeSourceExports.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "cli-arguments.spec.ts" },
           "quantity": "exactly_one"
         },
         {
@@ -33,18 +86,35 @@
         },
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "cli-arguments.ts" },
-          "quantity": "exactly_one"
+          "name": { "type": "literal", "value": "collectFileTree.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
         },
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "cli-arguments.spec.ts" },
-          "quantity": "exactly_one"
+          "name": { "type": "literal", "value": "collectGitFileTree.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
         },
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "filesystem.ts" },
-          "quantity": "exactly_one"
+          "name": { "type": "literal", "value": "collectSourceExports.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "configurePath.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
         },
         {
           "kind": "file",
@@ -53,7 +123,171 @@
         },
         {
           "kind": "file",
-          "name": { "type": "literal", "value": "format-result.ts" },
+          "name": { "type": "literal", "value": "findAnatomyDefinition.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "format-agent-result.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "formatAgentCheck.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "formatAgentError.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "formatAgentQuery.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "formatHumanResult.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "formatJsonResult.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "function-export-workflow.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "getPathPlan.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "git-files.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "index.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install-main.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "installUsage.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "main.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "parseCliArguments.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "parseInstallOptions.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "posixLauncher.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "quoteShell.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "readAnatomyDefinition.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "repository-contract.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "runAnatomyCli.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "runInstallation.ts" },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem"
+          }
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "source-contract.spec.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "windowsLauncher.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "windowsPathScript.ts" },
           "quantity": "exactly_one"
         }
       ]

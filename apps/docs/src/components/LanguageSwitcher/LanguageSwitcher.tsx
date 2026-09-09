@@ -1,7 +1,7 @@
 import { Select } from "@base-ui/react/select";
 import { Check, ChevronDown, Languages } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 
 const LANGUAGES = [
   { value: "zh", labelKey: "common.chinese" },

@@ -1,10 +1,12 @@
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Button } from "@/components/ui/Button";
+import { applyTheme } from "@/lib/applyTheme";
+import { getSavedTheme } from "@/lib/getSavedTheme";
+import { saveTheme } from "@/lib/saveTheme";
+import { Link } from "@tanstack/react-router";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/Button";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { applyTheme, getSavedTheme, saveTheme } from "@/lib/theme";
 
 const route = (href: string) => href as never;
 

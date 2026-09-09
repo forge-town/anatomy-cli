@@ -21,8 +21,9 @@ vi.mock("react", async (original) => ({
     return [typeof initial === "function" ? initial() : initial, setter];
   },
 }));
-vi.mock("@/lib/i18n", () => ({ applySavedLanguage: hooks.language }));
-vi.mock("@/lib/theme", () => ({ applyTheme: hooks.theme, getSavedTheme: () => "dark" }));
+vi.mock("@/lib/applySavedLanguage", () => ({ applySavedLanguage: hooks.language }));
+vi.mock("@/lib/applyTheme", () => ({ applyTheme: hooks.theme }));
+vi.mock("@/lib/getSavedTheme", () => ({ getSavedTheme: () => "dark" }));
 
 const deferred = () => {
   let resolve!: () => void;

@@ -2,9 +2,12 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { parseInstallOptions, type InstallOptions } from "./install-options";
-import { getPathPlan, quoteShell, windowsPathScript } from "./install-path";
-import { runInstallation, windowsLauncher, type InstallContext } from "./install";
+import { getPathPlan } from "./getPathPlan";
+import { parseInstallOptions, type InstallOptions } from "./parseInstallOptions";
+import { quoteShell } from "./quoteShell";
+import { runInstallation, type InstallContext } from "./runInstallation";
+import { windowsLauncher } from "./windowsLauncher";
+import { windowsPathScript } from "./windowsPathScript";
 
 const projectRoot = resolve(import.meta.dirname, "../../..");
 let temporary: string;
