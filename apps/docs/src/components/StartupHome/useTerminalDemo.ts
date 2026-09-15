@@ -1,6 +1,7 @@
 import { useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { getTerminalDemoFrame, TERMINAL_DEMO_TIMING } from "./terminalDemo";
+import { getTerminalDemoFrame } from "./getTerminalDemoFrame";
+import { TERMINAL_DEMO_TIMING } from "./TERMINAL_DEMO_TIMING";
 
 export const useTerminalDemo = () => {
   const ref = useRef<HTMLElement>(null);

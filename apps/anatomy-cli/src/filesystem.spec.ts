@@ -1,13 +1,11 @@
+import { createEmptyAnatomyDraft } from "@anatomy-cli/anatomy/core";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { createEmptyAnatomyDraft } from "@anatomy-cli/anatomy/core";
-import {
-  collectFileTree,
-  findAnatomyDefinition,
-  readAnatomyDefinition,
-} from "./filesystem";
+import { collectFileTree } from "./collectFileTree.js";
+import { findAnatomyDefinition } from "./findAnatomyDefinition.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
 
 const testDirectory = join(process.cwd(), ".anatomy-cli-test");
 const missingDefinitionDirectory = join(

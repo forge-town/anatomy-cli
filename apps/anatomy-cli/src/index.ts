@@ -1,4 +1,2 @@
-export * from "./cli";
-export * from "./cli-arguments";
-export * from "./filesystem";
-export * from "./format-result";
+export * from "../../../packages/anatomy/src/index.js";
+export * from "../../../packages/schemas/src/index.js";

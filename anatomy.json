@@ -1,0 +1,2390 @@
+{
+  "name": "Anatomy repository",
+  "purpose": "Strict repository structure and function export contracts for all Git-visible files. Run anatomy . --git-files. Non-function source roles are reviewed in anatomy.coverage.json and verified by repository-contract.spec.ts.",
+  "structure": {
+    "rootMode": "contents",
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "root": {
+      "children": [
+        {
+          "kind": "directory",
+          "name": { "type": "literal", "value": ".github" },
+          "quantity": "exactly_one",
+          "children": [
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "workflows" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "ci.yml" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "deploy-docs.yml" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "id": "a7082281-d14e-47e3-9676-d33b35803497",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "publish-npm.yml" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": ".gitignore" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "CONTRIBUTING.md" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "LICENSE" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "README.md" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "README.zh-CN.md" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "anatomy.coverage.json" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "anatomy.json" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "directory",
+          "name": { "type": "literal", "value": "apps" },
+          "quantity": "exactly_one",
+          "children": [
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "anatomy-cli" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "anatomies" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "cli-source.anatomy.json" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "drizzle-table-files.anatomy.json" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "service-files.anatomy.json" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "45acc4f3-21e9-4759-87da-0ef20e0846d5",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "db-schema.bundle.json" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    }
+                  ]
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "bin" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "anatomy-cli.js" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "anatomy.js" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runEntrypoint.js" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "package.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "src" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyCliArgumentError.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyCliExitCode.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyCliFormatValues.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyCliUsage.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyDefinitionFileError.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyFileTreeError.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "AnatomyInstallError.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "DefaultAnatomyDefinitionFileName.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "DefaultIgnoredNames.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "agent-workflow.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "analyze-source-exports.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "analyzeSourceExports.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "cli-arguments.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "cli.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "collectFileTree.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "collectGitFileTree.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "collectSourceExports.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "configurePath.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "filesystem.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "findAnatomyDefinition.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "format-agent-result.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "formatAgentCheck.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "formatAgentError.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "formatAgentQuery.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "formatHumanResult.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "formatJsonResult.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "function-export-workflow.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "getPathPlan.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "git-files.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "index.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "install-main.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "install.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "installUsage.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "main.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "parseCliArguments.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "parseInstallOptions.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "posixLauncher.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "quoteShell.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "readAnatomyDefinition.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "repository-contract.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runAnatomyCli.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runInstallation.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "source-contract.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "windowsLauncher.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "windowsPathScript.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "f88299ba-3073-4d64-bd25-c4aa230bc587",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "packed-consumer.spec.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "7a251c8b-bdde-4daa-baff-b976f954274d",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runAnatomyBundleCli.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "id": "2bd1e035-6adf-4c66-b914-c39d13534ab9",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "NpmReleaseError.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "c9628cc1-0955-494c-bcc8-3d7dbfeb7f77",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "npm-release.spec.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "4a897b3f-4fa5-4fd0-94c2-e674b8c40c68",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "planNpmRelease.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "id": "e24d00a1-6a21-4c36-b524-0c0710a510b3",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "release-main.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "f6b731f4-7d53-40a9-a0e7-d085b366f5d2",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runNpmRelease.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "id": "3bd4a3b1-b3cb-48c9-b84e-e04e7bbdf8e3",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "build-main.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "e8264936-76d8-4532-9712-97c4e3e13022",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "resolvePackageImports.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "id": "9d9b5029-9e08-4f0b-a5e2-adf1eb8a370f",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.build.json" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                }
+              ]
+            },
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "docs" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": ".env.example" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "README.md" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "README.zh-CN.md" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "package.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "plans" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-01-galaxy-hero-design.md" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-01-placeholder-binding-design.md" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-01-tailwind-shadcn-design.md" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-01-tanstack-docs-design.md" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-02-aceternity-startup-home-design.md" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-02-home-redesign-design.md" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "2026-09-02-monolaunch-home-redesign-design.md" },
+                      "quantity": "exactly_one"
+                    }
+                  ]
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "public" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "_redirects" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "logo.svg" },
+                      "quantity": "exactly_one"
+                    }
+                  ]
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "scripts" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "check-cloudflare-build.ts" },
+                      "quantity": "exactly_one"
+                    }
+                  ]
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "src" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "components" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "AppBootScreen" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "AppBootScreen.lifecycle.test.tsx" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "AppBootScreen.test.tsx" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "AppBootScreen.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "BOOT_MOTION.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "OVERSCAN.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "TRIANGLE_INRADIUS.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "TRIANGLE_RADIUS.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "TRIANGLE_VERTICES.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "createBootGeometry.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "createBootMotion.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "getOpeningScale.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "getTurnSettleMs.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "polygonPoints.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "waitForBoot.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "LanguageSwitcher" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "LanguageSwitcher.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "MonoBlockCanvas" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "MonoBlockCanvas.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "MonoLaunchHero" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "MonoLaunchHero.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "PublicLayout" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "PublicLayout.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "StartupHome" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "KiteDartPattern.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "RhombusPattern.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupCiFileTree.css" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupCiFileTree.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupCiSection.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupCta.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupFooter.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupGridBackground.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupHeader.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupHero.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupHome.temp.json" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupHome.temp.md" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupHome.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupScanSection.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupTerminalCase.css" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupTerminalCase.test.tsx" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StartupTerminalCase.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StructureScanPreview.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "StructureTreeRow.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "TERMINAL_COMMAND.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "TERMINAL_DEMO_TIMING.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "add.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "createPenroseTiling.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "createRhombusTiling.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "getTerminalDemoFrame.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "pointsToSvg.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "scanRows.tsx" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "updateGridPatternHover.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "updateKiteDartHover.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "useTerminalDemo.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "icons" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "CODE_PATH_LABELS.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "CODE_PATH_MAP.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "CODE_PATH_ROUTE.ts" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "CodePathMapIcon.tsx" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "createCodePathDots.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "getCodePathPoint.ts" },
+                              "quantity": "exactly_one",
+                              "exports": {
+                                "name": "file_stem"
+                              }
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "index.ts" },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "ui" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "directory",
+                              "name": { "type": "literal", "value": "Badge" },
+                              "quantity": "exactly_one",
+                              "children": [
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "Badge.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "index.ts" },
+                                  "quantity": "exactly_one"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "directory",
+                              "name": { "type": "literal", "value": "Button" },
+                              "quantity": "exactly_one",
+                              "children": [
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "Button.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "buttonVariants.tsx" },
+                                  "quantity": "exactly_one"
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "index.ts" },
+                                  "quantity": "exactly_one"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "directory",
+                              "name": { "type": "literal", "value": "Card" },
+                              "quantity": "exactly_one",
+                              "children": [
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "Card.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "CardContent.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "CardHeader.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "index.ts" },
+                                  "quantity": "exactly_one"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "directory",
+                              "name": { "type": "literal", "value": "DropdownMenu" },
+                              "quantity": "exactly_one",
+                              "children": [
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "DropdownMenu.tsx" },
+                                  "quantity": "exactly_one"
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "DropdownMenuContent.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "DropdownMenuItem.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "DropdownMenuSeparator.tsx" },
+                                  "quantity": "exactly_one",
+                                  "exports": {
+                                    "name": "file_stem"
+                                  }
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "DropdownMenuTrigger.tsx" },
+                                  "quantity": "exactly_one"
+                                },
+                                {
+                                  "kind": "file",
+                                  "name": { "type": "literal", "value": "index.ts" },
+                                  "quantity": "exactly_one"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "docsEntries.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "getDocsEntry.ts" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem"
+                      }
+                    },
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "lib" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "PERSISTENT_DETECTION_OPTIONS.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "THEME_PREPAINT_SCRIPT.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "THEME_STORAGE_KEY.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "applySavedLanguage.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "applyTheme.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "cn.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "getSavedLanguage.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "getSavedTheme.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "getServerLanguage.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "i18n.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "languageDetector.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "normalizeLanguage.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "saveTheme.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "locales" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "en.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "zh.json" },
+                          "quantity": "exactly_one"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "pages" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "DocsPage.tsx" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "HomePage.tsx" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "payload-types.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "payload.config.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "routeTree.gen.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "router.tsx" },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": { "type": "literal", "value": "getRouter" }
+                      }
+                    },
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "routes" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "$.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "-RootDocument.tsx" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": { "type": "literal", "value": "RootDocument" }
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "__root.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "_payload.admin.$.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "_payload.admin.index.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "_payload.api.$.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "_payload.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "directory",
+                          "name": { "type": "literal", "value": "_payload" },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "importMap.js" },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": { "type": "literal", "value": "server.functions.ts" },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "docs.$slug.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "docs.index.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "docs.tsx" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.tsx" },
+                          "quantity": "exactly_one"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "styles.css" },
+                      "quantity": "exactly_one"
+                    }
+                  ]
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "vite.config.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "vitest.config.ts" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "wrangler.jsonc" },
+                  "quantity": "exactly_one"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "bun.lock" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install.ps1" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "install.sh" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "package.json" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "directory",
+          "name": { "type": "literal", "value": "packages" },
+          "quantity": "exactly_one",
+          "children": [
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "anatomy-cli-config" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "package.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "src" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "anatomies.spec.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "anatomies" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "dao.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "drizzle-relation.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "drizzle-table.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "mobile-screen.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "repository.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "schemas.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "service.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "trpc-router.anatomy.json" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "zod-schema.anatomy.json" },
+                          "quantity": "exactly_one"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.json" },
+                  "quantity": "exactly_one"
+                }
+              ]
+            },
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "anatomy" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "package.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "src" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "core" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyCheckCode.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyQueryPathError.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomySourceAnalysisError.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyValidationCode.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "ResolvedAnatomyPolicy.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "anatomy-tree.spec.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "anatomyRulePaths.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "check-anatomy.spec.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "checkAnatomy.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "cloneEntry.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createDirectoryEntry.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createEmptyAnatomyDraft.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createEmptyStructure.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createFileEntry.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "evaluateName.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "findNodeInTree.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "function-export.spec.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "groupSiblingEntries.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "insertAnatomyNode.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "locateNodeInTree.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "planAnatomyCheck.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "query-anatomy.spec.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "queryAnatomy.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "removeAnatomyNode.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "replaceNodeInTree.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "resolveAnatomyExportName.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "resolveAnatomyPolicies.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "uid.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "updateAnatomyNode.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "validateAnatomyForPublish.ts" },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem"
+                          }
+                        },
+                        {
+                          "id": "912e152f-207d-49e6-bf5e-19b09f4db772",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "applyAnatomyExportChecks.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "index.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "7296b4c2-1837-4fa9-96c0-fbf9dd278582",
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "composition" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "children": [
+                        {
+                          "id": "c452ab9d-0503-4d86-a20b-a7ae6bf000e5",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyResourceLimits.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "c983d55e-30ea-4903-9c38-25229b3d3dea",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "checkInputBudget.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "35224d28-2fac-474c-9a2c-6065b19610dc",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "compileAnatomyDefinition.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "78ba7db4-55fd-4447-a40c-0a258b86307a",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "composition.spec.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "bcb37a38-1a29-4db1-be49-993ab280c2f6",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createAnatomyFinding.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "5f4556e6-134d-47b0-9df0-8703bcaf839b",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "1e5ee477-b3a6-4b66-87c2-35681b82e9ba",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "planAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "2488913b-2826-4c81-86fd-20ef44ab2f79",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "queryAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "60db4ef2-c3b3-422b-b7cd-74981701bbac",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "resolveAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "d0a7e0ad-4bdb-4e97-ab18-50a945dd4fad",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "scanAnatomy.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "ad7ef58f-dc28-4205-9d12-2a28bafd8b38",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "validateAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "943960e8-b6e4-4762-9503-b1d9d219c0f7",
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "source" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "children": [
+                        {
+                          "id": "3e327f8b-8a4e-47db-8696-19f954acfe8a",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "analyzeSourceExports.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "71f16197-1e57-4e10-b7ba-7d2002f9d6ee",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "id": "5f32e69b-3f48-41f1-9e8d-1d3095b8c4a9",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.build.json" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                }
+              ]
+            },
+            {
+              "kind": "directory",
+              "name": { "type": "literal", "value": "schemas" },
+              "quantity": "exactly_one",
+              "children": [
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "anatomy.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "package.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "directory",
+                  "name": { "type": "literal", "value": "src" },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "anatomy" },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBindingFormatSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBindingSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyCheckWithDiagnosticsSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyContract.spec.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDetailSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDirectoryEntrySchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDraftCreateInputSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDraftInput.spec.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDraftInputSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDraftSaveInputSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDraftSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyEntrySchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyFileEntrySchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyFunctionExportCheckSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyFunctionExportRuleSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyListInputSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyNameExpressionSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyNodeSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyOneOfGroupSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyPoliciesSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyPolicyOverridesSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyPolicyValueSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyQuantitySchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyQueryWithConstraintsSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomySourceExportsSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyStatusSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyStructureSchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomySummarySchema.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "id": "9cd1a902-c57b-4768-9b79-20a77c246822",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createAnatomyNodeId.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "index.ts" },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "e34dac06-21bb-41ec-983f-9d2c56d1baff",
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "composition" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "children": [
+                        {
+                          "id": "c16be793-ca68-4a13-aebf-caca2a737ec6",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleQueryOutcomeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "dc5e87e5-27e8-43ec-b242-ad7587596b3f",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleQueryRequestSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "b3570310-a071-47f6-a605-789f8745fcc3",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "478b7f75-b07c-46f9-a8bc-4c4c364b9e08",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleValidationOutcomeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "81de7097-5cc4-4bd9-b845-f3bb309e2623",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyCompositionNodeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "20112a95-0688-4061-9d03-25c3ed304b55",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDefinitionSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "655d4c82-4a83-4977-9cc8-4c56d95f015e",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDiagnosticSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "2ca52c34-5deb-406f-b412-72846f67c9c0",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyFindingSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "70c660ca-9de5-476e-9ae4-74c3f734dcfb",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyMountSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "58a91a05-b06c-4ba7-9fc7-b9d0a0270146",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyOriginSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "2deacc34-b51c-439e-bc65-edd88ba74573",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyRuleSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "c836c891-fa08-4f48-875b-8c2d29b306d8",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyScanOutcomeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "7a1e42f9-d401-41ba-a32b-965f09dca254",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyScanRequestSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "e45f2f14-03a7-41b7-acb7-1e3d3d2293ac",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyTargetSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "4c419753-1ea1-40ec-b11e-afd8813df35e",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.json" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "id": "36a6551f-1e39-4aa0-aed4-3d6f7f1d8271",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.build.json" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "tsconfig.json" },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": { "type": "literal", "value": "vitest.config.ts" },
+          "quantity": "exactly_one"
+        },
+        {
+          "id": "3ad4a0a9-e9bf-4b4c-a4ab-5759d78f21ea",
+          "kind": "file",
+          "name": { "type": "literal", "value": ".nvmrc" },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        }
+      ]
+    }
+  }
+}

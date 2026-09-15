@@ -2,7 +2,7 @@
   "name": "Drizzle table files",
   "purpose": "Require Drizzle table definition files to use the *.table.ts suffix while allowing the tables barrel and optional JSON support modules.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

@@ -2,7 +2,7 @@
   "name": "Repository operation units",
   "purpose": "Require every Repository to aggregate independently tested, folderized transaction operations with colocated barrel exports.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": false,
+    "rootDir": "../..",
+    "outDir": "dist",
+    "emitDeclarationOnly": false
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "../../packages/**/*.spec.ts",
+    "src/build-main.ts",
+    "src/resolvePackageImports.ts",
+    "src/release-main.ts",
+    "src/runNpmRelease.ts",
+    "src/planNpmRelease.ts",
+    "src/NpmReleaseError.ts"
+  ]
+}

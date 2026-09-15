@@ -2,7 +2,7 @@
   "name": "Tellyn Drizzle relation files",
   "purpose": "Require domain-grouped Drizzle relation modules to use the singular *.relation.ts suffix and explicit barrels.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

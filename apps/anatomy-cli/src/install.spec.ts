@@ -2,9 +2,12 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { parseInstallOptions, type InstallOptions } from "./install-options";
-import { getPathPlan, quoteShell, windowsPathScript } from "./install-path";
-import { runInstallation, windowsLauncher, type InstallContext } from "./install";
+import { getPathPlan } from "./getPathPlan.js";
+import { parseInstallOptions, type InstallOptions } from "./parseInstallOptions.js";
+import { quoteShell } from "./quoteShell.js";
+import { runInstallation, type InstallContext } from "./runInstallation.js";
+import { windowsLauncher } from "./windowsLauncher.js";
+import { windowsPathScript } from "./windowsPathScript.js";
 
 const projectRoot = resolve(import.meta.dirname, "../../..");
 let temporary: string;
@@ -22,7 +25,7 @@ beforeEach(() => {
   writeFileSync(join(packageRoot, "dist", "main.js"), 'console.log(process.argv.includes("--help") ? "Usage: anatomy [target] [options]" : JSON.stringify(process.argv.slice(2)));\n');
   options = { prefix: join(home, ".anatomy"), modifyPath: true, uninstall: false, help: false };
   context = {
-    home, packageRoot, platform: "linux", nodeVersion: "22.18.0", nodeExecutable: process.execPath,
+    home, packageRoot, platform: "linux", nodeVersion: "24.21.0", nodeExecutable: process.execPath,
     env: { ...process.env, SHELL: "/bin/zsh", ZDOTDIR: "", XDG_CONFIG_HOME: "", ANATOMY_INSTALL_DIR: "" },
   };
 });
@@ -94,7 +97,9 @@ describe("one-shot installation", () => {
     expect(readdirSync(options.prefix).some((name) => name.startsWith(".install-"))).toBe(false);
   });
   it("rejects incomplete packages and unsupported runtimes before installation", () => {
-    expect(runInstallation(options, { ...context, nodeVersion: "16.20.0" }).isErr()).toBe(true);
+    for (const nodeVersion of ["18.20.8", "22.18.0", "23.11.0"]) {
+      expect(runInstallation(options, { ...context, nodeVersion })._unsafeUnwrapErr().message).toContain("Node.js 24");
+    }
     expect(existsSync(options.prefix)).toBe(false);
     rmSync(join(context.packageRoot, "dist", "main.js"));
     expect(runInstallation(options, context).isErr()).toBe(true);

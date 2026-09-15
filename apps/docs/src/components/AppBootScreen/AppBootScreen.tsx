@@ -1,8 +1,12 @@
+import { applySavedLanguage } from "@/lib/applySavedLanguage";
+import { applyTheme } from "@/lib/applyTheme";
+import { getSavedTheme } from "@/lib/getSavedTheme";
 import { useEffect, useRef, useState } from "react";
-import { applySavedLanguage } from "@/lib/i18n";
-import { applyTheme, getSavedTheme } from "@/lib/theme";
-import { createBootGeometry, polygonPoints, TRIANGLE_VERTICES } from "./boot-geometry";
-import { createBootMotion, waitForBoot } from "./boot-motion";
+import { createBootGeometry } from "./createBootGeometry";
+import { createBootMotion } from "./createBootMotion";
+import { polygonPoints } from "./polygonPoints";
+import { TRIANGLE_VERTICES } from "./TRIANGLE_VERTICES";
+import { waitForBoot } from "./waitForBoot";
 
 const MINIMUM_OPENING_MS = 640;
 const MAXIMUM_FONT_WAIT_MS = 900;

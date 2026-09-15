@@ -1,12 +1,10 @@
 import { type AnatomyDraftInput } from "@anatomy-cli/schemas";
-import { createEmptyAnatomyDraft } from "./createEmptyAnatomyDraft";
 import { describe, expect, it } from "vitest";
-import {
-  AnatomyCheckCode,
-  checkAnatomy,
-  type AnatomyFileTreeEntry,
-} from "./check-anatomy";
-import { AnatomyValidationCode } from "./validate-anatomy-for-publish";
+import { AnatomyCheckCode } from "./AnatomyCheckCode.js";
+import { AnatomyValidationCode } from "./AnatomyValidationCode.js";
+import { checkAnatomy } from "./checkAnatomy.js";
+import { createEmptyAnatomyDraft } from "./createEmptyAnatomyDraft.js";
+import { type AnatomyFileTreeEntry } from "./planAnatomyCheck.js";
 
 const file = (id: string, name: string, quantity = "exactly_one" as const) => {
   return {

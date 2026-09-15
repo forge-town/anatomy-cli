@@ -1,5 +1,5 @@
 import type { AnatomyPolicies, AnatomyPolicyOverrides } from "@anatomy-cli/schemas";
-import type { ResolvedAnatomyPolicy } from "./ResolvedAnatomyPolicy";
+import type { ResolvedAnatomyPolicy } from "./ResolvedAnatomyPolicy.js";
 
 /** Resolve policies in current-entry, nearest-parent, then Anatomy-default order. */
 export const resolveAnatomyPolicies = (

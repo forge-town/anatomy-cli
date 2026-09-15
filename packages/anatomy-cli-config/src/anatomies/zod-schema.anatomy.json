@@ -2,7 +2,7 @@
   "name": "Tellyn Zod schema files",
   "purpose": "Require shared Zod schema modules to use the *.schema.ts suffix; tests live outside the schemas package.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { runEntrypoint } from "./run.js";
+import { runEntrypoint } from "./runEntrypoint.js";
 
 const args = process.argv.slice(2);
 const installFlags = ["--install", "--prefix", "--no-modify-path", "--uninstall"];

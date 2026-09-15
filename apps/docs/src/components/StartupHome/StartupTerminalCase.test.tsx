@@ -1,11 +1,13 @@
+import { CODE_PATH_MAP, createCodePathDots, getCodePathPoint } from "@/components/icons";
+import en from "@/locales/en.json";
+import zh from "@/locales/zh.json";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import en from "@/locales/en.json";
-import zh from "@/locales/zh.json";
-import { CODE_PATH_MAP, createCodePathDots, getCodePathPoint } from "@/components/icons";
+import { getTerminalDemoFrame } from "./getTerminalDemoFrame";
 import { StartupTerminalCase } from "./StartupTerminalCase";
-import { getTerminalDemoFrame, TERMINAL_COMMAND, TERMINAL_DEMO_TIMING as timing } from "./terminalDemo";
+import { TERMINAL_COMMAND } from "./TERMINAL_COMMAND";
+import { TERMINAL_DEMO_TIMING as timing } from "./TERMINAL_DEMO_TIMING";
 
 const motionPreferences = vi.hoisted(() => ({ reducedMotion: true }));
 

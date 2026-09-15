@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-
 import { KiteDartPattern } from "./KiteDartPattern";
+import { updateGridPatternHover } from "./updateGridPatternHover";
 
 type StartupGridBackgroundProps = {
   gridRef: { current: HTMLDivElement | null };
@@ -19,8 +19,11 @@ export type StartupGridTransitionRequest = {
 };
 
 const ROTATION_INTERVAL_MS = 16_000;
+
 const REVEAL_DURATION_MS = 1_800;
+
 const HOLD_DURATION_MS = ROTATION_INTERVAL_MS - REVEAL_DURATION_MS;
+
 const DEFAULT_TRANSITION_ORIGIN: StartupGridTransitionOrigin = { x: 50, y: 50 };
 
 type PatternDefinition = {
@@ -47,24 +50,6 @@ const patterns: PatternDefinition[] = [
   },
   { key: "kite-dart", render: (className) => <KiteDartPattern className={className} /> },
 ];
-
-export const updateGridPatternHover = (
-  grid: HTMLElement,
-  clientX: number | null,
-  clientY: number | null,
-) => {
-  if (clientX === null || clientY === null) return;
-
-  grid.querySelectorAll<HTMLElement>(".startup-grid-background__pattern").forEach((pattern) => {
-    const rect = pattern.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
-
-    const x = ((clientX - rect.left) / rect.width) * 100;
-    const y = ((clientY - rect.top) / rect.height) * 100;
-    pattern.style.setProperty("--grid-pattern-pointer-x", `${x.toFixed(3)}%`);
-    pattern.style.setProperty("--grid-pattern-pointer-y", `${y.toFixed(3)}%`);
-  });
-};
 
 type Transition = {
   from: number;
@@ -179,5 +164,4 @@ export const StartupGridBackground = ({
     </div>
   );
 };
-
 StartupGridBackground.displayName = "StartupGridBackground";

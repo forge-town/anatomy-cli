@@ -2,7 +2,7 @@
   "name": "Schemas package structure",
   "purpose": "Require every Zod schema module to live inside a domain directory, use the *.schema.ts suffix, and expose that domain through an index.ts barrel.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

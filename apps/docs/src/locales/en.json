@@ -212,7 +212,7 @@
         "3": "Start using Anatomy",
         "5": "Upgrade",
         "7": "Uninstall",
-        "9": "Requires Node.js 18+. Installs into ~/.anatomy and configures your terminal PATH; open a new terminal afterwards. Your repository still needs anatomy.json. Use --prefix with an absolute path for a custom directory, or --no-modify-path to manage PATH yourself. Uninstall keeps shell settings and backups; remove the Anatomy PATH entry manually if desired."
+        "9": "Requires Node.js 24+. Installs into ~/.anatomy and configures your terminal PATH; open a new terminal afterwards. Your repository still needs anatomy.json. Use --prefix with an absolute path for a custom directory, or --no-modify-path to manage PATH yourself. Uninstall keeps shell settings and backups; remove the Anatomy PATH entry manually if desired."
       }
     },
     "quick-start": {

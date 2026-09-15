@@ -1,0 +1,16 @@
+export const AnatomyCliUsage = [
+  "Usage: anatomy [target] [options]",
+  "",
+  "Arguments:",
+  "  target                   Directory to check (default: current directory)",
+  "",
+  "Options:",
+  "  -d, --definition <file>  Anatomy JSON (default: nearest anatomy.json)",
+  "      --bundle <file>      Composition bundle (exclusive with --definition)",
+  "  -t, --target <directory> Alternate form of the target argument",
+  "      --format <format>    human or json (default: human)",
+  "      --query <path>       Query constraints relative to target (path may not exist)",
+  "      --git-files          Check tracked and non-ignored untracked files (requires Git)",
+  "      --ignore <paths>     Comma-separated names; may be repeated",
+  "  -h, --help               Show this help",
+].join("\n");

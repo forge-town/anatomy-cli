@@ -5,23 +5,48 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./core": "./src/core/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "default": "./dist/core/index.js"
+    },
+    "./source": {
+      "types": "./dist/source/index.d.ts",
+      "default": "./dist/source/index.js"
+    },
+    "./composition": {
+      "types": "./dist/composition/index.d.ts",
+      "default": "./dist/composition/index.js"
+    }
   },
   "scripts": {
     "check-types": "tsc --noEmit",
     "lint": "oxlint src/",
     "test": "vitest run",
-    "quality": "bun run check-types && bun run lint && bun run test"
+    "quality": "bun run check-types && bun run lint && bun run test",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepack": "bun run build"
   },
   "dependencies": {
     "@anatomy-cli/schemas": "workspace:*",
-    "neverthrow": "^8.2.0"
+    "neverthrow": "^8.2.0",
+    "typescript": "5.9.2"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",
     "oxlint": "^1.59.0",
     "typescript": "5.9.2",
     "vitest": "^4.1.8"
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=24"
+  },
+  "private": true
 }

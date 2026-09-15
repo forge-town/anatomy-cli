@@ -9,12 +9,12 @@ be able to say that `Name` is PascalCase and that every descendant using
 
 ## JSON shape
 
-Bindings are declared next to `schemaVersion` and `defaultPolicies`:
+Bindings are declared next to `rootMode` and `defaultPolicies`:
 
 ```json
 {
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "bindings": {
       "Name": {
         "format": "PascalCase",
@@ -57,4 +57,4 @@ attempt to infer acronyms or split words beyond these documented conventions.
 Add schema tests for binding parsing and invalid patterns; checker tests for each
 built-in format, combined format-plus-pattern constraints, captured-value
 consistency, independent repeated-directory scopes, and compatibility with
-legacy definitions that do not declare bindings.
+definitions that do not declare bindings.

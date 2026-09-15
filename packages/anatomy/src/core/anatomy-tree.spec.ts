@@ -1,21 +1,19 @@
-import { describe, it, expect } from "vitest";
-import {
-  createEmptyStructure,
-  createDirectoryEntry,
-  createFileEntry,
-  insertAnatomyNode,
-  removeAnatomyNode,
-  updateAnatomyNode,
-  locateNodeInTree,
-  groupSiblingEntries,
-} from "./anatomy-tree";
+import { describe, expect, it } from "vitest";
+import { createDirectoryEntry } from "./createDirectoryEntry.js";
+import { createEmptyStructure } from "./createEmptyStructure.js";
+import { createFileEntry } from "./createFileEntry.js";
+import { groupSiblingEntries } from "./groupSiblingEntries.js";
+import { insertAnatomyNode } from "./insertAnatomyNode.js";
+import { locateNodeInTree } from "./locateNodeInTree.js";
+import { removeAnatomyNode } from "./removeAnatomyNode.js";
+import { updateAnatomyNode } from "./updateAnatomyNode.js";
 
 describe("anatomy-tree", () => {
   describe("createEmptyStructure", () => {
     it("returns a valid empty structure", () => {
       const structure = createEmptyStructure();
 
-      expect(structure.schemaVersion).toBe(1);
+      expect(structure.rootMode).toBe("contents");
       expect(structure.root.children).toEqual([]);
       expect(structure.defaultPolicies.missingRequired).toBe("block");
     });

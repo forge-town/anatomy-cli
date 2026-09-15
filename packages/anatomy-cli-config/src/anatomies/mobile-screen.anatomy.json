@@ -2,7 +2,7 @@
   "name": "Tellyn mobile screen files",
   "purpose": "Require every mobile screen to use a dedicated *Screen directory with a main component, Storybook story, and barrel.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

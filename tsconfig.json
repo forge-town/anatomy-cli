@@ -11,7 +11,32 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "paths": {
+      "@anatomy-cli/anatomy/core": [
+        "./packages/anatomy/src/core/index.ts"
+      ],
+      "@anatomy-cli/anatomy/source": [
+        "./packages/anatomy/src/source/index.ts"
+      ],
+      "@anatomy-cli/anatomy/composition": [
+        "./packages/anatomy/src/composition/index.ts"
+      ],
+      "@anatomy-cli/anatomy": [
+        "./packages/anatomy/src/index.ts"
+      ],
+      "@anatomy-cli/schemas/anatomy": [
+        "./packages/schemas/src/anatomy/index.ts"
+      ],
+      "@anatomy-cli/schemas/composition": [
+        "./packages/schemas/src/composition/index.ts"
+      ],
+      "@anatomy-cli/schemas": [
+        "./packages/schemas/src/index.ts"
+      ]
+    }
   },
   "include": [
     "apps/anatomy-cli/src",
