@@ -247,7 +247,7 @@ bun run build
 
 先在仓库 Actions Secrets 配置 `NPM_TOKEN`，只需授予 `anatomy-cli` 的无交互发布权限。工作流使用 `.nvmrc` 中的 Node，运行 `bun run quality`，
 独立安装打包后的 CLI 和 SDK 验证，再携带 provenance 发布。发布后回读 registry 的版本、
-完整性和标签，并重新安装验证。版本计划、tarball 和消费验证结果保存在 Actions artifacts。
+完整性和标签，并重新安装验证。npm 异步处理发布时，校验最多等待 15 分钟。版本计划、tarball 和消费验证结果保存在 Actions artifacts。
 
 工作流进入 `main` 后，可以手动发布 canary：
 

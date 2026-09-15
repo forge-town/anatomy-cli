@@ -303,7 +303,7 @@ console.log(JSON.stringify({node:process.version,version:${JSON.stringify(versio
       }
       for (const pkg of plan.packages) {
         let confirmed = false;
-        for (let attempt = 0; attempt < 6; attempt++) {
+        for (let attempt = 0; attempt < 46; attempt++) {
           const history = await readHistory(pkg.name);
           const published = history.versions[plan.version];
           confirmed =
@@ -311,9 +311,12 @@ console.log(JSON.stringify({node:process.version,version:${JSON.stringify(versio
             published.dist?.integrity === pkg.integrity &&
             history.tags[plan.tag] === plan.version;
           if (confirmed) break;
-          await new Promise((resolve) =>
-            setTimeout(resolve, 1000 * 2 ** attempt),
-          );
+          if (attempt < 45) {
+            console.log(
+              `Waiting for npm to process ${pkg.name}@${plan.version} (${attempt + 1}/45)`,
+            );
+            await new Promise((resolve) => setTimeout(resolve, 20_000));
+          }
         }
         if (!confirmed)
           throw new NpmReleaseError(

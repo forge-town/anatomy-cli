@@ -362,7 +362,8 @@ Configure the repository Actions secret `NPM_TOKEN` with non-interactive publish
 access to `anatomy-cli`. The workflow uses Node from `.nvmrc`, runs `bun run quality`,
 installs the packed CLI and SDK in an isolated consumer, then publishes with provenance. It reads
 back registry versions, integrity and tags, and installs the published package
-again. Release plans, tarballs and consumer results are uploaded as run artifacts.
+again. Registry verification waits up to 15 minutes for npm to finish processing a
+publication. Release plans, tarballs and consumer results are uploaded as run artifacts.
 
 To publish a canary manually after the workflow reaches `main`:
 
