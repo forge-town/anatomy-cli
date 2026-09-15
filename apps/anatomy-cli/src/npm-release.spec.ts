@@ -3,8 +3,6 @@ import { readFileSync } from "node:fs";
 import { planNpmRelease, type NpmPackageHistory } from "./planNpmRelease.js";
 const sha = "a".repeat(40);
 const history = (): NpmPackageHistory[] => [
-  { name: "@anatomy-cli/schemas", versions: {}, tags: {} },
-  { name: "@anatomy-cli/anatomy", versions: {}, tags: {} },
   {
     name: "anatomy-cli",
     versions: { "0.0.3": { gitHead: "b".repeat(40) } },
@@ -12,14 +10,14 @@ const history = (): NpmPackageHistory[] => [
   },
 ];
 describe("patch-only npm release planning", () => {
-  it("starts unpublished SDK packages on the CLI's next patch", () => {
+  it("increments the single public package patch", () => {
     expect(
       planNpmRelease(history(), sha, "stable", "12", "1")._unsafeUnwrap(),
     ).toMatchObject({ version: "0.0.4", tag: "latest" });
   });
   it("keeps canaries off latest and does not consume stable patch numbers", () => {
     const h = history();
-    h[2]!.versions["0.0.99-canary.10.1"] = { gitHead: sha };
+    h[0]!.versions["0.0.99-canary.10.1"] = { gitHead: sha };
     expect(
       planNpmRelease(h, sha, "canary", "12", "2")._unsafeUnwrap(),
     ).toMatchObject({ version: "0.0.4-canary.12.2", tag: "canary" });
@@ -27,7 +25,7 @@ describe("patch-only npm release planning", () => {
       planNpmRelease(h, sha, "stable", "12", "2")._unsafeUnwrap().version,
     ).toBe("0.0.4");
   });
-  it("resumes a partially published stable version instead of incrementing again", () => {
+  it("resumes a published stable version after verification failed", () => {
     const h = history();
     h[0]!.versions["0.0.4"] = { gitHead: sha };
     expect(
@@ -49,7 +47,7 @@ describe("patch-only npm release planning", () => {
   it("rejects inconsistent versions for one source", () => {
     const h = history();
     h[0]!.versions["0.0.4"] = { gitHead: sha };
-    h[1]!.versions["0.0.5"] = { gitHead: sha };
+    h[0]!.versions["0.0.5"] = { gitHead: sha };
     expect(planNpmRelease(h, sha, "stable", "1", "1").isErr()).toBe(true);
   });
   it("never automatically crosses to a minor release", () => {
@@ -74,14 +72,23 @@ describe("patch-only npm release planning", () => {
       planNpmRelease(history(), source, "canary", run, attempt).isErr(),
     ).toBe(true);
   });
-  it("requires a complete package set", () => {
+  it("rejects publishing internal or extra packages", () => {
     expect(
-      planNpmRelease(history().slice(1), sha, "stable", "1", "1").isErr(),
+      planNpmRelease(
+        [
+          ...history(),
+          { name: "@anatomy-cli/schemas", versions: {}, tags: {} },
+        ],
+        sha,
+        "stable",
+        "1",
+        "1",
+      ).isErr(),
     ).toBe(true);
   });
   it("does not add a canary build or retry to the stable counter", () => {
     const h = history();
-    h[2]!.versions["0.0.9"] = {};
+    h[0]!.versions["0.0.9"] = {};
     expect(
       planNpmRelease(h, sha, "canary", "999", "2")._unsafeUnwrap().version,
     ).toBe("0.0.10-canary.999.2");

@@ -241,12 +241,11 @@ bun run build
 
 ## 发布
 
-`Publish npm packages` 在发版相关改动进入 `main` 后自动发布 patch。目前只递增
-`0.0.x` 的第三位，不自动升级 minor 或 major。三个公开包使用同一版本，按
-`@anatomy-cli/schemas` → `@anatomy-cli/anatomy` → `anatomy-cli` 的顺序发布；根包保持私有。
+`Publish anatomy-cli` 在发版相关改动进入 `main` 后自动发布 patch。目前只递增
+`0.0.x` 的第三位，不自动升级 minor 或 major。只发布 `anatomy-cli` 一个包，同时提供 CLI、SDK、
+运行时 Schema 和类型。engine 和 schemas 工作区标记为私有，编译产物一起放进 `anatomy-cli`。
 
-先在仓库 Actions Secrets 配置 `NPM_TOKEN`，授予三个包的无交互发布权限，首次发布
-还需要创建 scope 包的权限。工作流使用 `.nvmrc` 中的 Node，运行 `bun run quality`，
+先在仓库 Actions Secrets 配置 `NPM_TOKEN`，只需授予 `anatomy-cli` 的无交互发布权限。工作流使用 `.nvmrc` 中的 Node，运行 `bun run quality`，
 独立安装打包后的 CLI 和 SDK 验证，再携带 provenance 发布。发布后回读 registry 的版本、
 完整性和标签，并重新安装验证。版本计划、tarball 和消费验证结果保存在 Actions artifacts。
 
@@ -259,11 +258,10 @@ gh workflow run publish-npm.yml --ref main -f channel=canary
 Actions 页面也支持选择 `channel=stable`（默认）或 `channel=canary`。稳定版只允许从
 `main` 发布；canary 可以选择功能分支。工作流尚未进入默认分支时，推送 `canary-*` Git
 标签也能从对应提交触发 canary。版本形如 `0.0.4-canary.<run-id>.<attempt>`，只更新 npm
-的 `canary` 标签，不更新 `latest`。安装命令为 `npm install anatomy-cli@canary`，SDK 为
-`npm install @anatomy-cli/anatomy@canary @anatomy-cli/schemas@canary`。
+的 `canary` 标签，不更新 `latest`。CLI 和 SDK 都通过 `npm install anatomy-cli@canary` 安装。
 
-稳定版取三个包在 registry 上最高的 `0.0.x` 再递增。同一源码提交的稳定版重跑会继续原版本，
-不会重复递增；已发布产物冲突时失败。版本号和内部依赖精确版本只写入被忽略的根 `docs/`
+稳定版取 `anatomy-cli` 在 registry 上最高的 `0.0.x` 再递增。同一源码提交的稳定版重跑会继续原版本，
+不会重复递增；已发布产物冲突时失败。版本号只写入被忽略的根 `docs/`
 下的临时打包副本，工作流不向 Git 提交版本修改，实际发布版本与源码提交以 registry 为准。
 
 两个 `bin` 入口保持独立：`anatomy-cli` 默认进入安装器，`anatomy` 进入检查器。
@@ -301,9 +299,11 @@ Bundle 使用逻辑根键 `root` 和 `definitions: [{ key, definition }]`。key 
 
 composition 不允许内联 children、alternatives 或源码规则，也不允许出现在 one_of 的 alternatives 中。只维护一套当前契约，不设置格式版本字段或历史 Anatomy 版本；每次请求只使用调用方提供的定义快照。
 
-构建后的 `@anatomy-cli/anatomy` 提供 `validateAnatomyBundle`、`scanAnatomy`、`queryAnatomyBundle`，`@anatomy-cli/schemas` 提供运行时 Schema 与派生类型。两个包均输出 ESM JavaScript 和 d.ts。调用示例：
+安装 `anatomy-cli` 后，即可使用 `validateAnatomyBundle`、`scanAnatomy`、`queryAnatomyBundle`，以及运行时 Schema 与派生类型。这个包同时提供 CLI、ESM JavaScript 和 d.ts。调用示例：
 
 ```ts
+import { scanAnatomy, queryAnatomyBundle, validateAnatomyBundle } from "anatomy-cli";
+
 const result = await scanAnatomy({
   bundle,
   target: { kind: 'directory', name: 'db-schema', children: completeTree },
@@ -318,4 +318,4 @@ SDK 不读取文件系统、Git、数据库或网络，不执行目标源码；�
 
 公开限额 `AnatomyResourceLimits`：128 个定义、100,000 个输入对象、输入嵌套深度 128、引用深度 32、10,000 个挂载实例、单份源码 5,000,000 UTF-8 字节、全部源码 20,000,000 字节。超限返回 resource_limit_exceeded。
 
-`bun run quality` 包含打包后独立安装与实际 Node CLI/SDK 测试；测试需要访问 npm registry，消费样例保留在被忽略的根 docs/verification/cod-420/ 中。发布前核对 scope 权限、npm 版本和 schemas→core→CLI 依赖顺序，真正发布是单独操作。Daedalus 仍负责权限、业务 ID 映射、完整仓库快照、Findings 映射，以及 MCP 根 Anatomy 选择与扫描编排的贯通。
+`bun run quality` 包含打包后独立安装与实际 Node CLI/SDK 测试；测试需要访问 npm registry，消费样例保留在被忽略的根 docs/verification/cod-420/ 中。发版工作流只发布 `anatomy-cli`，发布前核对这个包的 npm 权限和版本。Daedalus 仍负责权限、业务 ID 映射、完整仓库快照、Findings 映射，以及 MCP 根 Anatomy 选择与扫描编排的贯通。

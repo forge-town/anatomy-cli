@@ -490,6 +490,24 @@
                         "name": "file_stem",
                         "policy": "block"
                       }
+                    },
+                    {
+                      "id": "3bd4a3b1-b3cb-48c9-b84e-e04e7bbdf8e3",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "build-main.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "e8264936-76d8-4532-9712-97c4e3e13022",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "resolvePackageImports.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
                     }
                   ]
                 },

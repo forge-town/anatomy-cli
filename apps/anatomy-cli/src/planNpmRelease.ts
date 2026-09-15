@@ -20,13 +20,8 @@ export const planNpmRelease = (
     );
   if (!/^\d+$/.test(runId) || !/^\d+$/.test(attempt))
     return err(new NpmReleaseError("Release run and attempt must be numeric"));
-  if (
-    histories.length !== 3 ||
-    new Set(histories.map((p) => p.name)).size !== 3
-  )
-    return err(
-      new NpmReleaseError("A release requires all three distinct packages"),
-    );
+  if (histories.length !== 1 || histories[0]?.name !== "anatomy-cli")
+    return err(new NpmReleaseError("Only anatomy-cli may be published"));
   let highest = 0;
   const sameSource = new Set<string>();
   for (const history of histories) {

@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { execFile } from "node:child_process";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { promisify } from "node:util";
 import { ResultAsync } from "neverthrow";
@@ -22,11 +22,7 @@ beforeAll(async () => {
   consumer = await mkdtemp(join(root, "docs/verification/cod-420/consumer-"));
   (await execute("bun", ["run", "build"], root))._unsafeUnwrap();
   const tarballs: string[] = [];
-  for (const pkg of [
-    "packages/schemas",
-    "packages/anatomy",
-    "apps/anatomy-cli",
-  ]) {
+  for (const pkg of ["apps/anatomy-cli"]) {
     const packed = (
       await execute(
         "npm",
@@ -75,11 +71,11 @@ beforeAll(async () => {
   cliPath = join(consumer, "node_modules/anatomy-cli/bin/anatomy.js");
   await writeFile(
     join(consumer, "sdk.mjs"),
-    `import {scanAnatomy} from '@anatomy-cli/anatomy';
-import {AnatomyScanOutcomeSchema} from '@anatomy-cli/schemas';
+    `import {scanAnatomy} from 'anatomy-cli';
+import {AnatomyScanOutcomeSchema} from 'anatomy-cli';
 import {readFileSync} from 'node:fs';import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-for(const name of ['@anatomy-cli/anatomy','@anatomy-cli/schemas','typescript']) {
+for(const name of ['anatomy-cli','typescript']) {
   if(!require.resolve(name).startsWith(process.cwd()+'/node_modules/')) throw Error('dependency escaped consumer: '+name);
 }
 if(Number(process.versions.node.split('.')[0]) < 24) throw Error('Node 24+ required');
@@ -103,16 +99,12 @@ AnatomyScanOutcomeSchema.parse(result);console.log(JSON.stringify(result));`,
 describe("isolated packed Node consumer", () => {
   /** @summary Install packages in an ordinary Node consumer
    * @description
-   * Given: An isolated consumer uses installed tarballs and runs exclusively through Node.
+   * Given: An isolated consumer installs only the anatomy-cli tarball and runs exclusively through Node.
    * When: The maintainer installs and runs the packed consumer example.
    * Then: ESM imports, type resolution, and CLI bins work without unresolved workspace dependencies.
    */
   it("[AC-28] resolves JavaScript, declarations and manifests", async () => {
-    for (const pkg of [
-      "@anatomy-cli/schemas",
-      "@anatomy-cli/anatomy",
-      "anatomy-cli",
-    ]) {
+    for (const pkg of ["anatomy-cli"]) {
       const manifest = await readFile(
         join(consumer, "node_modules", pkg, "package.json"),
         "utf8",
@@ -122,10 +114,8 @@ describe("isolated packed Node consumer", () => {
     }
     await writeFile(
       join(consumer, "typecheck.ts"),
-      `import {scanAnatomy,queryAnatomyBundle,validateAnatomyBundle} from '@anatomy-cli/anatomy';
-import type {AnatomyScanOutcome,AnatomyBundleQueryOutcome} from '@anatomy-cli/schemas';
-import {parseCliArguments} from 'anatomy-cli';
-parseCliArguments(['.', '--bundle', 'bundle.json']);
+      `import {scanAnatomy,queryAnatomyBundle,validateAnatomyBundle} from 'anatomy-cli';
+import type {AnatomyScanOutcome,AnatomyBundleQueryOutcome} from 'anatomy-cli';
 const scan: Promise<AnatomyScanOutcome> = scanAnatomy({});
 const query: AnatomyBundleQueryOutcome = queryAnatomyBundle({});
 validateAnatomyBundle({}); void scan; void query;`,
@@ -138,7 +128,7 @@ validateAnatomyBundle({}); void scan; void query;`,
         existsSync(
           join(
             consumer,
-            "node_modules/@anatomy-cli/schemas/dist/anatomy",
+            "node_modules/anatomy-cli/dist/packages/schemas/src/anatomy",
             `${obsolete}.js`,
           ),
         ),
@@ -148,7 +138,7 @@ validateAnatomyBundle({}); void scan; void query;`,
       existsSync(
         join(
           consumer,
-          "node_modules/@anatomy-cli/schemas/dist/composition/AnatomyNodeV2Schema.js",
+          "node_modules/anatomy-cli/dist/packages/schemas/src/composition/AnatomyNodeV2Schema.js",
         ),
       ),
     ).toBe(false);
@@ -161,7 +151,8 @@ validateAnatomyBundle({}); void scan; void query;`,
             tsc,
             "--noEmit",
             "--strict",
-            "--skipLibCheck",
+            "--typeRoots",
+            "node_modules/@types",
             "--target",
             "ES2022",
             "--module",
@@ -176,6 +167,37 @@ validateAnatomyBundle({}); void scan; void query;`,
     ).toBe(true);
     const cli = await execute(process.execPath, [cliPath, "--help"], consumer);
     expect(cli._unsafeUnwrap().stdout).toContain("--bundle");
+  }, 30_000);
+  it("ships the engine and schemas without private npm package dependencies", async () => {
+    expect(existsSync(join(consumer, "node_modules/@anatomy-cli"))).toBe(false);
+    const installed = join(consumer, "node_modules/anatomy-cli");
+    const manifest = JSON.parse(
+      await readFile(join(installed, "package.json"), "utf8"),
+    );
+    for (const section of [
+      "dependencies",
+      "peerDependencies",
+      "optionalDependencies",
+    ])
+      expect(
+        Object.keys(manifest[section] ?? {}).filter((name) =>
+          name.startsWith("@anatomy-cli/"),
+        ),
+      ).toEqual([]);
+    for (const file of await readdir(join(installed, "dist"), {
+      recursive: true,
+    })) {
+      if (!file.endsWith(".d.ts")) continue;
+      expect(
+        await readFile(join(installed, "dist", file), "utf8"),
+      ).not.toContain("@anatomy-cli/");
+    }
+    for (const name of ["anatomy", "schemas"])
+      expect(
+        JSON.parse(
+          await readFile(join(root, "packages", name, "package.json"), "utf8"),
+        ).private,
+      ).toBe(true);
   });
   /** @summary Scan five definitions from supplied data alone
    * @description

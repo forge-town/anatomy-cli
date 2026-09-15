@@ -6,10 +6,9 @@
 
 ## Workspace layout
 
-- `apps/anatomy-cli` — command-line interface and filesystem adapter
-- `packages/anatomy` — immutable Anatomy tree utilities and the conformance engine
-- `packages/schemas` — runtime-validated Anatomy Draft schemas (the `anatomy`
-  domain is the public surface of this standalone workspace)
+- `apps/anatomy-cli` — the public CLI and SDK package, including the filesystem adapter
+- `packages/anatomy` — private workspace for Anatomy tree utilities and the conformance engine
+- `packages/schemas` — private workspace for runtime-validated Anatomy Draft schemas
 - `packages/anatomy-cli-config` — reusable example Anatomy definitions
 
 The migration keeps the original boundaries: the Daedalus CLI becomes the app,
@@ -353,16 +352,16 @@ outside this workspace and is not modified by this project.
 
 ## Publishing
 
-`Publish npm packages` automatically publishes a stable patch when release-related
-changes reach `main`. All three public packages share the next `0.0.x` version:
-`@anatomy-cli/schemas`, `@anatomy-cli/anatomy`, then `anatomy-cli`. The root package
-stays private. Minor and major releases are disabled until explicitly enabled.
+`Publish anatomy-cli` automatically publishes a stable patch when release-related
+changes reach `main`. Only `anatomy-cli` is published, providing both the CLI and SDK.
+Its next version increments the third number in `0.0.x`. Minor and major releases
+are disabled until explicitly enabled. The engine and schema workspaces are private;
+their compiled code and declarations ship inside `anatomy-cli`.
 
 Configure the repository Actions secret `NPM_TOKEN` with non-interactive publish
-access to all three packages (including permission to create the scoped packages).
-The workflow uses Node from `.nvmrc`, runs `bun run quality`, installs the packed
-CLI and SDK in an isolated consumer, then publishes with provenance. It reads
-back registry versions, integrity and tags, and installs the published packages
+access to `anatomy-cli`. The workflow uses Node from `.nvmrc`, runs `bun run quality`,
+installs the packed CLI and SDK in an isolated consumer, then publishes with provenance. It reads
+back registry versions, integrity and tags, and installs the published package
 again. Release plans, tarballs and consumer results are uploaded as run artifacts.
 
 To publish a canary manually after the workflow reaches `main`:
@@ -375,13 +374,12 @@ The Actions UI also accepts `channel=stable` (the default) or `channel=canary`.
 Stable runs require `main`; canaries can use a feature branch. Before the workflow
 is on the default branch, pushing a `canary-*` Git tag triggers a canary from that
 commit. Canary versions look like `0.0.4-canary.<run-id>.<attempt>` and update only
-the npm `canary` tag. Install them with `npm install anatomy-cli@canary` or
-`npm install @anatomy-cli/anatomy@canary @anatomy-cli/schemas@canary`.
+the npm `canary` tag. Install `anatomy-cli@canary` for both the CLI and SDK.
 
-Stable version numbers come from the highest registry `0.0.x` patch across the
-three packages. A stable retry resumes the same source version instead of bumping
-again; conflicting published artifacts fail. Versions and internal dependency
-pins are changed only in staged package copies under ignored root `docs/`.
+Stable version numbers come from the highest registry `0.0.x` patch of `anatomy-cli`.
+A stable retry resumes the same source version instead of bumping again; conflicting
+published artifacts fail. The version changes only in a staged package copy under
+ignored root `docs/`.
 The workflow does not commit version changes; registry metadata records the
 published version and source commit. Canary runs do not advance `latest`.
 
@@ -441,10 +439,11 @@ alternatives, or source rules, and is not supported inside `one_of` alternatives
 There is one current contract without format-version selectors or historical Anatomy
 versions. Each request resolves only its supplied definition snapshot.
 
-After building, the public packages expose ESM JavaScript and declarations:
+Install `anatomy-cli` to use the SDK. The same package exposes ESM JavaScript,
+runtime schemas, and TypeScript declarations:
 
 ```ts
-import { scanAnatomy, queryAnatomyBundle, validateAnatomyBundle } from '@anatomy-cli/anatomy';
+import { scanAnatomy, queryAnatomyBundle, validateAnatomyBundle } from 'anatomy-cli';
 
 const validation = validateAnatomyBundle(bundle);
 const result = await scanAnatomy({
@@ -457,8 +456,8 @@ const query = queryAnatomyBundle({ bundle, path: 'src/tables/accounts', targetNa
 ```
 
 The SDK performs no filesystem, Git, network, or database reads and never executes target
-source. Source analysis loads lazily when an export rule requires it. `@anatomy-cli/schemas`
-exports runtime schemas and their inferred types. The lower-level `checkAnatomy`
+source. Source analysis loads lazily when an export rule requires it. `anatomy-cli`
+also exports runtime schemas and their inferred types. The lower-level `checkAnatomy`
 matcher accepts normalized contents rules and a pre-analyzed source export map.
 
 A completed scan returns `status: "completed"`, `conforms`, `summary`, and `issues`.
@@ -477,7 +476,7 @@ UTF-8 bytes per source, and 20,000,000 source bytes per request. Exceeding a lim
 
 `bun run quality` includes isolated tarball installation and real Node CLI/SDK tests;
 these tests require npm registry access and retain their consumer fixtures under ignored
-root `docs/verification/cod-420/`. Release order is schemas, core, then CLI after checking
-scope permissions and registry versions. Publishing is a separate operation. Daedalus
+root `docs/verification/cod-420/`. Only `anatomy-cli` is published; check its npm
+publish permission and registry version before running the release workflow. Daedalus
 integration additionally owns permissions, business-ID mapping, complete snapshots,
 Findings mapping, and passing a selected root Anatomy through MCP scan orchestration.

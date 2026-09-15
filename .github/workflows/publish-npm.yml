@@ -1,4 +1,4 @@
-name: Publish npm packages
+name: Publish anatomy-cli
 run-name: npm ${{ inputs.channel || (startsWith(github.ref, 'refs/tags/canary-') && 'canary' || 'stable') }} from ${{ github.ref_name }}
 
 on:
@@ -58,7 +58,7 @@ jobs:
             exit 1
           fi
           if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo '::error::Configure NPM_TOKEN with publish access to anatomy-cli, @anatomy-cli/schemas, and @anatomy-cli/anatomy.'
+            echo '::error::Configure NPM_TOKEN with publish access to anatomy-cli.'
             exit 1
           fi
           npm whoami --registry=https://registry.npmjs.org

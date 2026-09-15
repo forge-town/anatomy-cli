@@ -12,16 +12,8 @@ export const runNpmRelease = (mode: string) =>
     (async () => {
       const root = resolve(import.meta.dirname, "../../..");
       const output = join(root, "docs/verification/npm-release/artifacts");
-      const packagePaths = [
-        "packages/schemas",
-        "packages/anatomy",
-        "apps/anatomy-cli",
-      ];
-      const names = [
-        "@anatomy-cli/schemas",
-        "@anatomy-cli/anatomy",
-        "anatomy-cli",
-      ];
+      const packagePaths = ["apps/anatomy-cli"];
+      const names = ["anatomy-cli"];
       const exec = async (command: string, args: string[], cwd = root) =>
         (
           await promisify(execFile)(command, args, {
@@ -82,8 +74,8 @@ export const runNpmRelease = (mode: string) =>
         );
         await writeFile(
           join(consumer, "check.mjs"),
-          `import { scanAnatomy, queryAnatomyBundle } from '@anatomy-cli/anatomy';
-import { AnatomyScanOutcomeSchema } from '@anatomy-cli/schemas';
+          `import { scanAnatomy, queryAnatomyBundle } from 'anatomy-cli';
+import { AnatomyScanOutcomeSchema } from 'anatomy-cli';
 import {createRequire} from 'node:module';
 import {readFileSync} from 'node:fs';
 const require=createRequire(import.meta.url);
@@ -113,7 +105,7 @@ console.log(JSON.stringify({node:process.version,version:${JSON.stringify(versio
           throw new NpmReleaseError("Installed CLI does not expose --bundle");
         await writeFile(
           join(consumer, "check.ts"),
-          "import {scanAnatomy} from '@anatomy-cli/anatomy';\nimport type {AnatomyScanOutcome} from '@anatomy-cli/schemas';\nconst result: Promise<AnatomyScanOutcome> = scanAnatomy({});\nvoid result;\n",
+          "import {scanAnatomy} from 'anatomy-cli';\nimport type {AnatomyScanOutcome} from 'anatomy-cli';\nconst result: Promise<AnatomyScanOutcome> = scanAnatomy({});\nvoid result;\n",
         );
         await exec(
           "node",
@@ -155,15 +147,24 @@ console.log(JSON.stringify({node:process.version,version:${JSON.stringify(versio
             url: "git+https://github.com/forge-town/anatomy-cli.git",
             directory: path,
           };
+          if (pkg.private || pkg.name !== "anatomy-cli")
+            throw new NpmReleaseError(
+              "Only the public anatomy-cli package may be published",
+            );
           for (const key of [
             "dependencies",
-            "devDependencies",
             "peerDependencies",
             "optionalDependencies",
-          ]) {
-            for (const name of Object.keys(pkg[key] ?? {}))
-              if (names.includes(name)) pkg[key][name] = plan.value.version;
-          }
+          ])
+            if (
+              Object.keys(pkg[key] ?? {}).some((name) =>
+                name.startsWith("@anatomy-cli/"),
+              )
+            )
+              throw new NpmReleaseError(
+                "Public package cannot depend on private workspaces",
+              );
+          delete pkg.devDependencies;
           const staging = join(
             output,
             "packages",
@@ -320,7 +321,7 @@ console.log(JSON.stringify({node:process.version,version:${JSON.stringify(versio
         "registry-consumer",
         plan.version,
       );
-      console.log(`Verified all packages at ${plan.version} (${plan.tag})`);
+      console.log(`Verified anatomy-cli at ${plan.version} (${plan.tag})`);
     })(),
     (cause) =>
       cause instanceof NpmReleaseError

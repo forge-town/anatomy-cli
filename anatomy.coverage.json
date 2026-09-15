@@ -938,6 +938,11 @@
       "role": "entrypoint",
       "reason": "GitHub Actions release process entrypoint; no public runtime exports.",
       "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/build-main.ts": {
+      "role": "entrypoint",
+      "reason": "Package build process entrypoint; no public runtime exports.",
+      "runtimeExports": []
     }
   }
 }

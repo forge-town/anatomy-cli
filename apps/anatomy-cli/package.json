@@ -1,7 +1,7 @@
 {
   "name": "anatomy-cli",
   "version": "0.0.2",
-  "description": "Scan repository file trees against Anatomy Draft definitions.",
+  "description": "Anatomy CLI and SDK for repository structure and source export validation.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -32,12 +32,12 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/apps/anatomy-cli/src/index.d.ts",
+      "default": "./dist/apps/anatomy-cli/src/index.js"
     }
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json && bun build src/main.ts --target=node --outfile=dist/main.js && bun build src/index.ts --target=node --outfile=dist/index.js && bun build src/install-main.ts --target=node --outfile=dist/install-main.js",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && bun src/build-main.ts && bun build src/main.ts --target=node --outfile=dist/main.js && bun build src/install-main.ts --target=node --outfile=dist/install-main.js",
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
     "scan:self": "bun src/main.ts ../.. --git-files",
@@ -58,10 +58,10 @@
     "typescript": "5.9.2",
     "vitest": "^4.1.8"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/apps/anatomy-cli/src/index.d.ts",
   "dependencies": {
-    "@anatomy-cli/anatomy": "^0.1.0",
-    "@anatomy-cli/schemas": "^0.1.0",
-    "neverthrow": "^8.2.0"
+    "neverthrow": "^8.2.0",
+    "zod": "^4.3.6",
+    "typescript": "5.9.2"
   }
 }

@@ -31,7 +31,7 @@
     "prepack": "bun run build"
   },
   "dependencies": {
-    "@anatomy-cli/schemas": "^0.1.0",
+    "@anatomy-cli/schemas": "workspace:*",
     "neverthrow": "^8.2.0",
     "typescript": "5.9.2"
   },
@@ -45,10 +45,8 @@
     "dist"
   ],
   "types": "./dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "engines": {
     "node": ">=24"
-  }
+  },
+  "private": true
 }
