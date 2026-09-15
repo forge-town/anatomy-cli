@@ -921,6 +921,23 @@
       "runtimeExports": [
         "AnatomyRuleSchema"
       ]
+    },
+    "apps/anatomy-cli/src/npm-release.spec.ts": {
+      "role": "test",
+      "reason": "Executable regression suite with no public runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/NpmReleaseError.ts": {
+      "role": "class",
+      "reason": "Dedicated release error class.",
+      "runtimeExports": [
+        "NpmReleaseError"
+      ]
+    },
+    "apps/anatomy-cli/src/release-main.ts": {
+      "role": "entrypoint",
+      "reason": "GitHub Actions release process entrypoint; no public runtime exports.",
+      "runtimeExports": []
     }
   }
 }

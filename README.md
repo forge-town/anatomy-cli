@@ -353,23 +353,41 @@ outside this workspace and is not modified by this project.
 
 ## Publishing
 
-The one-shot installer must be published in a new `anatomy-cli` release before
-the registry commands above gain this behavior; the existing 0.0.2 release
-predates it. Do not deploy homepage installer instructions ahead of that release.
+`Publish npm packages` automatically publishes a stable patch when release-related
+changes reach `main`. All three public packages share the next `0.0.x` version:
+`@anatomy-cli/schemas`, `@anatomy-cli/anatomy`, then `anatomy-cli`. The root package
+stays private. Minor and major releases are disabled until explicitly enabled.
 
-The root package is intentionally private. To publish a CLI release, authenticate
-with npm and publish the app workspace with Bun. Build the workspace first; the
-prepack hook creates the CLI declarations and Node.js bundles:
+Configure the repository Actions secret `NPM_TOKEN` with non-interactive publish
+access to all three packages (including permission to create the scoped packages).
+The workflow uses Node from `.nvmrc`, runs `bun run quality`, installs the packed
+CLI and SDK in an isolated consumer, then publishes with provenance. It reads
+back registry versions, integrity and tags, and installs the published packages
+again. Release plans, tarballs and consumer results are uploaded as run artifacts.
+
+To publish a canary manually after the workflow reaches `main`:
 
 ```bash
-cd apps/anatomy-cli
-bun publish --access public
+gh workflow run publish-npm.yml --ref main -f channel=canary
 ```
 
-The package's `bin` entries must stay distinct: `anatomy-cli` dispatches to the
-installer by default; `anatomy` dispatches to the checker. Publish the three
-bundles (`main.js`, `index.js`, `install-main.js`) and the `bin/` launchers
-together. No separate installer package or install lifecycle script is needed.
+The Actions UI also accepts `channel=stable` (the default) or `channel=canary`.
+Stable runs require `main`; canaries can use a feature branch. Before the workflow
+is on the default branch, pushing a `canary-*` Git tag triggers a canary from that
+commit. Canary versions look like `0.0.4-canary.<run-id>.<attempt>` and update only
+the npm `canary` tag. Install them with `npm install anatomy-cli@canary` or
+`npm install @anatomy-cli/anatomy@canary @anatomy-cli/schemas@canary`.
+
+Stable version numbers come from the highest registry `0.0.x` patch across the
+three packages. A stable retry resumes the same source version instead of bumping
+again; conflicting published artifacts fail. Versions and internal dependency
+pins are changed only in staged package copies under ignored root `docs/`.
+The workflow does not commit version changes; registry metadata records the
+published version and source commit. Canary runs do not advance `latest`.
+
+The package's `bin` entries stay distinct: `anatomy-cli` dispatches to the installer;
+`anatomy` dispatches to the checker. The release includes the CLI bundles and
+`bin/` launchers together.
 
 ## Composition bundles and the SDK
 

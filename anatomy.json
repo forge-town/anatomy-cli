@@ -30,6 +30,13 @@
                   "kind": "file",
                   "name": { "type": "literal", "value": "deploy-docs.yml" },
                   "quantity": "exactly_one"
+                },
+                {
+                  "id": "a7082281-d14e-47e3-9676-d33b35803497",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "publish-npm.yml" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
                 }
               ]
             }
@@ -434,6 +441,49 @@
                       "id": "7a251c8b-bdde-4daa-baff-b976f954274d",
                       "kind": "file",
                       "name": { "type": "literal", "value": "runAnatomyBundleCli.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "id": "2bd1e035-6adf-4c66-b914-c39d13534ab9",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "NpmReleaseError.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "c9628cc1-0955-494c-bcc8-3d7dbfeb7f77",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "npm-release.spec.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "4a897b3f-4fa5-4fd0-94c2-e674b8c40c68",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "planNpmRelease.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "id": "e24d00a1-6a21-4c36-b524-0c0710a510b3",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "release-main.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "f6b731f4-7d53-40a9-a0e7-d085b366f5d2",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runNpmRelease.ts" },
                       "quantity": "exactly_one",
                       "policyOverrides": {},
                       "exports": {
