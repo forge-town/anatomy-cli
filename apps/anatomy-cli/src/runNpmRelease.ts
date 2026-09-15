@@ -14,13 +14,17 @@ export const runNpmRelease = (mode: string) =>
       const output = join(root, "docs/verification/npm-release/artifacts");
       const packagePaths = ["apps/anatomy-cli"];
       const names = ["anatomy-cli"];
-      const exec = async (command: string, args: string[], cwd = root) =>
-        (
-          await promisify(execFile)(command, args, {
-            cwd,
-            maxBuffer: 16 * 1024 * 1024,
-          })
-        ).stdout.trim();
+      const exec = async (command: string, args: string[], cwd = root) => {
+        const result = await promisify(execFile)(command, args, {
+          cwd,
+          maxBuffer: 16 * 1024 * 1024,
+        });
+        if (command === "npm" && args[0] === "publish") {
+          console.log(result.stdout.trim());
+          console.log(result.stderr.trim());
+        }
+        return result.stdout.trim();
+      };
       const source = await exec("git", ["rev-parse", "HEAD"]);
       const manifest = async (path: string) =>
         JSON.parse(await readFile(join(root, path, "package.json"), "utf8"));
