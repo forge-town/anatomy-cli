@@ -11,7 +11,7 @@ export const formatAgentQuery = (
 ): string => {
   const report = {
     ...result,
-    definition: { path: resolve(definitionPath), name: definition.name, schemaVersion: definition.structure.schemaVersion },
+    definition: { path: resolve(definitionPath), name: definition.name, rootMode: definition.structure.rootMode },
     targetPath: resolve(targetPath),
   };
   if (format === "json") return JSON.stringify(report, null, 2);

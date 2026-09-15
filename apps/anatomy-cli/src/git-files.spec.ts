@@ -2,9 +2,9 @@ import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { collectGitFileTree } from "./collectGitFileTree";
-import { parseCliArguments } from "./parseCliArguments";
-import { runAnatomyCli } from "./runAnatomyCli";
+import { collectGitFileTree } from "./collectGitFileTree.js";
+import { parseCliArguments } from "./parseCliArguments.js";
+import { runAnatomyCli } from "./runAnatomyCli.js";
 
 const temporaryDirectories: string[] = [];
 const fixture = async () => {
@@ -65,7 +65,7 @@ describe("Git file selection", () => {
     const directory = await fixture();
     const definitionPath = resolve(directory, "local/contract.json");
     await writeFile(definitionPath, JSON.stringify({ name: "Git fixture", purpose: "No source files allowed", structure: {
-      schemaVersion: 1,
+      rootMode: "contents",
       defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
       root: { children: [{ kind: "file", name: { type: "literal", value: ".gitignore" }, quantity: "exactly_one" }] },
     } }));

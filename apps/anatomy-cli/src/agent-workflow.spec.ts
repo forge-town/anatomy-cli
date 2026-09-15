@@ -2,18 +2,18 @@ import { AnatomyCheckWithDiagnosticsSchema, AnatomyQueryWithConstraintsSchema } 
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { collectFileTree } from "./collectFileTree";
-import { findAnatomyDefinition } from "./findAnatomyDefinition";
-import { formatAgentError } from "./formatAgentError";
-import { readAnatomyDefinition } from "./readAnatomyDefinition";
-import { runAnatomyCli, type AnatomyCliDependencies } from "./runAnatomyCli";
+import { collectFileTree } from "./collectFileTree.js";
+import { findAnatomyDefinition } from "./findAnatomyDefinition.js";
+import { formatAgentError } from "./formatAgentError.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
+import { runAnatomyCli, type AnatomyCliDependencies } from "./runAnatomyCli.js";
 
 const verificationRoot = resolve(import.meta.dirname, "../../../docs/verification/agent-workflow-tests");
 let directory: string;
 const document = () => ({
   name: "Services", purpose: "Plan before creating modules",
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
     bindings: { Name: { format: "PascalCase" } },
     root: { children: [{

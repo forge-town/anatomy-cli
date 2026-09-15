@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { err, ok, ResultAsync, type Result } from "neverthrow";
 import { AnatomySourceAnalysisError } from "@anatomy-cli/anatomy/core";
 import type { AnatomyFunctionExportCheck, AnatomySourceExports } from "@anatomy-cli/schemas";
-import { analyzeSourceExports } from "./analyzeSourceExports";
+import { analyzeSourceExports } from "./analyzeSourceExports.js";
 
 export const collectSourceExports = async (
   targetPath: string,

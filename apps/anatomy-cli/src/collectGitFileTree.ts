@@ -4,7 +4,7 @@ import { execFile } from "node:child_process";
 import { lstat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { promisify } from "node:util";
-import { AnatomyFileTreeError } from "./AnatomyFileTreeError";
+import { AnatomyFileTreeError } from "./AnatomyFileTreeError.js";
 
 export const collectGitFileTree = async (
   targetPath: string,

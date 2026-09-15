@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema";
+import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema.js";
 
 const definition = () => ({
   name: "Contract", purpose: "Reject unsupported rules",
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: { missingRequired: "block", unexpectedEntry: "warn", nameMismatch: "warn", nestingMismatch: "block" },
     root: { children: [{ kind: "file", name: { type: "literal", value: "index.ts" }, quantity: "exactly_one" }] },
   },
 });
 
-describe("Anatomy definition compatibility", () => {
+describe("Anatomy definition contract", () => {
   it("allows an explicit function export rule only on files", () => {
     const input = definition();
     Object.assign(input.structure.root.children[0]!, { exports: { name: "file_stem" } });
@@ -25,14 +25,14 @@ describe("Anatomy definition compatibility", () => {
     Object.assign(input.structure.root.children[0]!, { exports: { name: "file_stem", allowDefault: true } });
     expect(AnatomyDraftInputSchema.safeParse(input).success).toBe(false);
   });
-  it("accepts version one with omitted IDs and overrides", () => {
+  it("accepts the current format with omitted IDs and overrides", () => {
     expect(AnatomyDraftInputSchema.safeParse(definition()).success).toBe(true);
   });
-  it("rejects unsupported versions and node kinds", () => {
+  it("rejects unknown root modes and node kinds", () => {
     const input = definition();
-    input.structure.schemaVersion = 2;
+    input.structure.rootMode = "unknown";
     expect(AnatomyDraftInputSchema.safeParse(input).success).toBe(false);
-    input.structure.schemaVersion = 1;
+    input.structure.rootMode = "contents";
     input.structure.root.children[0]!.kind = "dependency";
     expect(AnatomyDraftInputSchema.safeParse(input).success).toBe(false);
   });

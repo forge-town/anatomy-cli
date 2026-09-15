@@ -1,9 +1,9 @@
 import { checkAnatomy, planAnatomyCheck } from "@anatomy-cli/anatomy/core";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { collectSourceExports } from "./collectSourceExports";
-import { collectFileTree } from "./collectFileTree";
-import { readAnatomyDefinition } from "./readAnatomyDefinition";
+import { collectSourceExports } from "./collectSourceExports.js";
+import { collectFileTree } from "./collectFileTree.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
 
 describe("CLI source contract", () => {
   it("checks the real source directory against the shipped example definition", async () => {

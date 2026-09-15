@@ -2,7 +2,7 @@
   "name": "Service files",
   "purpose": "Allow simple *.service.ts modules and PascalCase *Service folder components with conventional helper, method, schema, and error submodules.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

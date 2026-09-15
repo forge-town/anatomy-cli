@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
-import { AnatomyNameExpressionSchema } from "./AnatomyNameExpressionSchema";
-import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema";
+import { AnatomyNameExpressionSchema } from "./AnatomyNameExpressionSchema.js";
+import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema.js";
 
 export const AnatomyFunctionExportRuleSchema = z.strictObject({
   name: z.union([z.literal("file_stem"), AnatomyNameExpressionSchema]),

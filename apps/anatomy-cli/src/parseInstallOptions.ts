@@ -1,7 +1,7 @@
 import { err, ok, type Result } from "neverthrow";
 import { homedir } from "node:os";
 import { isAbsolute, join, parse, resolve } from "node:path";
-import { AnatomyInstallError } from "./AnatomyInstallError";
+import { AnatomyInstallError } from "./AnatomyInstallError.js";
 
 export type InstallOptions = {
   prefix: string;

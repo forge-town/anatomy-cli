@@ -3,8 +3,8 @@ import { z } from "zod/v4";
 import {
   AnatomyDirectoryEntrySchema,
   type AnatomyDirectoryEntry,
-} from "./AnatomyDirectoryEntrySchema";
-import { AnatomyFileEntrySchema, type AnatomyFileEntry } from "./AnatomyFileEntrySchema";
+} from "./AnatomyDirectoryEntrySchema.js";
+import { AnatomyFileEntrySchema, type AnatomyFileEntry } from "./AnatomyFileEntrySchema.js";
 
 type AnatomyEntryValue = AnatomyFileEntry | AnatomyDirectoryEntry;
 

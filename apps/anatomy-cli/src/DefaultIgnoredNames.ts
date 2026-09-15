@@ -1,4 +1,4 @@
-import { DefaultAnatomyDefinitionFileName } from "./DefaultAnatomyDefinitionFileName";
+import { DefaultAnatomyDefinitionFileName } from "./DefaultAnatomyDefinitionFileName.js";
 
 export const DefaultIgnoredNames = [
   ".git",

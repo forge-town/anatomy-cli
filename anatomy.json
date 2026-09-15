@@ -2,7 +2,7 @@
   "name": "Anatomy repository",
   "purpose": "Strict repository structure and function export contracts for all Git-visible files. Run anatomy . --git-files. Non-function source roles are reviewed in anatomy.coverage.json and verified by repository-contract.spec.ts.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",
@@ -99,6 +99,13 @@
                       "kind": "file",
                       "name": { "type": "literal", "value": "service-files.anatomy.json" },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "45acc4f3-21e9-4759-87da-0ef20e0846d5",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "db-schema.bundle.json" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
                     }
                   ]
                 },
@@ -415,6 +422,24 @@
                       "kind": "file",
                       "name": { "type": "literal", "value": "windowsPathScript.ts" },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "f88299ba-3073-4d64-bd25-c4aa230bc587",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "packed-consumer.spec.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {}
+                    },
+                    {
+                      "id": "7a251c8b-bdde-4daa-baff-b976f954274d",
+                      "kind": "file",
+                      "name": { "type": "literal", "value": "runAnatomyBundleCli.ts" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
                     }
                   ]
                 },
@@ -422,6 +447,13 @@
                   "kind": "file",
                   "name": { "type": "literal", "value": "tsconfig.json" },
                   "quantity": "exactly_one"
+                },
+                {
+                  "id": "9d9b5029-9e08-4f0b-a5e2-adf1eb8a370f",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.build.json" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
                 }
               ]
             },
@@ -1767,6 +1799,17 @@
                           "exports": {
                             "name": "file_stem"
                           }
+                        },
+                        {
+                          "id": "912e152f-207d-49e6-bf5e-19b09f4db772",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "applyAnatomyExportChecks.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
                         }
                       ]
                     },
@@ -1774,6 +1817,151 @@
                       "kind": "file",
                       "name": { "type": "literal", "value": "index.ts" },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "7296b4c2-1837-4fa9-96c0-fbf9dd278582",
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "composition" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "children": [
+                        {
+                          "id": "c452ab9d-0503-4d86-a20b-a7ae6bf000e5",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyResourceLimits.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "c983d55e-30ea-4903-9c38-25229b3d3dea",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "checkInputBudget.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "35224d28-2fac-474c-9a2c-6065b19610dc",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "compileAnatomyDefinition.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "78ba7db4-55fd-4447-a40c-0a258b86307a",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "composition.spec.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "bcb37a38-1a29-4db1-be49-993ab280c2f6",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "createAnatomyFinding.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "5f4556e6-134d-47b0-9df0-8703bcaf839b",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "1e5ee477-b3a6-4b66-87c2-35681b82e9ba",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "planAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "2488913b-2826-4c81-86fd-20ef44ab2f79",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "queryAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "60db4ef2-c3b3-422b-b7cd-74981701bbac",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "resolveAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "d0a7e0ad-4bdb-4e97-ab18-50a945dd4fad",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "scanAnatomy.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "ad7ef58f-dc28-4205-9d12-2a28bafd8b38",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "validateAnatomyBundle.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id": "943960e8-b6e4-4762-9503-b1d9d219c0f7",
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "source" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "children": [
+                        {
+                          "id": "3e327f8b-8a4e-47db-8696-19f954acfe8a",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "analyzeSourceExports.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "id": "71f16197-1e57-4e10-b7ba-7d2002f9d6ee",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        }
+                      ]
                     }
                   ]
                 },
@@ -1781,6 +1969,13 @@
                   "kind": "file",
                   "name": { "type": "literal", "value": "tsconfig.json" },
                   "quantity": "exactly_one"
+                },
+                {
+                  "id": "5f32e69b-3f48-41f1-9e8d-1d3095b8c4a9",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.build.json" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
                 }
               ]
             },
@@ -1921,11 +2116,6 @@
                         },
                         {
                           "kind": "file",
-                          "name": { "type": "literal", "value": "AnatomyPublishedVersionListInputSchema.ts" },
-                          "quantity": "exactly_one"
-                        },
-                        {
-                          "kind": "file",
                           "name": { "type": "literal", "value": "AnatomyQuantitySchema.ts" },
                           "quantity": "exactly_one"
                         },
@@ -1956,13 +2146,19 @@
                         },
                         {
                           "kind": "file",
-                          "name": { "type": "literal", "value": "AnatomyVersionSchema.ts" },
+                          "name": { "type": "literal", "value": "index.ts" },
                           "quantity": "exactly_one"
                         },
                         {
+                          "id": "9cd1a902-c57b-4768-9b79-20a77c246822",
                           "kind": "file",
-                          "name": { "type": "literal", "value": "index.ts" },
-                          "quantity": "exactly_one"
+                          "name": { "type": "literal", "value": "createAnatomyNodeId.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {},
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
                         }
                       ]
                     },
@@ -1970,6 +2166,120 @@
                       "kind": "file",
                       "name": { "type": "literal", "value": "index.ts" },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "id": "e34dac06-21bb-41ec-983f-9d2c56d1baff",
+                      "kind": "directory",
+                      "name": { "type": "literal", "value": "composition" },
+                      "quantity": "exactly_one",
+                      "policyOverrides": {},
+                      "children": [
+                        {
+                          "id": "c16be793-ca68-4a13-aebf-caca2a737ec6",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleQueryOutcomeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "dc5e87e5-27e8-43ec-b242-ad7587596b3f",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleQueryRequestSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "b3570310-a071-47f6-a605-789f8745fcc3",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "478b7f75-b07c-46f9-a8bc-4c4c364b9e08",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyBundleValidationOutcomeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "81de7097-5cc4-4bd9-b845-f3bb309e2623",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyCompositionNodeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "20112a95-0688-4061-9d03-25c3ed304b55",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDefinitionSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "655d4c82-4a83-4977-9cc8-4c56d95f015e",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyDiagnosticSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "2ca52c34-5deb-406f-b412-72846f67c9c0",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyFindingSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "70c660ca-9de5-476e-9ae4-74c3f734dcfb",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyMountSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "58a91a05-b06c-4ba7-9fc7-b9d0a0270146",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyOriginSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "2deacc34-b51c-439e-bc65-edd88ba74573",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyRuleSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "c836c891-fa08-4f48-875b-8c2d29b306d8",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyScanOutcomeSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "7a1e42f9-d401-41ba-a32b-965f09dca254",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyScanRequestSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "e45f2f14-03a7-41b7-acb7-1e3d3d2293ac",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "AnatomyTargetSchema.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        },
+                        {
+                          "id": "4c419753-1ea1-40ec-b11e-afd8813df35e",
+                          "kind": "file",
+                          "name": { "type": "literal", "value": "index.ts" },
+                          "quantity": "exactly_one",
+                          "policyOverrides": {}
+                        }
+                      ]
                     }
                   ]
                 },
@@ -1977,6 +2287,13 @@
                   "kind": "file",
                   "name": { "type": "literal", "value": "tsconfig.json" },
                   "quantity": "exactly_one"
+                },
+                {
+                  "id": "36a6551f-1e39-4aa0-aed4-3d6f7f1d8271",
+                  "kind": "file",
+                  "name": { "type": "literal", "value": "tsconfig.build.json" },
+                  "quantity": "exactly_one",
+                  "policyOverrides": {}
                 }
               ]
             }
@@ -1991,6 +2308,13 @@
           "kind": "file",
           "name": { "type": "literal", "value": "vitest.config.ts" },
           "quantity": "exactly_one"
+        },
+        {
+          "id": "3ad4a0a9-e9bf-4b4c-a4ab-5759d78f21ea",
+          "kind": "file",
+          "name": { "type": "literal", "value": ".nvmrc" },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
         }
       ]
     }

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { AnatomyCliExitCode } from "./AnatomyCliExitCode";
-import { AnatomyCliUsage } from "./AnatomyCliUsage";
-import { formatAgentError } from "./formatAgentError";
-import { runAnatomyCli } from "./runAnatomyCli";
+import { AnatomyCliExitCode } from "./AnatomyCliExitCode.js";
+import { AnatomyCliUsage } from "./AnatomyCliUsage.js";
+import { formatAgentError } from "./formatAgentError.js";
+import { runAnatomyCli } from "./runAnatomyCli.js";
 
 const result = await runAnatomyCli(process.argv.slice(2));
 

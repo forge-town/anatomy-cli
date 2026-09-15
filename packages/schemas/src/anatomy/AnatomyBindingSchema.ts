@@ -1,7 +1,7 @@
 import { Result } from "neverthrow";
 import { z } from "zod/v4";
 
-import { AnatomyBindingFormatSchema } from "./AnatomyBindingFormatSchema";
+import { AnatomyBindingFormatSchema } from "./AnatomyBindingFormatSchema.js";
 
 const compilePattern = Result.fromThrowable(
   (pattern: string) => new RegExp(`^(?:${pattern})$`),

@@ -30,7 +30,7 @@ block · warn · allow result
 ## 环境要求
 
 - Bun 1.3 或更新版本
-- 通过 npm 或 pnpm 安装已发布 CLI 包时，需要 Node.js 18 或更新版本
+- 通过 npm 或 pnpm 安装已发布 CLI 包时，需要 Node.js 24 或更新版本
 
 仓库开发以 Bun 为主。发布的 CLI 会打包为独立的 Node.js 入口，从包仓库安装时不需要 Bun。
 
@@ -44,7 +44,7 @@ pnpm dlx anatomy-cli
 bunx anatomy-cli
 ```
 
-一键安装器支持 macOS、Linux 和 Windows，需要 Node.js 18+。它将下载的 `anatomy-cli` 版本中已打包的独立 CLI 复制到 `~/.anatomy`，包管理器清理缓存后仍可使用。安装无需再次下载包、无需管理员权限，也不会修改项目依赖。包名保持为 `anatomy-cli`，日常使用的命令是 `anatomy`。
+一键安装器支持 macOS、Linux 和 Windows，需要 Node.js 24+。它将下载的 `anatomy-cli` 版本中已打包的独立 CLI 复制到 `~/.anatomy`，包管理器清理缓存后仍可使用。安装无需再次下载包、无需管理员权限，也不会修改项目依赖。包名保持为 `anatomy-cli`，日常使用的命令是 `anatomy`。
 
 安装器会将其 `bin` 目录加入受支持的 Shell 配置文件或 Windows 用户 PATH。已有配置内容会保留，首次修改前会生成 `.anatomy-backup` 备份。安装后**打开新终端**，再运行：
 
@@ -129,7 +129,7 @@ Anatomy JSON 定义只需包含供人阅读的元数据和结构约束。可以�
 ```json
 {
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "warn",
@@ -206,7 +206,7 @@ bun run anatomy ./packages/services \
 
 省略 `--format json` 时，直接显示文件要求、数量、继承名称、策略和 one-of 条件选择的可读摘要。摘要描述的是约束，不代表实际文件已通过检查。
 
-查询 JSON 使用 `contractVersion: 1`、`operation: "query"`，状态含义如下：
+查询 JSON 使用 `operation: "query"`，状态含义如下：
 
 | 状态 | 含义 |
 | --- | --- |
@@ -217,9 +217,9 @@ bun run anatomy ./packages/services \
 
 响应包含定义及目标的绝对路径、有效策略、占位符捕获值、绑定约束、祖先数量约束、相关规则和所属 one-of 组。目录规则保留子树；可用 `captures` 替换后代中的继承占位符。one-of 的候选项是条件选择，不是全部必须创建的文件。数量、同级候选项和实际节点类型仍须在修改后执行检查。
 
-检查 JSON 保留 `conforms`、`summary` 和原有诊断字段，新增 `contractVersion: 1`、`operation: "check"`、定义及目标信息、`ignoredNames`。每条诊断新增 `rulePath`（定义中的 JSON Pointer）、`expected`（声明的节点）和 `actual`（实际条目摘要）。缺失节点与 one-of 诊断的 `actual` 列出受影响目录下的同级条目；意外节点的 `rulePath`、`expected` 为 null。用 `rulePath` 关联同一版定义的查询与检查：省略的 ID 每次解析都会重新生成，编辑定义后数组下标也可能变化。
+检查 JSON 保留 `conforms`、`summary` 和原有诊断字段，包含 `operation: "check"`、定义及目标信息、`ignoredNames`。每条诊断新增 `rulePath`（定义中的 JSON Pointer）、`expected`（声明的节点）和 `actual`（实际条目摘要）。缺失节点与 one-of 诊断的 `actual` 列出受影响目录下的同级条目；意外节点的 `rulePath`、`expected` 为 null。用 `rulePath` 关联同一版定义的查询与检查：省略的 ID 每次解析都会重新生成，编辑定义后数组下标也可能变化。
 
-查询完成时所有查询状态均返回退出码 `0`，Agent 应读取 `status` 再决定如何修改。检查仍以 `0` 表示没有阻断项、`1` 表示存在阻断项。运行错误返回 `2`；指定 `--format json` 时，stderr 输出 `operation: "error"` 的 JSON，stdout 不输出成功报告。定义缺失或无效、版本不支持、未知字段和目标不可读都属于错误，不能视为“没有约束”。未知定义字段现在会被拒绝，不再静默移除；需要修正拼写或使用已支持的版本 1 规则。原有人类可读检查输出和目标、定义参数保持可用。
+查询完成时所有查询状态均返回退出码 `0`，Agent 应读取 `status` 再决定如何修改。检查仍以 `0` 表示没有阻断项、`1` 表示存在阻断项。运行错误返回 `2`；指定 `--format json` 时，stderr 输出 `operation: "error"` 的 JSON，stdout 不输出成功报告。定义缺失或无效、未知字段和目标不可读都属于错误，不能视为“没有约束”。未知定义字段现在会被拒绝，不再静默移除；需要修正拼写或使用当前规则。目标和定义参数用于明确检查范围。
 
 查询描述声明的结构，不应用扫描忽略规则，因此 `--ignore` 只接受于检查模式。默认检查跳过符号链接以及 `node_modules`、`dist` 等生成目录，报告会列出忽略名称。结构检查通过仅覆盖已采集文件树与已执行规则；类型和行为须另行验证。
 
@@ -243,7 +243,7 @@ bun run build
 
 必须先发布包含一键安装器的新 `anatomy-cli` 版本，上面的包仓库安装命令才会具有对应行为。现有 `0.0.2` 版本发布于该功能之前。请勿在新版发布前部署包含一键安装说明的首页。
 
-根包有意设置为私有。发布 CLI 时，先登录 npm，再使用 Bun 发布应用工作区；Bun 会在打包时替换本地 `workspace:` 依赖，`prepack` 钩子会生成 Node.js 包：
+根包有意设置为私有。发布 CLI 时，先构建工作区并登录 npm，再使用 Bun 发布应用工作区；`prepack` 钩子会生成 CLI 类型声明和 Node.js 构建文件：
 
 ```bash
 cd apps/anatomy-cli
@@ -251,3 +251,54 @@ bun publish --access public
 ```
 
 包的两个 `bin` 入口必须保持独立：`anatomy-cli` 默认进入安装器，`anatomy` 进入检查器。发布时应同时包含三个构建文件（`main.js`、`index.js`、`install-main.js`）和 `bin/` 下的启动文件。无需单独的安装器包或安装生命周期脚本。
+
+## 组合 Bundle 与 SDK
+
+在仓库根目录先运行 `nvm install && nvm use`，再运行 `bun install && bun run build`。`.nvmrc` 锁定 Node 24.21.0，所有包要求 Node 24+，CI 使用同一固定版本。npm 版本可能落后于本地代码，构建不等于发布。
+
+```bash
+node apps/anatomy-cli/bin/anatomy.js /path/to/packages/db-schema \
+  --bundle apps/anatomy-cli/anatomies/db-schema.bundle.json --format json
+
+node apps/anatomy-cli/bin/anatomy.js /path/to/packages/db-schema \
+  --bundle apps/anatomy-cli/anatomies/db-schema.bundle.json \
+  --query src/tables/accounts --format json
+```
+
+`--bundle` 与 `--definition`、`--ignore` 互斥，可搭配 `--git-files` 使用完整的 Git 可见文件清单。普通文件系统模式沿用单定义扫描的默认忽略名称及符号链接排除规则；SDK 调用方自行提供清单并声明覆盖范围。退出码：符合结构为 0、阻断违规为 1、配置或执行错误为 2。
+
+示例包含 Package、Tables Class、Relations Class、Table Domain、Relation Domain 五个独立定义。Domain 必须显示自身的目录：
+
+```text
+<domain>/
+├── index.ts
+└── <table>.table.ts  （一个或多个）
+```
+
+Class 通过 `{ "kind": "composition", "ref": "table-domain", "quantity": "one_or_more" }` 引用整个目录单元，不会生成 `accounts/accounts/` 两层目录。Tables 至少包含一个域；Relations 可以没有域，但已有关系域至少需要一个 `.relation.ts` 文件。额外子目录与 type-test 文件会被拒绝，扫描不会删除文件。允许跨域关系引用，结构规则不验证关系代码语义。
+
+Bundle 使用逻辑根键 `root` 和 `definitions: [{ key, definition }]`。key 必须唯一，以小写字母开头，可包含数字和中划线。所有结构必须明确指定 `rootMode`：
+
+- `entry`：root 是具名目录，数量为 `exactly_one`；引用继承根名，禁止重复指定 name，重复次数由引用的 quantity 控制。
+- `contents`：root.children 描述目录内容；引用必须提供单段挂载 name。
+
+composition 不允许内联 children、alternatives 或源码规则，也不允许出现在 one_of 的 alternatives 中。只维护一套当前契约，不设置格式版本字段或历史 Anatomy 版本；每次请求只使用调用方提供的定义快照。
+
+构建后的 `@anatomy-cli/anatomy` 提供 `validateAnatomyBundle`、`scanAnatomy`、`queryAnatomyBundle`，`@anatomy-cli/schemas` 提供运行时 Schema 与派生类型。两个包均输出 ESM JavaScript 和 d.ts。调用示例：
+
+```ts
+const result = await scanAnatomy({
+  bundle,
+  target: { kind: 'directory', name: 'db-schema', children: completeTree },
+  coverage: { status: 'complete' },
+  sources: {}, // 仅源码规则需要；键为扫描根下的相对 POSIX 路径。
+});
+```
+
+SDK 不读取文件系统、Git、数据库或网络，不执行目标源码；需要导出校验时才加载共享源码分析器。底层 checkAnatomy 匹配器接收规范化的 contents 规则与预先分析的源码导出 Map。
+
+扫描完成时返回 completed、conforms、summary 和 issues；结构阻断是 completed + conforms=false。配置、依赖、输入或源码错误返回 error + conforms=null + diagnostics，不返回部分通过。诊断携带原始定义/规则指针、实际挂载链、捕获值、策略来源和稳定身份。缺失与因权限未提供的引用统一为 unavailable_reference。SDK 拒绝调用方声明的 incomplete 树，但不能证明调用方没有隐瞒清单缺口。
+
+公开限额 `AnatomyResourceLimits`：128 个定义、100,000 个输入对象、输入嵌套深度 128、引用深度 32、10,000 个挂载实例、单份源码 5,000,000 UTF-8 字节、全部源码 20,000,000 字节。超限返回 resource_limit_exceeded。
+
+`bun run quality` 包含打包后独立安装与实际 Node CLI/SDK 测试；测试需要访问 npm registry，消费样例保留在被忽略的根 docs/verification/cod-420/ 中。发布前核对 scope 权限、npm 版本和 schemas→core→CLI 依赖顺序，真正发布是单独操作。Daedalus 仍负责权限、业务 ID 映射、完整仓库快照、Findings 映射，以及 MCP 根 Anatomy 选择与扫描编排的贯通。

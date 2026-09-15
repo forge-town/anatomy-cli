@@ -1,13 +1,13 @@
 import { AnatomyDraftInputSchema, AnatomyQueryWithConstraintsSchema } from "@anatomy-cli/schemas";
 import { describe, expect, it } from "vitest";
-import { anatomyRulePaths } from "./anatomyRulePaths";
-import { checkAnatomy } from "./checkAnatomy";
-import { queryAnatomy } from "./queryAnatomy";
+import { anatomyRulePaths } from "./anatomyRulePaths.js";
+import { checkAnatomy } from "./checkAnatomy.js";
+import { queryAnatomy } from "./queryAnatomy.js";
 
 const serviceDefinition = () => AnatomyDraftInputSchema.parse({
   name: "Services", purpose: "Agent workflow",
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: { missingRequired: "block", unexpectedEntry: "warn", nameMismatch: "block", nestingMismatch: "block" },
     bindings: { Name: { format: "PascalCase", pattern: "[A-Z][a-z]+" } },
     root: { children: [{

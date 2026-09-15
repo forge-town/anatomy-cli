@@ -3,9 +3,9 @@ import { basename, dirname, resolve } from "node:path";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import { anatomyRulePaths, checkAnatomy, planAnatomyCheck, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
-import { collectGitFileTree } from "./collectGitFileTree";
-import { collectSourceExports } from "./collectSourceExports";
-import { readAnatomyDefinition } from "./readAnatomyDefinition";
+import { collectGitFileTree } from "./collectGitFileTree.js";
+import { collectSourceExports } from "./collectSourceExports.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
 
 const root = resolve(import.meta.dirname, "../../..");
 const load = async () => {

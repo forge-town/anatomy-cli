@@ -1,13 +1,13 @@
 import { AnatomyDraftInputSchema, type AnatomySourceExports } from "@anatomy-cli/schemas";
 import { describe, expect, it } from "vitest";
-import { checkAnatomy } from "./checkAnatomy";
-import { planAnatomyCheck } from "./planAnatomyCheck";
-import { queryAnatomy } from "./queryAnatomy";
+import { checkAnatomy } from "./checkAnatomy.js";
+import { planAnatomyCheck } from "./planAnatomyCheck.js";
+import { queryAnatomy } from "./queryAnatomy.js";
 
 const definition = () => AnatomyDraftInputSchema.parse({
   name: "Function files", purpose: "One named function per file",
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
     root: { children: [{
       kind: "file", name: { type: "placeholder", value: "<Method>.ts" }, quantity: "one_or_more",

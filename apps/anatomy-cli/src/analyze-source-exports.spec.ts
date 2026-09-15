@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analyzeSourceExports } from "./analyzeSourceExports";
+import { analyzeSourceExports } from "./analyzeSourceExports.js";
 
 describe("JavaScript and TypeScript export analysis", () => {
   it.each([
@@ -16,9 +16,9 @@ describe("JavaScript and TypeScript export analysis", () => {
     "export function getUser(id: string): void; export function getUser(id: number): void; export function getUser(id: string | number) {}",
     "export type User = { id: string }; export interface Options {} export function getUser() {}",
     "type User = {}; interface Options {} export { User, Options }; export const getUser = () => {};",
-    "import type { User } from './user'; export { User }; export function getUser() {}",
-    "export type * from './types'; export function getUser() {}",
-    "export { type User } from './types'; export function getUser() {}",
+    "import type { User } from './user.js'; export { User }; export function getUser() {}",
+    "export type * from './types.js'; export function getUser() {}",
+    "export { type User } from './types.js'; export function getUser() {}",
     "// export function fake() {}\nconst text = 'export const fake = 1'; export function getUser() {}",
     "throw new Error('This source must never execute'); export function getUser() {}",
   ])("finds local functions without executing source: %s", (source) => {
@@ -52,9 +52,9 @@ describe("JavaScript and TypeScript export analysis", () => {
 
   it.each([
     "export function getUser( {",
-    "export * from './other';",
-    "export { getUser } from './other';",
-    "import { getUser } from './other'; export { getUser };",
+    "export * from './other.js';",
+    "export { getUser } from './other.js';",
+    "import { getUser } from './other.js'; export { getUser };",
     "export const getUser = createFunction();",
     "export declare function getUser(): void;",
     "const one = two; const two = one; export { one };",

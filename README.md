@@ -34,7 +34,7 @@ block · warn · allow result
 ## Requirements
 
 - Bun 1.3 or newer
-- Node.js 18 or newer for the published CLI package when it is installed with npm or pnpm
+- Node.js 24 or newer for the published CLI package when it is installed with npm or pnpm
 
 The repository is Bun-first for development. Published CLI releases are bundled
 as a standalone Node.js entry point, so registry installs do not need Bun.
@@ -49,7 +49,7 @@ pnpm dlx anatomy-cli
 bunx anatomy-cli
 ```
 
-The one-shot installer requires Node.js 18+ on macOS, Linux or Windows. It
+The one-shot installer requires Node.js 24+ on macOS, Linux or Windows. It
 copies the standalone CLI bundled in the downloaded `anatomy-cli` release to
 `~/.anatomy`, so it keeps working after the package manager clears its cache.
 No second package download, administrator privileges, or project dependency
@@ -159,7 +159,7 @@ binding can use one built-in format, a custom regular expression, or both:
 ```json
 {
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "warn",
@@ -273,7 +273,7 @@ Omit `--format json` for a readable summary of required files, quantities,
 inherited names, policies and conditional one-of alternatives. This summary
 describes constraints; it does not certify that the files pass validation.
 
-Query JSON uses `contractVersion: 1`, `operation: "query"`, and these statuses:
+Query JSON uses `operation: "query"` and these statuses:
 
 | Status | Meaning |
 | --- | --- |
@@ -290,7 +290,7 @@ alternatives are conditional, not a list of files that must all be created.
 Always run a check to evaluate quantities, sibling alternatives and actual kinds.
 
 Check JSON preserves `conforms`, `summary`, and the existing issue fields, adding
-`contractVersion: 1`, `operation: "check"`, definition/target metadata and
+`operation: "check"`, definition/target metadata and
 `ignoredNames`. Each issue adds `rulePath` (a JSON Pointer into the definition),
 `expected` (the declared node), and `actual` (observed entry summaries). For
 missing-entry and one-of issues, `actual` lists siblings in the affected directory.
@@ -302,10 +302,10 @@ A completed query exits `0` for every query status; inspect `status` before
 editing. Checks retain `0` for no blocking findings and `1` for blocking findings.
 Operational errors exit `2`; with `--format json`, stderr contains an
 `operation: "error"` JSON object and stdout has no success report. Missing or
-invalid definitions, unsupported schema versions, unknown fields and unreadable
+invalid definitions, unknown fields and unreadable
 targets are errors, not an absence of constraints. Unknown definition fields are
-now rejected instead of silently removed; fix spelling or use supported version-1
-rules. Human check output and legacy target/definition flags remain supported.
+rejected instead of silently removed; fix spelling or use the declared rules.
+Use the explicit target and definition flags to select the scan scope.
 
 Queries describe declared structure independently of scan exclusions, so `--ignore`
 is only accepted for checks. By default, checks skip symbolic links and default
@@ -358,8 +358,8 @@ the registry commands above gain this behavior; the existing 0.0.2 release
 predates it. Do not deploy homepage installer instructions ahead of that release.
 
 The root package is intentionally private. To publish a CLI release, authenticate
-with npm and publish the app workspace with Bun; Bun replaces local `workspace:`
-references while packing and the prepack hook creates the Node.js bundle:
+with npm and publish the app workspace with Bun. Build the workspace first; the
+prepack hook creates the CLI declarations and Node.js bundles:
 
 ```bash
 cd apps/anatomy-cli
@@ -370,3 +370,96 @@ The package's `bin` entries must stay distinct: `anatomy-cli` dispatches to the
 installer by default; `anatomy` dispatches to the checker. Publish the three
 bundles (`main.js`, `index.js`, `install-main.js`) and the `bin/` launchers
 together. No separate installer package or install lifecycle script is needed.
+
+## Composition bundles and the SDK
+
+Use `nvm install && nvm use` at the repository root, then `bun install && bun run build`.
+`.nvmrc` pins Node 24.21.0; package engines require Node 24+, and CI reads the same pin.
+The registry release may lag behind the checkout; a local build does not publish packages.
+
+```bash
+node apps/anatomy-cli/bin/anatomy.js /path/to/packages/db-schema \
+  --bundle apps/anatomy-cli/anatomies/db-schema.bundle.json --format json
+
+# Query a mounted unit, relative to the target directory:
+node apps/anatomy-cli/bin/anatomy.js /path/to/packages/db-schema \
+  --bundle apps/anatomy-cli/anatomies/db-schema.bundle.json \
+  --query src/tables/accounts --format json
+```
+
+`--bundle` is exclusive with `--definition` and `--ignore`; `--git-files` can select the
+complete Git-visible inventory. Without it, the filesystem adapter excludes its standard
+ignored names and symbolic links, as in single-definition scans. SDK callers explicitly
+supply their inventory and declare its coverage. Exit codes are 0 for conformance,
+1 for blocking findings, and 2 for invalid configuration or execution failure.
+
+The shipped bundle contains five independent definitions: Package, Tables Class,
+Relations Class, Table Domain, and Relation Domain. A Domain is an **explicit directory**:
+
+```text
+<domain>/
+├── index.ts
+└── <table>.table.ts  (one or more)
+```
+
+A Class references this directory unit using `{ "kind": "composition", "ref": "table-domain",
+"quantity": "one_or_more" }`. It reuses the directory itself, without creating
+`accounts/accounts/`. Tables require at least one domain. Relations may have no domains,
+but each existing relation domain requires at least one `.relation.ts` file. Extra
+subdirectories and type-test files are rejected without modifying them. Relations may
+refer across domains; this structure contract does not analyze relation-code semantics.
+
+A bundle has a logical `root` key and a `definitions` array of
+`{ key, definition }` records. Definition keys are unique lowercase identifiers with
+optional digits/hyphens. Every structure requires an explicit `rootMode`:
+
+- `entry`: `root` is a named directory with `quantity: "exactly_one"`. A composition
+  reference inherits its name and must omit `name`; the reference controls repetition.
+- `contents`: `root.children` describes a selected directory's contents. A reference
+  must provide a single-segment mount `name`.
+
+Composition has no inline children,
+alternatives, or source rules, and is not supported inside `one_of` alternatives.
+There is one current contract without format-version selectors or historical Anatomy
+versions. Each request resolves only its supplied definition snapshot.
+
+After building, the public packages expose ESM JavaScript and declarations:
+
+```ts
+import { scanAnatomy, queryAnatomyBundle, validateAnatomyBundle } from '@anatomy-cli/anatomy';
+
+const validation = validateAnatomyBundle(bundle);
+const result = await scanAnatomy({
+  bundle,
+  target: { kind: 'directory', name: 'db-schema', children: completeTree },
+  coverage: { status: 'complete' },
+  sources: {}, // Relative POSIX paths to source text, only needed for source rules.
+});
+const query = queryAnatomyBundle({ bundle, path: 'src/tables/accounts', targetName: 'db-schema' });
+```
+
+The SDK performs no filesystem, Git, network, or database reads and never executes target
+source. Source analysis loads lazily when an export rule requires it. `@anatomy-cli/schemas`
+exports runtime schemas and their inferred types. The lower-level `checkAnatomy`
+matcher accepts normalized contents rules and a pre-analyzed source export map.
+
+A completed scan returns `status: "completed"`, `conforms`, `summary`, and `issues`.
+Blocking findings are completed scans with `conforms: false`. Input/dependency/source
+errors return `status: "error"`, `conforms: null`, and `diagnostics`, never a partial pass.
+Findings carry original definition/rule pointers, actual mount paths, isolated captures,
+effective policy origins, and stable `instanceKey`/`issueKey` values. Missing or
+permission-omitted references both produce `unavailable_reference` without disclosing
+unprovided definitions. The SDK rejects declared incomplete coverage; the caller remains
+responsible for honestly reporting missing inventory.
+
+Resource limits are exported as `AnatomyResourceLimits`: 128 definitions, 100,000 input
+objects, input nesting depth 128, reference depth 32, 10,000 mount instances, 5,000,000
+UTF-8 bytes per source, and 20,000,000 source bytes per request. Exceeding a limit returns
+`resource_limit_exceeded`.
+
+`bun run quality` includes isolated tarball installation and real Node CLI/SDK tests;
+these tests require npm registry access and retain their consumer fixtures under ignored
+root `docs/verification/cod-420/`. Release order is schemas, core, then CLI after checking
+scope permissions and registry versions. Publishing is a separate operation. Daedalus
+integration additionally owns permissions, business-ID mapping, complete snapshots,
+Findings mapping, and passing a selected root Anatomy through MCP scan orchestration.

@@ -1,6 +1,7 @@
+import { createAnatomyNodeId } from "./createAnatomyNodeId.js";
 import { z } from "zod/v4";
 
-import { AnatomyEntrySchema, type AnatomyEntry } from "./AnatomyEntrySchema";
+import { AnatomyEntrySchema, type AnatomyEntry } from "./AnatomyEntrySchema.js";
 
 /** One-of group requiring a match count across multiple candidate entries. */
 export const AnatomyOneOfGroupSchema: z.ZodType<{
@@ -11,7 +12,7 @@ export const AnatomyOneOfGroupSchema: z.ZodType<{
   alternatives: AnatomyEntry[];
 }> = z.strictObject({
   /** Unique group identifier, generated during schema parsing when omitted. */
-  id: z.string().uuid().default(() => crypto.randomUUID()),
+  id: z.string().uuid().default(createAnatomyNodeId),
   /** Node discriminant, fixed to one_of. */
   kind: z.literal("one_of"),
   /** Minimum number of alternatives that must match. */

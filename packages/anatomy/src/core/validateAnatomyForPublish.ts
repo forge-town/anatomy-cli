@@ -1,6 +1,6 @@
 import type { AnatomyDraftInput, AnatomyEntry, AnatomyNode } from "@anatomy-cli/schemas";
 import { err, ok, Result, type Result as ResultType } from "neverthrow";
-import { AnatomyValidationCode } from "./AnatomyValidationCode";
+import { AnatomyValidationCode } from "./AnatomyValidationCode.js";
 
 export type AnatomyValidationIssue = {
   code: (typeof AnatomyValidationCode)[keyof typeof AnatomyValidationCode];

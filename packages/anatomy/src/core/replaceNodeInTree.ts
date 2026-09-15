@@ -1,5 +1,5 @@
 import type { AnatomyNode, AnatomyStructure } from "@anatomy-cli/schemas";
-import { updateAnatomyNode } from "./updateAnatomyNode";
+import { updateAnatomyNode } from "./updateAnatomyNode.js";
 
 export const replaceNodeInTree = (
   root: AnatomyStructure,

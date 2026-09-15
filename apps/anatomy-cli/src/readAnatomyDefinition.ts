@@ -2,7 +2,7 @@ import { AnatomyDraftInputSchema, type AnatomyDraftInput } from "@anatomy-cli/sc
 import { err, ok, Result, ResultAsync } from "neverthrow";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError";
+import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError.js";
 
 const parseJson = Result.fromThrowable(
   JSON.parse,

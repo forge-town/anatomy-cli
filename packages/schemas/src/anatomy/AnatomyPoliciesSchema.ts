@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema";
+import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema.js";
 
 /** Default policies applied when a Crate does not conform to an Anatomy. */
 export const AnatomyPoliciesSchema = z.strictObject({

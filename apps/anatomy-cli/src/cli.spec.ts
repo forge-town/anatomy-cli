@@ -1,10 +1,10 @@
 import { createEmptyAnatomyDraft } from "@anatomy-cli/anatomy/core";
 import { err, ok } from "neverthrow";
 import { describe, expect, it, vi } from "vitest";
-import { AnatomyCliExitCode } from "./AnatomyCliExitCode";
-import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError";
-import { AnatomyFileTreeError } from "./AnatomyFileTreeError";
-import { runAnatomyCli, type AnatomyCliDependencies } from "./runAnatomyCli";
+import { AnatomyCliExitCode } from "./AnatomyCliExitCode.js";
+import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError.js";
+import { AnatomyFileTreeError } from "./AnatomyFileTreeError.js";
+import { runAnatomyCli, type AnatomyCliDependencies } from "./runAnatomyCli.js";
 
 const definition = createEmptyAnatomyDraft("Empty", "Allows an empty root");
 

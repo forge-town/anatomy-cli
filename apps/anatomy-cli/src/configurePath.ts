@@ -2,9 +2,9 @@ import { err, ok, Result } from "neverthrow";
 import { spawnSync } from "node:child_process";
 import { appendFileSync, constants, copyFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { AnatomyInstallError } from "./AnatomyInstallError";
-import { getPathPlan } from "./getPathPlan";
-import { windowsPathScript } from "./windowsPathScript";
+import { AnatomyInstallError } from "./AnatomyInstallError.js";
+import { getPathPlan } from "./getPathPlan.js";
+import { windowsPathScript } from "./windowsPathScript.js";
 
 export const configurePath = (
   bin: string,

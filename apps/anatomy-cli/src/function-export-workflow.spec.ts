@@ -2,18 +2,18 @@ import { AnatomyCheckWithDiagnosticsSchema } from "@anatomy-cli/schemas";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { collectSourceExports } from "./collectSourceExports";
-import { collectFileTree } from "./collectFileTree";
-import { findAnatomyDefinition } from "./findAnatomyDefinition";
-import { readAnatomyDefinition } from "./readAnatomyDefinition";
-import { runAnatomyCli } from "./runAnatomyCli";
+import { collectSourceExports } from "./collectSourceExports.js";
+import { collectFileTree } from "./collectFileTree.js";
+import { findAnatomyDefinition } from "./findAnatomyDefinition.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
+import { runAnatomyCli } from "./runAnatomyCli.js";
 
 const verificationRoot = resolve(import.meta.dirname, "../../../docs/verification/function-export-tests");
 let directory: string;
 const contract = () => ({
   name: "Function modules", purpose: "One function per file",
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
     root: { children: [{
       kind: "file", name: { type: "placeholder", value: "<Method>.ts" }, quantity: "one_or_more", exports: { name: "file_stem" },
@@ -70,7 +70,7 @@ describe("function export CLI workflow", () => {
     expect(JSON.parse(run.output).issues[0].code).toBe(code);
   });
 
-  it.each(["export function ( {", "export * from './other';"])("reports unsupported analysis as an operational error: %s", async (source) => {
+  it.each(["export function ( {", "export * from './other.js';"])("reports unsupported analysis as an operational error: %s", async (source) => {
     await writeFile(join(directory, "getUser.ts"), source);
     const run = await invoke();
     expect(run.result._unsafeUnwrapErr()).toMatchObject({ name: "AnatomySourceAnalysisError" });

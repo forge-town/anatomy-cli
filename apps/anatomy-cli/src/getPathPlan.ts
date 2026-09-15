@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { basename, join } from "node:path";
-import { quoteShell } from "./quoteShell";
+import { quoteShell } from "./quoteShell.js";
 
 export const getPathPlan = (bin: string, home: string, env: NodeJS.ProcessEnv) => {
   const shell = basename(env.SHELL ?? "sh");

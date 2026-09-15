@@ -1,5 +1,4 @@
 {
-  "schemaVersion": 1,
   "exceptions": {
     "apps/anatomy-cli/bin/anatomy-cli.js": {
       "role": "entrypoint",
@@ -734,13 +733,6 @@
         "AnatomyPolicyValueSchema"
       ]
     },
-    "packages/schemas/src/anatomy/AnatomyPublishedVersionListInputSchema.ts": {
-      "role": "schema",
-      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
-      "runtimeExports": [
-        "AnatomyPublishedVersionListInputSchema"
-      ]
-    },
     "packages/schemas/src/anatomy/AnatomyQuantitySchema.ts": {
       "role": "schema",
       "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
@@ -783,13 +775,6 @@
         "AnatomySummarySchema"
       ]
     },
-    "packages/schemas/src/anatomy/AnatomyVersionSchema.ts": {
-      "role": "schema",
-      "reason": "Exactly one named Zod schema matching the filename, with colocated inferred types.",
-      "runtimeExports": [
-        "AnatomyVersionSchema"
-      ]
-    },
     "packages/schemas/src/anatomy/index.ts": {
       "role": "barrel",
       "reason": "Public module aggregation; only relative wildcard re-exports are permitted.",
@@ -805,6 +790,136 @@
       "reason": "Vitest requires a default test configuration factory result.",
       "runtimeExports": [
         "default"
+      ]
+    },
+    "packages/anatomy/src/composition/AnatomyResourceLimits.ts": {
+      "role": "data",
+      "reason": "Documented resource budget constants shared by validation and scanning.",
+      "runtimeExports": [
+        "AnatomyResourceLimits"
+      ]
+    },
+    "packages/anatomy/src/composition/composition.spec.ts": {
+      "role": "test",
+      "reason": "Executable regression suite with no public runtime exports.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/composition/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation containing relative wildcard re-exports only.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/source/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation containing relative wildcard re-exports only.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/composition/AnatomyBundleQueryOutcomeSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyBundleQueryOutcomeSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyBundleQueryRequestSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyBundleQueryRequestSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyBundleSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyBundleSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyBundleValidationOutcomeSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyBundleValidationOutcomeSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyCompositionNodeSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyCompositionNodeSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyDefinitionSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyDefinitionSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyDiagnosticSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyDiagnosticSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyFindingSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyFindingSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyMountSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyMountSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyOriginSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyOriginSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyScanOutcomeSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyScanOutcomeSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyScanRequestSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyScanRequestSchema"
+      ]
+    },
+    "packages/schemas/src/composition/AnatomyTargetSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyTargetSchema"
+      ]
+    },
+    "packages/schemas/src/composition/index.ts": {
+      "role": "barrel",
+      "reason": "Public module aggregation containing relative wildcard re-exports only.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/packed-consumer.spec.ts": {
+      "role": "test",
+      "reason": "Executable regression suite with no public runtime exports.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/composition/AnatomyRuleSchema.ts": {
+      "role": "schema",
+      "reason": "Runtime Zod schema with colocated inferred public types matching its filename.",
+      "runtimeExports": [
+        "AnatomyRuleSchema"
       ]
     }
   }

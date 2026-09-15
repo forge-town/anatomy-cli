@@ -4,7 +4,7 @@ export const installUsage = `Install Anatomy once, then run: anatomy ./src
   pnpm:  pnpm dlx anatomy-cli
   Bun:   bunx anatomy-cli
 
-Requires Node.js 18+. No administrator privileges or project changes.
+Requires Node.js 24+. No administrator privileges or project changes.
 Downloads are handled by your package manager; the installer copies this release.
 
 Options:

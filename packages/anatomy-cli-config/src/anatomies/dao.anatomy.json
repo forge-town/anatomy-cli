@@ -2,7 +2,7 @@
   "name": "DAO operation units",
   "purpose": "Require every DAO to aggregate independently tested, folderized persistence operations with colocated barrel exports.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

@@ -26,7 +26,7 @@ type AnatomyDefinition = {
   structure: {
     defaultPolicies: Record<string, string>;
     root: { children: AnatomyNode[] };
-    schemaVersion: number;
+    rootMode: "contents";
   };
 };
 
@@ -61,7 +61,7 @@ describe("anatomy CLI configuration package", () => {
       ) as AnatomyDefinition;
       const ids = collectIds(definition.structure.root.children);
 
-      expect(definition.structure.schemaVersion, filename).toBe(1);
+      expect(definition.structure.rootMode, filename).toBe("contents");
       expect(definition.structure.defaultPolicies, filename).toEqual({
         missingRequired: "block",
         nameMismatch: "block",

@@ -2,12 +2,12 @@ import { err, ok, Result } from "neverthrow";
 import { spawnSync } from "node:child_process";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { AnatomyInstallError } from "./AnatomyInstallError";
-import { configurePath } from "./configurePath";
-import { getPathPlan } from "./getPathPlan";
-import { type InstallOptions } from "./parseInstallOptions";
-import { posixLauncher } from "./posixLauncher";
-import { windowsLauncher } from "./windowsLauncher";
+import { AnatomyInstallError } from "./AnatomyInstallError.js";
+import { configurePath } from "./configurePath.js";
+import { getPathPlan } from "./getPathPlan.js";
+import { type InstallOptions } from "./parseInstallOptions.js";
+import { posixLauncher } from "./posixLauncher.js";
+import { windowsLauncher } from "./windowsLauncher.js";
 
 const markerName = "install.json";
 
@@ -26,7 +26,7 @@ export const runInstallation = (
   options: InstallOptions,
   context: InstallContext,
 ): Result<string[], AnatomyInstallError> => {
-  if (Number(context.nodeVersion.split(".")[0]) < 18) return err(new AnatomyInstallError("Anatomy requires Node.js 18 or newer."));
+  if (Number(context.nodeVersion.split(".")[0]) < 24) return err(new AnatomyInstallError("Anatomy requires Node.js 24 or newer."));
   if (!["darwin", "linux", "win32"].includes(context.platform)) return err(new AnatomyInstallError(`Unsupported platform: ${context.platform}`));
   const prefix = options.prefix;
   const bin = join(prefix, "bin");

@@ -1,0 +1,238 @@
+{
+  "root": "db-schema-package",
+  "definitions": [
+    {
+      "key": "db-schema-package",
+      "definition": {
+        "name": "DB Schema Package",
+        "purpose": "Portable DB schema directory structure.",
+        "structure": {
+          "rootMode": "contents",
+          "defaultPolicies": {
+            "missingRequired": "block",
+            "unexpectedEntry": "block",
+            "nameMismatch": "block",
+            "nestingMismatch": "block"
+          },
+          "root": {
+            "children": [
+              {
+                "kind": "file",
+                "name": {
+                  "type": "literal",
+                  "value": "package.json"
+                },
+                "quantity": "exactly_one"
+              },
+              {
+                "kind": "file",
+                "name": {
+                  "type": "literal",
+                  "value": "tsconfig.json"
+                },
+                "quantity": "exactly_one"
+              },
+              {
+                "kind": "directory",
+                "name": {
+                  "type": "literal",
+                  "value": "src"
+                },
+                "quantity": "exactly_one",
+                "children": [
+                  {
+                    "kind": "file",
+                    "name": {
+                      "type": "literal",
+                      "value": "index.ts"
+                    },
+                    "quantity": "exactly_one"
+                  },
+                  {
+                    "kind": "composition",
+                    "name": {
+                      "type": "literal",
+                      "value": "tables"
+                    },
+                    "quantity": "exactly_one",
+                    "ref": "tables-class",
+                    "policyOverrides": {}
+                  },
+                  {
+                    "kind": "composition",
+                    "name": {
+                      "type": "literal",
+                      "value": "relations"
+                    },
+                    "quantity": "exactly_one",
+                    "ref": "relations-class",
+                    "policyOverrides": {}
+                  }
+                ]
+              }
+            ]
+          },
+          "rootMode": "contents"
+        }
+      }
+    },
+    {
+      "key": "tables-class",
+      "definition": {
+        "name": "Tables Class",
+        "purpose": "Portable DB schema directory structure.",
+        "structure": {
+          "rootMode": "contents",
+          "defaultPolicies": {
+            "missingRequired": "block",
+            "unexpectedEntry": "block",
+            "nameMismatch": "block",
+            "nestingMismatch": "block"
+          },
+          "root": {
+            "children": [
+              {
+                "kind": "file",
+                "name": {
+                  "type": "literal",
+                  "value": "index.ts"
+                },
+                "quantity": "exactly_one"
+              },
+              {
+                "kind": "composition",
+                "quantity": "one_or_more",
+                "ref": "table-domain",
+                "policyOverrides": {}
+              }
+            ]
+          },
+          "rootMode": "contents"
+        }
+      }
+    },
+    {
+      "key": "relations-class",
+      "definition": {
+        "name": "Relations Class",
+        "purpose": "Portable DB schema directory structure.",
+        "structure": {
+          "rootMode": "contents",
+          "defaultPolicies": {
+            "missingRequired": "block",
+            "unexpectedEntry": "block",
+            "nameMismatch": "block",
+            "nestingMismatch": "block"
+          },
+          "root": {
+            "children": [
+              {
+                "kind": "file",
+                "name": {
+                  "type": "literal",
+                  "value": "index.ts"
+                },
+                "quantity": "exactly_one"
+              },
+              {
+                "kind": "composition",
+                "quantity": "zero_or_more",
+                "ref": "relation-domain",
+                "policyOverrides": {}
+              }
+            ]
+          },
+          "rootMode": "contents"
+        }
+      }
+    },
+    {
+      "key": "table-domain",
+      "definition": {
+        "name": "Table Domain",
+        "purpose": "Portable DB schema directory structure.",
+        "structure": {
+          "rootMode": "contents",
+          "defaultPolicies": {
+            "missingRequired": "block",
+            "unexpectedEntry": "block",
+            "nameMismatch": "block",
+            "nestingMismatch": "block"
+          },
+          "root": {
+            "children": [
+              {
+                "kind": "file",
+                "name": {
+                  "type": "literal",
+                  "value": "index.ts"
+                },
+                "quantity": "exactly_one"
+              },
+              {
+                "kind": "file",
+                "name": {
+                  "type": "placeholder",
+                  "value": "<table>.table.ts"
+                },
+                "quantity": "one_or_more"
+              }
+            ],
+            "kind": "directory",
+            "name": {
+              "type": "placeholder",
+              "value": "<domain>"
+            },
+            "quantity": "exactly_one",
+            "policyOverrides": {}
+          },
+          "rootMode": "entry"
+        }
+      }
+    },
+    {
+      "key": "relation-domain",
+      "definition": {
+        "name": "Relation Domain",
+        "purpose": "Portable DB schema directory structure.",
+        "structure": {
+          "rootMode": "contents",
+          "defaultPolicies": {
+            "missingRequired": "block",
+            "unexpectedEntry": "block",
+            "nameMismatch": "block",
+            "nestingMismatch": "block"
+          },
+          "root": {
+            "children": [
+              {
+                "kind": "file",
+                "name": {
+                  "type": "literal",
+                  "value": "index.ts"
+                },
+                "quantity": "exactly_one"
+              },
+              {
+                "kind": "file",
+                "name": {
+                  "type": "placeholder",
+                  "value": "<table>.relation.ts"
+                },
+                "quantity": "one_or_more"
+              }
+            ],
+            "kind": "directory",
+            "name": {
+              "type": "placeholder",
+              "value": "<domain>"
+            },
+            "quantity": "exactly_one",
+            "policyOverrides": {}
+          },
+          "rootMode": "entry"
+        }
+      }
+    }
+  ]
+}

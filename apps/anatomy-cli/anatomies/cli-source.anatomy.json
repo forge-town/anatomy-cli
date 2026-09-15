@@ -2,7 +2,7 @@
   "name": "Anatomy CLI source modules",
   "purpose": "Focused copy of the repository contract for the CLI source directory; tests prevent divergence.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",
@@ -289,6 +289,24 @@
           "kind": "file",
           "name": { "type": "literal", "value": "windowsPathScript.ts" },
           "quantity": "exactly_one"
+        },
+        {
+          "id": "f88299ba-3073-4d64-bd25-c4aa230bc587",
+          "kind": "file",
+          "name": { "type": "literal", "value": "packed-consumer.spec.ts" },
+          "quantity": "exactly_one",
+          "policyOverrides": {}
+        },
+        {
+          "id": "7a251c8b-bdde-4daa-baff-b976f954274d",
+          "kind": "file",
+          "name": { "type": "literal", "value": "runAnatomyBundleCli.ts" },
+          "quantity": "exactly_one",
+          "policyOverrides": {},
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
         }
       ]
     }

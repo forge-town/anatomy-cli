@@ -1,13 +1,13 @@
 import { z } from "zod/v4";
 
-import { AnatomyPoliciesSchema } from "./AnatomyPoliciesSchema";
-import { AnatomyNodeSchema } from "./AnatomyNodeSchema";
-import { AnatomyBindingSchema } from "./AnatomyBindingSchema";
+import { AnatomyPoliciesSchema } from "./AnatomyPoliciesSchema.js";
+import { AnatomyNodeSchema } from "./AnatomyNodeSchema.js";
+import { AnatomyBindingSchema } from "./AnatomyBindingSchema.js";
 
 /** Recursive filesystem structure contract that an Anatomy must satisfy. */
 export const AnatomyStructureSchema = z.strictObject({
-  /** Structure document format version used for future-compatible migrations. */
-  schemaVersion: z.literal(1),
+  /** Root mode for normalized matcher input. */
+  rootMode: z.literal("contents"),
   /** Default policies used by nodes that do not provide local overrides. */
   defaultPolicies: AnatomyPoliciesSchema,
   /** Named placeholder constraints shared by matching descendants. */

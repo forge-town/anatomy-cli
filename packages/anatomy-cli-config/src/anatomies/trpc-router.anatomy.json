@@ -2,7 +2,7 @@
   "name": "tRPC Router catalogue",
   "purpose": "Require every tRPC Router to aggregate named-exported query and mutation Procedures, with each Procedure and its unit test colocated in an isolated directory and input validation defined inline.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

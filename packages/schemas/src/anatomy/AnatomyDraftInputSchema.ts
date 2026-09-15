@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { AnatomyStructureSchema } from "./AnatomyStructureSchema";
+import { AnatomyStructureSchema } from "./AnatomyStructureSchema.js";
 
 /** Author-managed definition used to create or replace an Anatomy draft. */
 export const AnatomyDraftInputSchema = z.strictObject({

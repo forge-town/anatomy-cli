@@ -1,27 +1,36 @@
-import { checkAnatomy, planAnatomyCheck, queryAnatomy, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
+import { runAnatomyBundleCli } from "./runAnatomyBundleCli.js";
+import {
+  checkAnatomy,
+  planAnatomyCheck,
+  queryAnatomy,
+  type AnatomyFileTreeEntry,
+} from "@anatomy-cli/anatomy/core";
 import type { AnatomyDraftInput } from "@anatomy-cli/schemas";
 import { err, ok, type Result } from "neverthrow";
-import { AnatomyCliExitCode } from "./AnatomyCliExitCode";
-import { AnatomyCliUsage } from "./AnatomyCliUsage";
-import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError";
-import { type AnatomyFileTreeError } from "./AnatomyFileTreeError";
-import { collectSourceExports } from "./collectSourceExports";
-import { collectFileTree } from "./collectFileTree";
-import { collectGitFileTree } from "./collectGitFileTree";
-import { findAnatomyDefinition } from "./findAnatomyDefinition";
-import { formatAgentCheck } from "./formatAgentCheck";
-import { formatAgentQuery } from "./formatAgentQuery";
-import { formatHumanResult } from "./formatHumanResult";
-import { parseCliArguments, type AnatomyCliOptions } from "./parseCliArguments";
-import { readAnatomyDefinition } from "./readAnatomyDefinition";
+import { AnatomyCliExitCode } from "./AnatomyCliExitCode.js";
+import { AnatomyCliUsage } from "./AnatomyCliUsage.js";
+import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError.js";
+import { type AnatomyFileTreeError } from "./AnatomyFileTreeError.js";
+import { collectSourceExports } from "./collectSourceExports.js";
+import { collectFileTree } from "./collectFileTree.js";
+import { collectGitFileTree } from "./collectGitFileTree.js";
+import { findAnatomyDefinition } from "./findAnatomyDefinition.js";
+import { formatAgentCheck } from "./formatAgentCheck.js";
+import { formatAgentQuery } from "./formatAgentQuery.js";
+import { formatHumanResult } from "./formatHumanResult.js";
+import { parseCliArguments, type AnatomyCliOptions } from "./parseCliArguments.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
 
-export type AnatomyCliError = Error | AnatomyDefinitionFileError | AnatomyFileTreeError;
+export type AnatomyCliError =
+  Error | AnatomyDefinitionFileError | AnatomyFileTreeError;
 
 export type AnatomyCliDependencies = {
   findDefinition: (
     targetPath: string,
   ) => Promise<Result<string, AnatomyDefinitionFileError>>;
-  readDefinition: (path: string) => Promise<Result<AnatomyDraftInput, AnatomyDefinitionFileError>>;
+  readDefinition: (
+    path: string,
+  ) => Promise<Result<AnatomyDraftInput, AnatomyDefinitionFileError>>;
   collectTree: (
     targetPath: string,
     ignoredNames: string[],
@@ -52,6 +61,9 @@ export const runAnatomyCli = async (
     return ok(AnatomyCliExitCode.success);
   }
 
+  if (options.bundlePath !== null)
+    return runAnatomyBundleCli(options, dependencies);
+
   const definitionPath = options.definitionPath
     ? ok(options.definitionPath)
     : await dependencies.findDefinition(options.targetPath);
@@ -61,28 +73,53 @@ export const runAnatomyCli = async (
   if (definition.isErr()) return err(definition.error);
 
   const tree = options.gitFiles
-    ? await (dependencies.collectGitTree ?? collectGitFileTree)(options.targetPath)
+    ? await (dependencies.collectGitTree ?? collectGitFileTree)(
+        options.targetPath,
+      )
     : await dependencies.collectTree(options.targetPath, options.ignore);
   if (tree.isErr()) return err(tree.error);
 
   if (options.queryPath !== null) {
     const queried = queryAnatomy(definition.value, options.queryPath);
     if (queried.isErr()) {
-      return err(Array.isArray(queried.error)
-        ? new AnatomyDefinitionFileError(queried.error.map((issue) => issue.message).join("; "), definitionPath.value)
-        : queried.error);
+      return err(
+        Array.isArray(queried.error)
+          ? new AnatomyDefinitionFileError(
+              queried.error.map((issue) => issue.message).join("; "),
+              definitionPath.value,
+            )
+          : queried.error,
+      );
     }
-    dependencies.writeOutput(formatAgentQuery(queried.value, definition.value,
-      definitionPath.value, options.targetPath, options.format));
+    dependencies.writeOutput(
+      formatAgentQuery(
+        queried.value,
+        definition.value,
+        definitionPath.value,
+        options.targetPath,
+        options.format,
+      ),
+    );
     return ok(AnatomyCliExitCode.success);
   }
 
   const plan = planAnatomyCheck(definition.value, tree.value);
-  if (plan.isErr()) return err(new AnatomyDefinitionFileError(
-    plan.error.map((issue) => issue.message).join("; "), definitionPath.value));
-  const sourceExports = await (dependencies.collectExports ?? collectSourceExports)(options.targetPath, plan.value.exportChecks);
+  if (plan.isErr())
+    return err(
+      new AnatomyDefinitionFileError(
+        plan.error.map((issue) => issue.message).join("; "),
+        definitionPath.value,
+      ),
+    );
+  const sourceExports = await (
+    dependencies.collectExports ?? collectSourceExports
+  )(options.targetPath, plan.value.exportChecks);
   if (sourceExports.isErr()) return err(sourceExports.error);
-  const checked = checkAnatomy(definition.value, tree.value, sourceExports.value);
+  const checked = checkAnatomy(
+    definition.value,
+    tree.value,
+    sourceExports.value,
+  );
   if (checked.isErr()) {
     if (!Array.isArray(checked.error)) return err(checked.error);
     return err(
@@ -94,9 +131,22 @@ export const runAnatomyCli = async (
   }
 
   dependencies.writeOutput(
-    options.format === "json" ? formatAgentCheck(checked.value, definition.value,
-      definitionPath.value, options.targetPath, tree.value, options.ignore, options.gitFiles) : formatHumanResult(checked.value),
+    options.format === "json"
+      ? formatAgentCheck(
+          checked.value,
+          definition.value,
+          definitionPath.value,
+          options.targetPath,
+          tree.value,
+          options.ignore,
+          options.gitFiles,
+        )
+      : formatHumanResult(checked.value),
   );
 
-  return ok(checked.value.conforms ? AnatomyCliExitCode.success : AnatomyCliExitCode.blocked);
+  return ok(
+    checked.value.conforms
+      ? AnatomyCliExitCode.success
+      : AnatomyCliExitCode.blocked,
+  );
 };

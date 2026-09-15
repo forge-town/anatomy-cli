@@ -2,8 +2,8 @@ import type { AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
 import { err, ok, Result, ResultAsync } from "neverthrow";
 import { readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import { AnatomyFileTreeError } from "./AnatomyFileTreeError";
-import { DefaultIgnoredNames } from "./DefaultIgnoredNames";
+import { AnatomyFileTreeError } from "./AnatomyFileTreeError.js";
+import { DefaultIgnoredNames } from "./DefaultIgnoredNames.js";
 
 const collectDirectory = async (
   directory: string,

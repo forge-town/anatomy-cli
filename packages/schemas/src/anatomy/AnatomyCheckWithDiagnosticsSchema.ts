@@ -1,10 +1,9 @@
 import { z } from "zod/v4";
-import { AnatomyNodeSchema } from "./AnatomyNodeSchema";
-import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema";
-import { AnatomySourceExportsSchema } from "./AnatomySourceExportsSchema";
+import { AnatomyNodeSchema } from "./AnatomyNodeSchema.js";
+import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema.js";
+import { AnatomySourceExportsSchema } from "./AnatomySourceExportsSchema.js";
 
 export const AnatomyCheckWithDiagnosticsSchema = z.object({
-  contractVersion: z.literal(1),
   operation: z.literal("check"),
   conforms: z.boolean(),
   summary: z.object({ block: z.number(), warn: z.number(), allow: z.number() }),
@@ -20,7 +19,7 @@ export const AnatomyCheckWithDiagnosticsSchema = z.object({
     expected: AnatomyNodeSchema.nullable(),
     actual: z.array(z.object({ kind: z.enum(["file", "directory"]), name: z.string() })),
   })),
-  definition: z.object({ path: z.string(), name: z.string(), schemaVersion: z.literal(1) }),
+  definition: z.object({ path: z.string(), name: z.string(), rootMode: z.literal("contents") }),
   targetPath: z.string(),
   ignoredNames: z.array(z.string()),
   fileSelection: z.enum(["filesystem", "git"]).optional(),

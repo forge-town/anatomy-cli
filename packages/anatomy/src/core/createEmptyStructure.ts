@@ -2,7 +2,7 @@ import type { AnatomyStructure } from "@anatomy-cli/schemas";
 
 export const createEmptyStructure = (): AnatomyStructure => {
   return {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: {
       missingRequired: "block",
       unexpectedEntry: "warn",

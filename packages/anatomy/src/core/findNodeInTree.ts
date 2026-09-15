@@ -1,5 +1,5 @@
 import type { AnatomyEntry, AnatomyNode } from "@anatomy-cli/schemas";
-import { type TreeNodeParent, locateNodeInTree } from "./locateNodeInTree";
+import { type TreeNodeParent, locateNodeInTree } from "./locateNodeInTree.js";
 
 type TreeNodeResult = { found: true; parent: TreeNodeParent; index: number } | { found: false };
 

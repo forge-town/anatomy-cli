@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema";
+import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema.js";
 
 /** Editable working draft of an Anatomy before publication. */
 export const AnatomyDraftSchema = AnatomyDraftInputSchema.extend({
@@ -9,8 +9,6 @@ export const AnatomyDraftSchema = AnatomyDraftInputSchema.extend({
 
   /** Identifier of the Anatomy that owns the draft. */
   anatomyId: z.string(),
-  /** Historical version the draft is based on, or null when created from scratch. */
-  basedOnVersionId: z.string().nullable(),
   /** Draft revision used for optimistic concurrency control. */
   revision: z.number().int().positive(),
 

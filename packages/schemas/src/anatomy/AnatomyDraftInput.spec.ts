@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema";
+import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema.js";
 
 const defaultPolicies = {
   missingRequired: "block" as const,
@@ -14,7 +14,7 @@ describe("AnatomyDraftInputSchema", () => {
       name: "Example",
       purpose: "Show the smallest useful Anatomy JSON shape.",
       structure: {
-        schemaVersion: 1,
+        rootMode: "contents",
         defaultPolicies,
         root: {
           children: [
@@ -63,7 +63,7 @@ describe("AnatomyDraftInputSchema", () => {
       name: "Bound example",
       purpose: "Constrain a captured name.",
       structure: {
-        schemaVersion: 1,
+        rootMode: "contents",
         defaultPolicies,
         bindings: {
           Name: { format: "PascalCase", pattern: "[A-Z][A-Za-z0-9]*" },
@@ -80,7 +80,7 @@ describe("AnatomyDraftInputSchema", () => {
         name: "Invalid",
         purpose: "",
         structure: {
-          schemaVersion: 1,
+          rootMode: "contents",
           defaultPolicies,
           bindings: { Name: { pattern: "[" } },
           root: { children: [] },
@@ -92,7 +92,7 @@ describe("AnatomyDraftInputSchema", () => {
         name: "Invalid binding name",
         purpose: "",
         structure: {
-          schemaVersion: 1,
+          rootMode: "contents",
           defaultPolicies,
           bindings: { "not a name": { format: "PascalCase" } },
           root: { children: [] },

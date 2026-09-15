@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
-import { AnatomyFileEntrySchema, type AnatomyFileEntry } from "./AnatomyFileEntrySchema";
-import { AnatomyNodeSchema, type AnatomyNode } from "./AnatomyNodeSchema";
+import { AnatomyFileEntrySchema, type AnatomyFileEntry } from "./AnatomyFileEntrySchema.js";
+import { AnatomyNodeSchema, type AnatomyNode } from "./AnatomyNodeSchema.js";
 
 /** Directory node and its recursive children in an Anatomy tree. */
 export const AnatomyDirectoryEntrySchema: z.ZodType<

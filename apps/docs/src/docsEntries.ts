@@ -27,7 +27,7 @@ export const docsEntries: DocsEntry[] = [
       { type: "code", language: "bash", code: "pnpm dlx anatomy-cli@latest" },
       { type: "heading", text: "卸载" },
       { type: "code", language: "bash", code: "pnpm dlx anatomy-cli --uninstall" },
-      { type: "paragraph", text: "需要 Node.js 18+。默认安装到 ~/.anatomy，并配置终端 PATH；完成后打开新终端。仓库仍需提供 anatomy.json。可用 --prefix 指定绝对路径，或用 --no-modify-path 自行管理 PATH。卸载保留终端配置及其备份，可手动移除 Anatomy PATH 条目。" },
+      { type: "paragraph", text: "需要 Node.js 24+。默认安装到 ~/.anatomy，并配置终端 PATH；完成后打开新终端。仓库仍需提供 anatomy.json。可用 --prefix 指定绝对路径，或用 --no-modify-path 自行管理 PATH。卸载保留终端配置及其备份，可手动移除 Anatomy PATH 条目。" },
     ],
   },
   {

@@ -1,18 +1,25 @@
 import {
-type AnatomyDraftInput,
-type AnatomyEntry,
-type AnatomyFunctionExportCheck,
-type AnatomyNode,
-type AnatomyPolicies,
-type AnatomyPolicyOverrides,
-type AnatomySourceExports,
+  type AnatomyDraftInput,
+  type AnatomyEntry,
+  type AnatomyFunctionExportCheck,
+  type AnatomyNode,
+  type AnatomyPolicies,
+  type AnatomyPolicyOverrides,
+  type AnatomySourceExports,
 } from "@anatomy-cli/schemas";
 import { err, ok, type Result as ResultType } from "neverthrow";
-import { resolveAnatomyExportName } from "./resolveAnatomyExportName";
-import { AnatomyCheckCode } from "./AnatomyCheckCode";
-import { evaluateName, type BindingScope, type NameMatch } from "./evaluateName";
-import { resolveAnatomyPolicies } from "./resolveAnatomyPolicies";
-import { validateAnatomyForPublish, type AnatomyValidationIssue } from "./validateAnatomyForPublish";
+import { resolveAnatomyExportName } from "./resolveAnatomyExportName.js";
+import { AnatomyCheckCode } from "./AnatomyCheckCode.js";
+import {
+  evaluateName,
+  type BindingScope,
+  type NameMatch,
+} from "./evaluateName.js";
+import { resolveAnatomyPolicies } from "./resolveAnatomyPolicies.js";
+import {
+  validateAnatomyForPublish,
+  type AnatomyValidationIssue,
+} from "./validateAnatomyForPublish.js";
 
 export type AnatomyFileTreeEntry =
   | { kind: "file"; name: string }
@@ -78,7 +85,7 @@ const getQuantityRange = (
   }
 };
 
-const getPolicy = (
+const resolvePolicyValue = (
   defaults: AnatomyPolicies,
   ancestors: PolicyAncestor[],
   key: keyof AnatomyPolicies,
@@ -95,21 +102,59 @@ const getEntryLabel = (entry: AnatomyEntry): string => {
   return entry.name.value;
 };
 
+export type AnatomyPlanHooks = {
+  skipValidation?: boolean;
+  onDirectory?: (
+    entry: Extract<AnatomyEntry, { kind: "directory" }>,
+    actual: Extract<AnatomyFileTreeEntry, { kind: "directory" }>,
+    path: string,
+    scope: BindingScope,
+  ) => boolean;
+  onLevel?: (
+    nodes: AnatomyNode[],
+    entries: AnatomyFileTreeEntry[],
+    path: string,
+    scope: BindingScope,
+  ) => boolean;
+  onIssue?: (
+    issue: AnatomyCheckIssue,
+    context: {
+      parentPath: string;
+      ancestors: PolicyAncestor[];
+      scope: BindingScope;
+      policyKey: keyof AnatomyPolicies;
+    },
+  ) => void;
+  onMatch?: (entry: AnatomyEntry, path: string, scope: BindingScope) => void;
+  matchName?: (
+    entry: AnatomyEntry,
+    name: string,
+    scope: BindingScope,
+    ignoreCase: boolean,
+  ) => NameMatch;
+  preferKindOwner?: boolean;
+};
+
 export const planAnatomyCheck = (
   definition: AnatomyDraftInput,
   entries: AnatomyFileTreeEntry[],
-): ResultType<{ structuralResult: AnatomyCheckResult; exportChecks: AnatomyFunctionExportCheck[] }, AnatomyValidationIssue[]> => {
-  const validated = validateAnatomyForPublish(definition);
-  if (validated.isErr()) return err(validated.error);
+  hooks: AnatomyPlanHooks = {},
+): ResultType<
+  {
+    structuralResult: AnatomyCheckResult;
+    exportChecks: AnatomyFunctionExportCheck[];
+  },
+  AnatomyValidationIssue[]
+> => {
+  if (!hooks.skipValidation) {
+    const validated = validateAnatomyForPublish(definition);
+    if (validated.isErr()) return err(validated.error);
+  }
 
   const issues: AnatomyCheckIssue[] = [];
   const exportChecks: AnatomyFunctionExportCheck[] = [];
   const defaults = definition.structure.defaultPolicies;
   const bindings = definition.structure.bindings ?? {};
-
-  const addIssue = (issue: AnatomyCheckIssue): void => {
-    issues.push(issue);
-  };
 
   const checkNodes = (
     expectedNodes: AnatomyNode[],
@@ -118,10 +163,33 @@ export const planAnatomyCheck = (
     ancestors: PolicyAncestor[],
     scope: BindingScope,
   ): void => {
+    if (
+      hooks.onLevel?.(expectedNodes, actualEntries, parentPath, scope) === false
+    )
+      return;
+    let policyKey: keyof AnatomyPolicies = "unexpectedEntry";
+    const getPolicy = (...args: Parameters<typeof resolvePolicyValue>) => {
+      policyKey = args[2];
+      return resolvePolicyValue(...args);
+    };
+    const addIssue = (issue: AnatomyCheckIssue): void => {
+      issues.push(issue);
+      hooks.onIssue?.(issue, { parentPath, ancestors, scope, policyKey });
+    };
+    const matchName = (
+      entry: AnatomyEntry,
+      name: string,
+      ignoreCase = false,
+    ) =>
+      hooks.matchName
+        ? hooks.matchName(entry, name, scope, ignoreCase)
+        : evaluateName(entry, name, scope, bindings, ignoreCase);
     const consumed = new Set<number>();
 
     const availableIndexes = (): number[] => {
-      return actualEntries.flatMap((_, index) => (consumed.has(index) ? [] : [index]));
+      return actualEntries.flatMap((_, index) =>
+        consumed.has(index) ? [] : [index],
+      );
     };
 
     const findMatches = (
@@ -135,18 +203,38 @@ export const planAnatomyCheck = (
           return [];
         }
 
-        const match = evaluateName(entry, actual.name, scope, bindings, options.ignoreCase);
+        if (
+          hooks.preferKindOwner &&
+          actual.kind !== entry.kind &&
+          expectedNodes.some((node) => {
+            const choices = node.kind === "one_of" ? node.alternatives : [node];
+            return choices.some(
+              (other) =>
+                other.id !== entry.id &&
+                other.kind === actual.kind &&
+                (matchName(other, actual.name).kind !== "none" ||
+                  matchName(other, actual.name, true).kind !== "none"),
+            );
+          })
+        )
+          return [];
+        const match = matchName(entry, actual.name, options.ignoreCase);
         return match.kind === "none" ? [] : [{ index, match }];
       });
     };
 
-    const checkEntry = (entry: AnatomyEntry, suppressMissing: boolean): number => {
+    const checkEntry = (
+      entry: AnatomyEntry,
+      suppressMissing: boolean,
+    ): number => {
       const structuralCandidates = findMatches(entry, { requireKind: false });
-      const nestingMismatchCandidates = structuralCandidates.filter((candidate) => {
-        const actual = actualEntries[candidate.index];
+      const nestingMismatchCandidates = structuralCandidates.filter(
+        (candidate) => {
+          const actual = actualEntries[candidate.index];
 
-        return actual !== undefined && actual.kind !== entry.kind;
-      });
+          return actual !== undefined && actual.kind !== entry.kind;
+        },
+      );
       for (const candidate of nestingMismatchCandidates) {
         const actual = actualEntries[candidate.index];
         if (!actual) continue;
@@ -164,14 +252,22 @@ export const planAnatomyCheck = (
         (candidate): candidate is SuccessfulNameMatchCandidate => {
           const actual = actualEntries[candidate.index];
 
-          return actual?.kind === entry.kind && candidate.match.kind === "match";
+          return (
+            actual?.kind === entry.kind && candidate.match.kind === "match"
+          );
         },
       );
-      const bindingMismatchCandidates = structuralCandidates.filter((candidate): candidate is NameMatchCandidate & { match: BindingMismatch } => {
-        const actual = actualEntries[candidate.index];
+      const bindingMismatchCandidates = structuralCandidates.filter(
+        (
+          candidate,
+        ): candidate is NameMatchCandidate & { match: BindingMismatch } => {
+          const actual = actualEntries[candidate.index];
 
-        return actual?.kind === entry.kind && candidate.match.kind !== "match";
-      });
+          return (
+            actual?.kind === entry.kind && candidate.match.kind !== "match"
+          );
+        },
+      );
       for (const candidate of bindingMismatchCandidates) {
         const actual = actualEntries[candidate.index];
         if (!actual) continue;
@@ -205,9 +301,15 @@ export const planAnatomyCheck = (
         }
       }
 
-      const correctIndexes = correctCandidates.map((candidate) => candidate.index);
-      const caseInsensitiveCandidates = findMatches(entry, { ignoreCase: true });
-      const caseInsensitiveIndexes = caseInsensitiveCandidates.map((candidate) => candidate.index);
+      const correctIndexes = correctCandidates.map(
+        (candidate) => candidate.index,
+      );
+      const caseInsensitiveCandidates = findMatches(entry, {
+        ignoreCase: true,
+      });
+      const caseInsensitiveIndexes = caseInsensitiveCandidates.map(
+        (candidate) => candidate.index,
+      );
       const nameMismatchIndexes = caseInsensitiveIndexes.filter(
         (index) => !correctIndexes.includes(index),
       );
@@ -255,22 +357,40 @@ export const planAnatomyCheck = (
           });
         }
 
+        const childScope = { ...scope, ...candidate.match.captures };
+        hooks.onMatch?.(entry, joinPath(parentPath, actual.name), childScope);
         if (entry.kind === "file" && actual.kind === "file" && entry.exports) {
           exportChecks.push({
-            path: joinPath(parentPath, actual.name), constraintId: entry.id,
-            expectedName: resolveAnatomyExportName(entry.exports, actual.name, { ...scope, ...candidate.match.captures }),
+            path: joinPath(parentPath, actual.name),
+            constraintId: entry.id,
+            expectedName: resolveAnatomyExportName(entry.exports, actual.name, {
+              ...scope,
+              ...candidate.match.captures,
+            }),
             policy: entry.exports.policy,
           });
         }
 
         if (entry.kind === "directory" && actual.kind === "directory") {
-          checkNodes(entry.children, actual.children, joinPath(parentPath, actual.name), [
-            ...ancestors,
-            { id: entry.id, overrides: entry.policyOverrides },
-          ], {
-            ...scope,
-            ...candidate.match.captures,
-          });
+          if (
+            hooks.onDirectory?.(
+              entry,
+              actual,
+              joinPath(parentPath, actual.name),
+              childScope,
+            ) === false
+          )
+            continue;
+          checkNodes(
+            entry.children,
+            actual.children,
+            joinPath(parentPath, actual.name),
+            [...ancestors, { id: entry.id, overrides: entry.policyOverrides }],
+            {
+              ...scope,
+              ...candidate.match.captures,
+            },
+          );
         }
       }
 
@@ -291,7 +411,9 @@ export const planAnatomyCheck = (
         matchedAlternatives.length > node.maximumMatches
       ) {
         const policyKey =
-          matchedAlternatives.length < node.minimumMatches ? "missingRequired" : "unexpectedEntry";
+          matchedAlternatives.length < node.minimumMatches
+            ? "missingRequired"
+            : "unexpectedEntry";
         addIssue({
           code: AnatomyCheckCode.oneOfMismatch,
           severity: getPolicy(defaults, ancestors, policyKey),
@@ -329,5 +451,8 @@ export const planAnatomyCheck = (
     { block: 0, warn: 0, allow: 0 },
   );
 
-  return ok({ structuralResult: { issues, summary, conforms: summary.block === 0 }, exportChecks });
+  return ok({
+    structuralResult: { issues, summary, conforms: summary.block === 0 },
+    exportChecks,
+  });
 };

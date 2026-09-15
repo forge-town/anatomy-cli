@@ -16,8 +16,6 @@ export const AnatomySummarySchema = z.object({
   updatedAt: z.date(),
   /** Whether an editable draft exists. */
   hasDraft: z.boolean(),
-  /** Latest published version number, or null when never published. */
-  latestVersion: z.number().int().positive().nullable(),
   /** Number of current Crate references. */
   usageCount: z.number().int().nonnegative(),
 });

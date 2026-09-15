@@ -5,7 +5,7 @@ export const createEmptyAnatomyDraft = (name: string, purpose: string): AnatomyD
   name,
   purpose,
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: {
       missingRequired: "block",
       unexpectedEntry: "warn",

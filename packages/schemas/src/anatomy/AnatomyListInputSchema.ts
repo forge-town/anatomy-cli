@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { AnatomyStatusSchema } from "./AnatomyStatusSchema";
+import { AnatomyStatusSchema } from "./AnatomyStatusSchema.js";
 
 /** Input contract for paginated Anatomy list queries. */
 export const AnatomyListInputSchema = z.object({

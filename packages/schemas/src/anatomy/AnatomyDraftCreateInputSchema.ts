@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema";
+import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema.js";
 
 export const AnatomyDraftCreateInputSchema = AnatomyDraftInputSchema.extend({
   id: z.string().uuid().optional(),

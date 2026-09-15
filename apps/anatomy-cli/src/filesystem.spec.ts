@@ -3,9 +3,9 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { collectFileTree } from "./collectFileTree";
-import { findAnatomyDefinition } from "./findAnatomyDefinition";
-import { readAnatomyDefinition } from "./readAnatomyDefinition";
+import { collectFileTree } from "./collectFileTree.js";
+import { findAnatomyDefinition } from "./findAnatomyDefinition.js";
+import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
 
 const testDirectory = join(process.cwd(), ".anatomy-cli-test");
 const missingDefinitionDirectory = join(

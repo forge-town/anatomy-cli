@@ -1,7 +1,7 @@
 import type { AnatomyNode, AnatomyStructure } from "@anatomy-cli/schemas";
-import { cloneEntry } from "./cloneEntry";
-import { locateNodeInTree } from "./locateNodeInTree";
-import { replaceNodeInTree } from "./replaceNodeInTree";
+import { cloneEntry } from "./cloneEntry.js";
+import { locateNodeInTree } from "./locateNodeInTree.js";
+import { replaceNodeInTree } from "./replaceNodeInTree.js";
 
 export const removeAnatomyNode = (root: AnatomyStructure, nodeId: string): AnatomyStructure => {
   const located = locateNodeInTree(root.root.children, nodeId);

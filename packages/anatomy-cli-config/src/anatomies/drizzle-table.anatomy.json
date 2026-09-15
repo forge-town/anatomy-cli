@@ -2,7 +2,7 @@
   "name": "Tellyn Drizzle table files",
   "purpose": "Require domain-grouped Drizzle table modules to use the *.table.ts suffix and explicit barrels.",
   "structure": {
-    "schemaVersion": 1,
+    "rootMode": "contents",
     "defaultPolicies": {
       "missingRequired": "block",
       "unexpectedEntry": "block",

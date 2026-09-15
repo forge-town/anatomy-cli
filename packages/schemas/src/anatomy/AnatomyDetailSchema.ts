@@ -1,9 +1,8 @@
 import { z } from "zod/v4";
 
-import { AnatomyDraftSchema } from "./AnatomyDraftSchema";
-import { AnatomyVersionSchema } from "./AnatomyVersionSchema";
+import { AnatomyDraftSchema } from "./AnatomyDraftSchema.js";
 
-/** Complete Anatomy aggregate view, including its draft, version history, and usage. */
+/** Complete Anatomy aggregate view, including its current draft and usage. */
 export const AnatomyDetailSchema = z.object({
   /** Unique Anatomy identifier. */
   id: z.string(),
@@ -12,8 +11,6 @@ export const AnatomyDetailSchema = z.object({
   archivedAt: z.date().nullable(),
   /** Current editable draft, or null when no draft exists. */
   draft: AnatomyDraftSchema.nullable(),
-  /** Immutable versions ordered by publication time. */
-  versions: z.array(AnatomyVersionSchema),
   /** Number of current Crate references. */
   usageCount: z.number().int().nonnegative(),
 

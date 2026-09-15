@@ -1,12 +1,12 @@
 import { queryAnatomy } from "@anatomy-cli/anatomy/core";
 import { AnatomyDraftInputSchema } from "@anatomy-cli/schemas";
 import { describe, expect, it } from "vitest";
-import { formatAgentQuery } from "./formatAgentQuery";
+import { formatAgentQuery } from "./formatAgentQuery.js";
 
 const definition = AnatomyDraftInputSchema.parse({
   name: "Readable query", purpose: "Show constraints before editing",
   structure: {
-    schemaVersion: 1,
+    rootMode: "contents",
     defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
     bindings: { Name: { format: "PascalCase" } },
     root: { children: [{
@@ -60,6 +60,6 @@ describe("human query output", () => {
     const query = queryAnatomy(definition, "UserService/UserService.ts")._unsafeUnwrap();
     const report = JSON.parse(formatAgentQuery(query, definition, "anatomy.json", ".", "json"));
     expect(report).toMatchObject(query);
-    expect(report.definition).toMatchObject({ name: definition.name, schemaVersion: 1 });
+    expect(report.definition).toMatchObject({ name: definition.name, rootMode: "contents" });
   });
 });

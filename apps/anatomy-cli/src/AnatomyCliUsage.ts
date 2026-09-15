@@ -6,6 +6,7 @@ export const AnatomyCliUsage = [
   "",
   "Options:",
   "  -d, --definition <file>  Anatomy JSON (default: nearest anatomy.json)",
+  "      --bundle <file>      Composition bundle (exclusive with --definition)",
   "  -t, --target <directory> Alternate form of the target argument",
   "      --format <format>    human or json (default: human)",
   "      --query <path>       Query constraints relative to target (path may not exist)",

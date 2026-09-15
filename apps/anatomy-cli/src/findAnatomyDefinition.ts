@@ -1,8 +1,8 @@
 import { err, ok, Result, ResultAsync } from "neverthrow";
 import { access } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
-import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError";
-import { DefaultAnatomyDefinitionFileName } from "./DefaultAnatomyDefinitionFileName";
+import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError.js";
+import { DefaultAnatomyDefinitionFileName } from "./DefaultAnatomyDefinitionFileName.js";
 
 export const findAnatomyDefinition = async (
   targetPath: string,

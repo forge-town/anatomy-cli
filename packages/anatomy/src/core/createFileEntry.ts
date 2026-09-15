@@ -1,5 +1,5 @@
 import type { AnatomyEntry, AnatomyQuantity } from "@anatomy-cli/schemas";
-import { uid } from "./uid";
+import { uid } from "./uid.js";
 
 export const createFileEntry = (
   name: string,

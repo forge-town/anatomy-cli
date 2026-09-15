@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema";
+import { AnatomyDraftInputSchema } from "./AnatomyDraftInputSchema.js";
 
 /** Input contract for saving an Anatomy draft. */
 export const AnatomyDraftSaveInputSchema = AnatomyDraftInputSchema.extend({

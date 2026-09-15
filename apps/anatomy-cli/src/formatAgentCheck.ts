@@ -1,7 +1,7 @@
 import { AnatomyCheckCode, anatomyRulePaths, type AnatomyCheckResult, type AnatomyFileTreeEntry } from "@anatomy-cli/anatomy/core";
 import type { AnatomyCheckWithDiagnostics, AnatomyDraftInput } from "@anatomy-cli/schemas";
 import { resolve } from "node:path";
-import { DefaultIgnoredNames } from "./DefaultIgnoredNames";
+import { DefaultIgnoredNames } from "./DefaultIgnoredNames.js";
 
 export const formatAgentCheck = (
   result: AnatomyCheckResult,
@@ -23,8 +23,8 @@ export const formatAgentCheck = (
   };
   visit(tree, "");
   const report: AnatomyCheckWithDiagnostics = {
-    ...result, contractVersion: 1, operation: "check",
-    definition: { path: resolve(definitionPath), name: definition.name, schemaVersion: definition.structure.schemaVersion },
+    ...result, operation: "check",
+    definition: { path: resolve(definitionPath), name: definition.name, rootMode: definition.structure.rootMode },
     targetPath: resolve(targetPath),
     fileSelection: gitFiles ? "git" : "filesystem",
     ignoredNames: gitFiles ? [] : [...new Set([...DefaultIgnoredNames, ...ignore])],

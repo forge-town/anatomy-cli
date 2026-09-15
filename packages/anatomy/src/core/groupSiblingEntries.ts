@@ -1,8 +1,8 @@
 import type { AnatomyEntry, AnatomyNode, AnatomyStructure } from "@anatomy-cli/schemas";
-import { cloneEntry } from "./cloneEntry";
-import { locateNodeInTree } from "./locateNodeInTree";
-import { replaceNodeInTree } from "./replaceNodeInTree";
-import { uid } from "./uid";
+import { cloneEntry } from "./cloneEntry.js";
+import { locateNodeInTree } from "./locateNodeInTree.js";
+import { replaceNodeInTree } from "./replaceNodeInTree.js";
+import { uid } from "./uid.js";
 
 export const groupSiblingEntries = (
   root: AnatomyStructure,

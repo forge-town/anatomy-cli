@@ -23,11 +23,13 @@
         "anatomy-cli": "./bin/anatomy-cli.js",
         "anatomy": "./bin/anatomy.js",
       },
-      "devDependencies": {
-        "@anatomy-cli/anatomy": "workspace:*",
-        "@anatomy-cli/schemas": "workspace:*",
-        "@types/node": "^25.9.2",
+      "dependencies": {
+        "@anatomy-cli/anatomy": "^0.1.0",
+        "@anatomy-cli/schemas": "^0.1.0",
         "neverthrow": "^8.2.0",
+      },
+      "devDependencies": {
+        "@types/node": "^25.9.2",
         "oxlint": "^1.59.0",
         "typescript": "5.9.2",
         "vitest": "^4.1.8",
@@ -83,8 +85,9 @@
       "name": "@anatomy-cli/anatomy",
       "version": "0.1.0",
       "dependencies": {
-        "@anatomy-cli/schemas": "workspace:*",
+        "@anatomy-cli/schemas": "^0.1.0",
         "neverthrow": "^8.2.0",
+        "typescript": "5.9.2",
       },
       "devDependencies": {
         "@types/node": "^25.9.2",
