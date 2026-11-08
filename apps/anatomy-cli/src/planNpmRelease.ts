@@ -13,6 +13,7 @@ export const planNpmRelease = (
   channel: string,
   runId: string,
   attempt: string,
+  sourceVersion: string,
 ) => {
   if (!/^[a-f0-9]{40}$/.test(source) || !["stable", "canary"].includes(channel))
     return err(
@@ -22,6 +23,8 @@ export const planNpmRelease = (
     return err(new NpmReleaseError("Release run and attempt must be numeric"));
   if (histories.length !== 1 || histories[0]?.name !== "anatomy-cli")
     return err(new NpmReleaseError("Only anatomy-cli may be published"));
+  if (!/^0\.0\.(0|[1-9]\d*)$/.test(sourceVersion))
+    return err(new NpmReleaseError("Source version must be a stable 0.0.x version"));
   let highest = 0;
   const sameSource = new Set<string>();
   for (const history of histories) {
@@ -44,18 +47,23 @@ export const planNpmRelease = (
   const previous = [...sameSource][0];
   if (
     channel === "stable" &&
-    previous &&
-    Number(previous.split(".")[2]) < highest
+    Number(sourceVersion.split(".")[2]) < highest
   )
     return err(
       new NpmReleaseError(
         "Refusing to restore latest to an older source release",
       ),
     );
-  const base =
-    channel === "stable" && previous ? previous : `0.0.${highest + 1}`;
+  if (channel === "stable" && previous && previous !== sourceVersion)
+    return err(new NpmReleaseError("Source revision was already published with a different version"));
+  if (
+    channel === "stable" &&
+    histories[0]?.versions[sourceVersion] &&
+    histories[0].versions[sourceVersion]?.gitHead !== source
+  )
+    return err(new NpmReleaseError("Source version is already published from another revision; run bun run version:patch"));
   const version =
-    channel === "canary" ? `${base}-canary.${runId}.${attempt}` : base;
+    channel === "canary" ? `${sourceVersion}-canary.${runId}.${attempt}` : sourceVersion;
   return ok({
     version,
     tag: channel === "canary" ? "canary" : "latest",

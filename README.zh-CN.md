@@ -241,8 +241,22 @@ bun run build
 
 ## 发布
 
-`Publish anatomy-cli` 在发版相关改动进入 `main` 后自动发布 patch。目前只递增
-`0.0.x` 的第三位，不自动升级 minor 或 major。只发布 `anatomy-cli` 一个包，同时提供 CLI、SDK、
+npm 页面读取 `apps/anatomy-cli/README.md`。请同步维护其中的安装和 SDK 说明，并使用绝对链接。
+包的 `files` 清单必须包含 `README.md`：发布准备步骤只会将清单中的文件复制到临时发布目录。
+构建后运行 `bun apps/anatomy-cli/src/release-main.ts prepare`，可验证实际发布压缩包及 CLI/SDK 消费端，
+该命令不会发布。README 更改会在下述工作流发布新版本后显示于 npm 页面。
+
+合并发版改动前，使用已安装的 `bumpp` 工具自动升版：
+
+```bash
+bun run version:patch
+```
+
+该命令递增 `apps/anatomy-cli/package.json` 的 patch 版本，并同步 `bun.lock` 中的工作区版本。
+请将这两个文件随发版改动一起提交。命令本身不会提交、打标签、推送或发布；私有工作区保留各自版本。
+
+`Publish anatomy-cli` 在发版相关改动进入 `main` 后，发布源码清单中的版本号。
+稳定版保持在 `0.0.x`，除非明确调整规则。只发布 `anatomy-cli` 一个包，同时提供 CLI、SDK、
 运行时 Schema 和类型。engine 和 schemas 工作区标记为私有，编译产物一起放进 `anatomy-cli`。
 
 先在仓库 Actions Secrets 配置 `NPM_TOKEN`，只需授予 `anatomy-cli` 的无交互发布权限。工作流使用 `.nvmrc` 中的 Node，运行 `bun run quality`，
@@ -257,12 +271,13 @@ gh workflow run publish-npm.yml --ref main -f channel=canary
 
 Actions 页面也支持选择 `channel=stable`（默认）或 `channel=canary`。稳定版只允许从
 `main` 发布；canary 可以选择功能分支。工作流尚未进入默认分支时，推送 `canary-*` Git
-标签也能从对应提交触发 canary。版本形如 `0.0.4-canary.<run-id>.<attempt>`，只更新 npm
+标签也能从对应提交触发 canary。版本形如 `0.0.5-canary.<run-id>.<attempt>`，只更新 npm
 的 `canary` 标签，不更新 `latest`。CLI 和 SDK 都通过 `npm install anatomy-cli@canary` 安装。
 
-稳定版取 `anatomy-cli` 在 registry 上最高的 `0.0.x` 再递增。同一源码提交的稳定版重跑会继续原版本，
-不会重复递增；已发布产物冲突时失败。版本号只写入被忽略的根 `docs/`
-下的临时打包副本，工作流不向 Git 提交版本修改，实际发布版本与源码提交以 registry 为准。
+稳定版以源码清单中的版本号为准。发布准备步骤会拒绝落后版本，以及已被其他提交发布的版本，
+不会在临时目录中悄悄升版。同一提交重跑时沿用同一版本；已发布产物冲突时失败。
+canary 只在被忽略的根 `docs/` 下的临时打包副本中，为源码版本追加运行标识，
+不会修改源码版本或 npm 的 `latest` 标签。
 
 两个 `bin` 入口保持独立：`anatomy-cli` 默认进入安装器，`anatomy` 进入检查器。
 发布产物同时包含 CLI 构建文件和 `bin/` 启动文件。

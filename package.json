@@ -41,7 +41,8 @@
     "lint": "bun run --filter '*' lint",
     "test": "bun run --filter '*' test",
     "quality": "bun run anatomy:check && bun run check-types && bun run lint && bun run test && bun run build",
-    "anatomy:check": "bun run anatomy . --git-files"
+    "anatomy:check": "bun run anatomy . --git-files",
+    "version:patch": "bumpp apps/anatomy-cli/package.json --release patch --yes --no-commit --no-tag --no-push --no-print-commits --execute \"bun apps/anatomy-cli/src/release-main.ts sync-version\""
   },
   "engines": {
     "bun": ">=1.3.0",
@@ -54,6 +55,8 @@
     "@anatomy-cli/schemas": "workspace:*",
     "@types/node": "^25.9.2",
     "anatomy-cli": "workspace:*",
+    "bumpp": "12.3.0",
+    "jsonc-parser": "3.3.1",
     "oxlint": "^1.59.0",
     "tailwindcss": "^4.3.3",
     "typescript": "5.9.2",

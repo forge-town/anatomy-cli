@@ -143,6 +143,11 @@
                 },
                 {
                   "kind": "file",
+                  "name": { "type": "literal", "value": "README.md" },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
                   "name": { "type": "literal", "value": "package.json" },
                   "quantity": "exactly_one"
                 },

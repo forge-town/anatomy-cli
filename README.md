@@ -352,11 +352,30 @@ outside this workspace and is not modified by this project.
 
 ## Publishing
 
-`Publish anatomy-cli` automatically publishes a stable patch when release-related
+The npm page uses `apps/anatomy-cli/README.md`. Keep its installation and SDK
+instructions current and use absolute links. The package's `files` list must
+include `README.md`: release preparation copies only those listed files into
+the staging directory. After building, run
+`bun apps/anatomy-cli/src/release-main.ts prepare` to verify the actual release
+archive and its CLI/SDK consumers without publishing. README changes appear on
+npm after a new version is published by the workflow below.
+
+Before merging a release, bump the public package with the installed `bumpp` tool:
+
+```bash
+bun run version:patch
+```
+
+This increments `apps/anatomy-cli/package.json` from `0.0.x` to the next patch and
+synchronizes its workspace version in `bun.lock`. Commit both files with the
+release changes. The command does not commit, tag, push, or publish on its own.
+The private workspace packages keep their own versions.
+
+`Publish anatomy-cli` publishes the source manifest version when release-related
 changes reach `main`. Only `anatomy-cli` is published, providing both the CLI and SDK.
-Its next version increments the third number in `0.0.x`. Minor and major releases
-are disabled until explicitly enabled. The engine and schema workspaces are private;
-their compiled code and declarations ship inside `anatomy-cli`.
+Stable versions stay in the `0.0.x` line until explicitly changed. The engine and
+schema workspaces are private; their compiled code and declarations ship inside
+`anatomy-cli`.
 
 Configure the repository Actions secret `NPM_TOKEN` with non-interactive publish
 access to `anatomy-cli`. The workflow uses Node from `.nvmrc`, runs `bun run quality`,
@@ -374,15 +393,15 @@ gh workflow run publish-npm.yml --ref main -f channel=canary
 The Actions UI also accepts `channel=stable` (the default) or `channel=canary`.
 Stable runs require `main`; canaries can use a feature branch. Before the workflow
 is on the default branch, pushing a `canary-*` Git tag triggers a canary from that
-commit. Canary versions look like `0.0.4-canary.<run-id>.<attempt>` and update only
+commit. Canary versions look like `0.0.5-canary.<run-id>.<attempt>` and update only
 the npm `canary` tag. Install `anatomy-cli@canary` for both the CLI and SDK.
 
-Stable version numbers come from the highest registry `0.0.x` patch of `anatomy-cli`.
-A stable retry resumes the same source version instead of bumping again; conflicting
-published artifacts fail. The version changes only in a staged package copy under
-ignored root `docs/`.
-The workflow does not commit version changes; registry metadata records the
-published version and source commit. Canary runs do not advance `latest`.
+The source manifest is the version authority. Stable preparation rejects stale
+versions and versions already published from a different commit; it never silently
+increments the staging version. A stable retry resumes the same source version;
+conflicting artifacts fail. Canary preparation appends its run identity to the
+source version only in the staged copy under ignored root `docs/`, leaving the
+source files and npm `latest` unchanged.
 
 The package's `bin` entries stay distinct: `anatomy-cli` dispatches to the installer;
 `anatomy` dispatches to the checker. The release includes the CLI bundles and
