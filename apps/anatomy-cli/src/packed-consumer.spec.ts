@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { execFile } from "node:child_process";
-import { mkdir, mkdtemp, readFile, readdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { promisify } from "node:util";
 import { ResultAsync } from "neverthrow";
@@ -97,6 +97,37 @@ AnatomyScanOutcomeSchema.parse(result);console.log(JSON.stringify(result));`,
 }, 120_000);
 
 describe("isolated packed Node consumer", () => {
+  it("prints the packed package version through both npm launchers", async () => {
+    const installed = join(consumer, "node_modules/anatomy-cli");
+    const manifest = JSON.parse(await readFile(join(installed, "package.json"), "utf8"));
+    for (const bin of ["anatomy.js", "anatomy-cli.js"]) {
+      for (const flag of ["--version", "-v"]) {
+        const result = (await execute(process.execPath, [join(installed, "bin", bin), flag], consumer))._unsafeUnwrap();
+        expect(result.stdout).toBe(`${manifest.version}\n`);
+        expect(result.stderr).toBe("");
+      }
+    }
+  });
+
+  it("retains a staged canary version after the installer source is removed", async () => {
+    const installed = join(consumer, "node_modules/anatomy-cli");
+    const source = join(consumer, "temporary-release");
+    const prefix = join(consumer, "persistent-install");
+    await mkdir(join(source, "dist"), { recursive: true });
+    const manifest = JSON.parse(await readFile(join(installed, "package.json"), "utf8"));
+    const version = `${manifest.version}-canary.123.1`;
+    await writeFile(join(source, "package.json"), JSON.stringify({ ...manifest, version }));
+    for (const file of ["main.js", "install-main.js"]) {
+      await copyFile(join(installed, "dist", file), join(source, "dist", file));
+    }
+    expect((await execute(process.execPath, [join(source, "dist/main.js"), "--version"], consumer))._unsafeUnwrap().stdout).toBe(`${version}\n`);
+    (await execute(process.execPath, [join(source, "dist/install-main.js"), "--prefix", prefix, "--no-modify-path"], consumer))._unsafeUnwrap();
+    await rm(source, { recursive: true });
+    for (const flag of ["--version", "-v"]) {
+      expect((await execute(process.execPath, [join(prefix, "anatomy.mjs"), flag], consumer))._unsafeUnwrap().stdout).toBe(`${version}\n`);
+    }
+  });
+
   /** @summary Install packages in an ordinary Node consumer
    * @description
    * Given: An isolated consumer installs only the anatomy-cli tarball and runs exclusively through Node.

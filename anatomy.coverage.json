@@ -943,6 +943,18 @@
       "role": "entrypoint",
       "reason": "Package build process entrypoint; no public runtime exports.",
       "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/AnatomyVersionError.ts": {
+      "role": "class",
+      "reason": "Dedicated version metadata error; the exported class name matches its filename.",
+      "runtimeExports": [
+        "AnatomyVersionError"
+      ]
+    },
+    "apps/anatomy-cli/src/version.spec.ts": {
+      "role": "test",
+      "reason": "Version metadata regression tests; intentionally expose no public runtime exports.",
+      "runtimeExports": []
     }
   }
 }

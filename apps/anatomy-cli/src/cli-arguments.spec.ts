@@ -29,6 +29,7 @@ describe("parseCliArguments", () => {
       format: "json",
       ignore: ["generated", "temp", "fixtures"],
       help: false,
+      version: false,
       queryPath: null,
       gitFiles: false,
     });

@@ -28,6 +28,7 @@ a supported shell profile or Windows user PATH. Open a new terminal, then run:
 
 ```bash
 anatomy --help
+anatomy --version
 ```
 
 Installation does not create an `anatomy.json` file. For installer options:

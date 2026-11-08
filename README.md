@@ -61,12 +61,17 @@ before the first edit. **Open a new terminal** after installation, then run:
 
 ```bash
 anatomy --help
+anatomy --version
 anatomy ./src
 ```
 
 Installation does not generate `anatomy.json`; keep your definition in the
 repository as described below. Unknown shells and read-only profiles receive
 manual PATH instructions instead of a silent setup failure.
+
+Use `anatomy --version` (or `anatomy -v`) to print the installed release version
+without scanning a project. `npx anatomy-cli --version` reports the downloaded
+package's version without installing it to `~/.anatomy`.
 
 ### Upgrade, customize or uninstall
 

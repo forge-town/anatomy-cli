@@ -20,6 +20,7 @@ import { formatAgentQuery } from "./formatAgentQuery.js";
 import { formatHumanResult } from "./formatHumanResult.js";
 import { parseCliArguments, type AnatomyCliOptions } from "./parseCliArguments.js";
 import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
+import { readAnatomyVersion } from "./readAnatomyVersion.js";
 
 export type AnatomyCliError =
   Error | AnatomyDefinitionFileError | AnatomyFileTreeError;
@@ -38,6 +39,7 @@ export type AnatomyCliDependencies = {
   writeOutput: (value: string) => void;
   collectExports?: typeof collectSourceExports;
   collectGitTree?: typeof collectGitFileTree;
+  readVersion?: typeof readAnatomyVersion;
 };
 
 const defaultDependencies: AnatomyCliDependencies = {
@@ -58,6 +60,13 @@ export const runAnatomyCli = async (
   if (options.help) {
     dependencies.writeOutput(AnatomyCliUsage);
 
+    return ok(AnatomyCliExitCode.success);
+  }
+
+  if (options.version) {
+    const version = (dependencies.readVersion ?? readAnatomyVersion)();
+    if (version.isErr()) return err(version.error);
+    dependencies.writeOutput(version.value);
     return ok(AnatomyCliExitCode.success);
   }
 

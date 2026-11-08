@@ -50,10 +50,14 @@ bunx anatomy-cli
 
 ```bash
 anatomy --help
+anatomy --version
 anatomy ./src
 ```
 
 安装过程不会生成 `anatomy.json`，请按下文说明在仓库中维护定义。对于无法识别的 Shell 或只读配置文件，安装器会给出手动配置 PATH 的说明。
+
+运行 `anatomy --version`（或 `anatomy -v`）可查看已安装的版本，无需扫描项目。
+`npx anatomy-cli --version` 显示本次下载包的版本，不会将其安装到 `~/.anatomy`。
 
 ### 升级、自定义安装或卸载
 

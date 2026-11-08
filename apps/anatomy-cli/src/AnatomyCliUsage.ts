@@ -13,4 +13,5 @@ export const AnatomyCliUsage = [
   "      --git-files          Check tracked and non-ignored untracked files (requires Git)",
   "      --ignore <paths>     Comma-separated names; may be repeated",
   "  -h, --help               Show this help",
+  "  -v, --version            Show the installed release version",
 ].join("\n");
