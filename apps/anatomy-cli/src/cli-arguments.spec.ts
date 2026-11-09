@@ -31,6 +31,10 @@ describe("parseCliArguments", () => {
       help: false,
       version: false,
       watch: false,
+      generate: false,
+      modelConfigPath: null,
+      outputPath: null,
+      instructions: null,
       queryPath: null,
       gitFiles: false,
     });

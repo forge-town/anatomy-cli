@@ -4,8 +4,10 @@ import { copyFile, cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "
 import { resolve, join } from "node:path";
 import { promisify } from "node:util";
 import { setTimeout as pause } from "node:timers/promises";
+import { createServer, type Server } from "node:http";
 import { ResultAsync } from "neverthrow";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { AnatomySkillFiles } from "./AnatomySkillFiles.js";
 
 const root = resolve(import.meta.dirname, "../../..");
 const execute = (command: string, args: string[], cwd: string) =>
@@ -18,8 +20,13 @@ let bundlePath: string;
 let targetPath: string;
 let cliPath: string;
 const watchChildren: ChildProcess[] = [];
-afterEach(() => {
+const modelServers: Server[] = [];
+afterEach(async () => {
   for (const child of watchChildren.splice(0)) if (child.exitCode === null) child.kill("SIGKILL");
+  for (const server of modelServers.splice(0)) {
+    server.closeAllConnections();
+    await new Promise<void>((done) => server.close(() => done()));
+  }
 });
 
 beforeAll(async () => {
@@ -102,6 +109,72 @@ AnatomyScanOutcomeSchema.parse(result);console.log(JSON.stringify(result));`,
 }, 120_000);
 
 describe("isolated packed Node consumer", () => {
+  it("installs bundled agent skills and exports the schema without model configuration", async () => {
+    const destination = join(consumer, "custom agent skills");
+    const args = [cliPath, "skills", "install", "--path", destination];
+    const installed = (await execute(process.execPath, args, consumer))._unsafeUnwrap();
+    expect(installed.stdout).toContain("Installed generate-anatomy");
+    for (const file of AnatomySkillFiles) {
+      expect(await readFile(join(destination, "generate-anatomy", file), "utf8"))
+        .toBe(await readFile(join(root, "apps/anatomy-cli/skills/generate-anatomy", file), "utf8"));
+    }
+    expect((await execute(process.execPath, args, consumer))._unsafeUnwrap().stdout).toContain("Already installed:");
+    const schema = (await execute(process.execPath, [cliPath, "skills", "schema"], consumer))._unsafeUnwrap();
+    expect(JSON.parse(schema.stdout).properties.structure.properties.rootMode).toMatchObject({ const: "contents" });
+    const help = (await execute(process.execPath, [cliPath, "skills", "--help"], consumer))._unsafeUnwrap();
+    expect(help.stdout).toContain("codex,claude-code,pi");
+    const abbreviated = await execute(process.execPath, [cliPath, "skills", "install", "--agent", "cc", "--dry-run"], consumer);
+    expect(abbreviated.isErr()).toBe(true);
+  });
+
+  it("configures a model, generates via HTTP and refuses to overwrite a saved definition", async () => {
+    let calls = 0;
+    const server = createServer((request, response) => {
+      let raw = "";
+      request.on("data", (data) => { raw += data.toString(); });
+      request.on("end", () => {
+        calls++;
+        const body = JSON.parse(raw);
+        expect(body.model).toBe("fixture-model");
+        expect(request.headers.authorization).toBe("Bearer fixture-key");
+        expect(body.messages[0].content).toContain("JSON Schema");
+        response.setHeader("content-type", "application/json");
+        response.end(JSON.stringify({ choices: [{ finish_reason: "stop", message: { content: JSON.stringify({
+          name: "Services", purpose: "Model-inferred service conventions", structure: {
+            rootMode: "contents", defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
+            bindings: { Name: { format: "PascalCase" } },
+            root: { children: [{ kind: "file", name: { type: "placeholder", value: "<Name>Service.ts" }, quantity: "one_or_more" }] },
+          },
+        }) } }] }));
+      });
+    });
+    modelServers.push(server);
+    await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
+    const address = server.address();
+    if (!address || typeof address === "string") throw Error("Missing model fixture address");
+    const config = join(consumer, "model.json");
+    const target = join(consumer, "generate-project");
+    await mkdir(target);
+    await writeFile(join(target, "UserService.ts"), "// Source content is not sent\n");
+    await writeFile(join(target, "OrderService.ts"), "");
+    const setup = await execute(process.execPath, [cliPath, "config", "model", "--base-url", `http://127.0.0.1:${address.port}/v1`, "--model", "fixture-model", "--api-key-env", "ANATOMY_FIXTURE_MODEL_KEY", "--model-config", config], consumer);
+    expect(setup.isOk()).toBe(true);
+    expect(JSON.parse(await readFile(config, "utf8")).model).toBe("fixture-model");
+    const args = [cliPath, target, "--generate", "--model-config", config, "--instructions", "Infer reusable service names"];
+    const env = { ...process.env, ANATOMY_FIXTURE_MODEL_KEY: "fixture-key" };
+    const preview = await promisify(execFile)(process.execPath, args, { cwd: consumer, env });
+    expect(JSON.parse(preview.stdout).structure.root.children).toHaveLength(1);
+    const output = join(target, "anatomy.json");
+    await promisify(execFile)(process.execPath, [...args, "--output", output], { cwd: consumer, env });
+    const saved = await readFile(output, "utf8");
+    expect(calls).toBe(2);
+    const overwrite = await ResultAsync.fromPromise(promisify(execFile)(process.execPath, [...args, "--output", output], { cwd: consumer, env }), (cause) => cause);
+    expect(overwrite.isErr()).toBe(true);
+    expect(await readFile(output, "utf8")).toBe(saved);
+    expect(calls).toBe(2);
+    expect((await execute(process.execPath, [cliPath, target], consumer)).isOk()).toBe(true);
+  }, 30_000);
+
   it("watches complete bundle checks and exits with the last blocked result", async () => {
     const target = join(consumer, "bundle-watch", "db-schema");
     await cp(targetPath, target, { recursive: true });
@@ -195,11 +268,18 @@ describe("isolated packed Node consumer", () => {
     for (const file of ["main.js", "install-main.js"]) {
       await copyFile(join(installed, "dist", file), join(source, "dist", file));
     }
+    await cp(join(installed, "skills"), join(source, "skills"), { recursive: true });
     expect((await execute(process.execPath, [join(source, "dist/main.js"), "--version"], consumer))._unsafeUnwrap().stdout).toBe(`${version}\n`);
     (await execute(process.execPath, [join(source, "dist/install-main.js"), "--prefix", prefix, "--no-modify-path"], consumer))._unsafeUnwrap();
     await rm(source, { recursive: true });
     for (const flag of ["--version", "-v"]) {
       expect((await execute(process.execPath, [join(prefix, "anatomy.mjs"), flag], consumer))._unsafeUnwrap().stdout).toBe(`${version}\n`);
+    }
+    const skills = join(consumer, "detached skills");
+    (await execute(process.execPath, [join(prefix, "anatomy.mjs"), "skills", "install", "--path", skills], consumer))._unsafeUnwrap();
+    for (const file of AnatomySkillFiles) {
+      expect(await readFile(join(skills, "generate-anatomy", file), "utf8"))
+        .toBe(await readFile(join(installed, "skills/generate-anatomy", file), "utf8"));
     }
   });
 

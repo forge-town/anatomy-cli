@@ -21,6 +21,7 @@ import { formatHumanResult } from "./formatHumanResult.js";
 import { parseCliArguments, type AnatomyCliOptions } from "./parseCliArguments.js";
 import { readAnatomyDefinition } from "./readAnatomyDefinition.js";
 import { readAnatomyVersion } from "./readAnatomyVersion.js";
+import { runAnatomyGeneration } from "./runAnatomyGeneration.js";
 
 export type AnatomyCliError =
   Error | AnatomyDefinitionFileError | AnatomyFileTreeError;
@@ -70,6 +71,8 @@ export const runAnatomyCli = async (
     dependencies.writeOutput(version.value);
     return ok(AnatomyCliExitCode.success);
   }
+
+  if (options.generate) return runAnatomyGeneration(options, dependencies.writeOutput);
 
   if (options.bundlePath !== null)
     return runAnatomyBundleCli(options, dependencies);

@@ -967,6 +967,51 @@
       "role": "test",
       "reason": "Watch session and filesystem inventory regression tests; no public runtime exports.",
       "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/AnatomyModelError.ts": {
+      "role": "class",
+      "reason": "Dedicated model configuration and generation error matching its module name.",
+      "runtimeExports": [
+        "AnatomyModelError"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyModelConfigSchema.ts": {
+      "role": "schema",
+      "reason": "Single same-named Zod schema with inferred types for model integration.",
+      "runtimeExports": [
+        "AnatomyModelConfigSchema"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomyCompletionSchema.ts": {
+      "role": "schema",
+      "reason": "Single same-named Zod schema with inferred types for model integration.",
+      "runtimeExports": [
+        "AnatomyCompletionSchema"
+      ]
+    },
+    "apps/anatomy-cli/src/model-generation.spec.ts": {
+      "role": "test",
+      "reason": "Local HTTP provider and model configuration tests; no runtime exports.",
+      "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/AnatomySkillFiles.ts": {
+      "role": "data",
+      "reason": "Dedicated named resource manifest matching the filename.",
+      "runtimeExports": [
+        "AnatomySkillFiles"
+      ]
+    },
+    "apps/anatomy-cli/src/AnatomySkillInstallError.ts": {
+      "role": "class",
+      "reason": "Dedicated error class matching the filename.",
+      "runtimeExports": [
+        "AnatomySkillInstallError"
+      ]
+    },
+    "apps/anatomy-cli/src/skill-install.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
     }
   }
 }

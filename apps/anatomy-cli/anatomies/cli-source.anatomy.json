@@ -436,6 +436,146 @@
             "value": "watch.spec.ts"
           },
           "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "AnatomyModelError.ts"
+          },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "AnatomyModelConfigSchema.ts"
+          },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "AnatomyCompletionSchema.ts"
+          },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "getModelConfigPath.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "readModelConfig.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "runModelConfig.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "generateAnatomy.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "runAnatomyGeneration.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "model-generation.spec.ts"
+          },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "AnatomySkillFiles.ts"
+          },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "AnatomySkillInstallError.ts"
+          },
+          "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "getSkillDestinations.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "runSkillCommand.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "skill-install.spec.ts"
+          },
+          "quantity": "exactly_one"
         }
       ]
     }
