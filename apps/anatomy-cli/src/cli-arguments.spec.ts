@@ -30,6 +30,7 @@ describe("parseCliArguments", () => {
       ignore: ["generated", "temp", "fixtures"],
       help: false,
       version: false,
+      watch: false,
       queryPath: null,
       gitFiles: false,
     });
@@ -71,6 +72,11 @@ describe("parseCliArguments", () => {
 });
 
 describe("composition bundle arguments",()=>{
+  it("accepts watch with check modes and rejects query watch", () => {
+    expect(parseCliArguments(["src", "--watch", "--ignore", "generated"])._unsafeUnwrap()).toMatchObject({ watch: true, ignore: ["generated"] });
+    expect(parseCliArguments(["--bundle", "bundle.json", "--git-files", "--watch"])._unsafeUnwrap()).toMatchObject({ watch: true, gitFiles: true });
+    expect(parseCliArguments(["--watch", "--query", "."]).isErr()).toBe(true);
+  });
   it("accepts a bundle and a Git-visible target",()=>{
     expect(parseCliArguments(["src","--bundle","bundle.json","--git-files"])._unsafeUnwrap()).toMatchObject({bundlePath:"bundle.json",definitionPath:null,gitFiles:true});
   });

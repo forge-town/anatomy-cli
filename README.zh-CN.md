@@ -229,6 +229,27 @@ bun run anatomy ./packages/services \
 
 检查整个仓库可使用 `anatomy . --git-files`：需要 Git，包含所有已跟踪文件（即使被忽略规则匹配）及未被忽略的新文件。它读取当前工作区，已删除文件仍会报告缺失。此模式包含契约文件，不应用默认名称排除规则，拒绝与 `--ignore` 混用，遇到符号链接或子模块会报错。未跟踪且被忽略的本地产物、空目录不属于此文件清单。JSON 会标明 `fileSelection: "git"`，`ignoredNames` 为空。
 
+## 持续检查
+
+```bash
+anatomy ./src --watch
+anatomy . --git-files --watch
+anatomy ./packages/db-schema --bundle ./config/db-schema.bundle.json --watch
+anatomy ./src --watch --format json
+```
+
+监听模式启动后立即检查，随后每 500 毫秒轮询选中的文件清单，合并连续修改后重新执行完整检查，
+不会同时运行多次扫描。文件新增、删除、重命名、源码编辑、定义或 Bundle 的修改都会触发检查。
+自动查找定义时，也会检测祖先目录中的 `anatomy.json`，以及新建的、更近的定义。
+
+监听范围沿用普通检查的忽略规则或 Git 文件选择。配置或源码出错时会报告错误并继续监听，修复后可重新检查。
+按 Ctrl+C 会在当前检查结束后停止，退出码保留最近一次检查结果（`0`、`1` 或 `2`）。
+`--watch` 不能与 `--query` 同用；帮助和版本查询仍只执行一次。
+
+`--format json` 下，标准输出每行是一份完整 JSON 报告（NDJSON），运行错误以单行 JSON 写入标准错误。
+重定向报告文件的写入不会自行触发新的检查，但报告文件仍参与结构校验，建议放到检查目标之外或明确忽略。
+轮询会枚举文件并读取元数据，开销随仓库规模增加。
+
 ## 开发
 
 ```bash

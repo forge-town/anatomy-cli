@@ -1,10 +1,11 @@
-import { existsSync } from "node:fs";
-import { execFile } from "node:child_process";
-import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { closeSync, existsSync, openSync, readFileSync } from "node:fs";
+import { execFile, spawn, type ChildProcess } from "node:child_process";
+import { copyFile, cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { promisify } from "node:util";
+import { setTimeout as pause } from "node:timers/promises";
 import { ResultAsync } from "neverthrow";
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 const root = resolve(import.meta.dirname, "../../..");
 const execute = (command: string, args: string[], cwd: string) =>
@@ -16,6 +17,10 @@ let consumer: string;
 let bundlePath: string;
 let targetPath: string;
 let cliPath: string;
+const watchChildren: ChildProcess[] = [];
+afterEach(() => {
+  for (const child of watchChildren.splice(0)) if (child.exitCode === null) child.kill("SIGKILL");
+});
 
 beforeAll(async () => {
   await mkdir(join(root, "docs/verification/cod-420"), { recursive: true });
@@ -97,6 +102,76 @@ AnatomyScanOutcomeSchema.parse(result);console.log(JSON.stringify(result));`,
 }, 120_000);
 
 describe("isolated packed Node consumer", () => {
+  it("watches complete bundle checks and exits with the last blocked result", async () => {
+    const target = join(consumer, "bundle-watch", "db-schema");
+    await cp(targetPath, target, { recursive: true });
+    const child = spawn(process.execPath, [cliPath, target, "--bundle", bundlePath, "--watch"], {
+      cwd: consumer, stdio: ["ignore", "pipe", "pipe"],
+    });
+    watchChildren.push(child);
+    let output = "";
+    child.stdout!.on("data", (data) => { output += data.toString(); });
+    child.stderr!.resume();
+    const exited = new Promise<number | null>((done) => child.once("exit", (code) => done(code)));
+    await vi.waitFor(() => expect(output).toContain("Anatomy structure conforms"), { timeout: 10_000 });
+    await writeFile(join(target, "unexpected.ts"), "export {};");
+    await vi.waitFor(() => expect(output).toContain("Anatomy structure does not conform"), { timeout: 10_000 });
+    child.kill("SIGTERM");
+    expect(await exited).toBe(1);
+  }, 20_000);
+
+  it("watches source and external config edits, recovers, and avoids redirected-output loops", async () => {
+    const target = join(consumer, "watch-project");
+    await mkdir(target);
+    const definitionPath = join(consumer, "watch-definition.json");
+    const definition = {
+      name: "Watch project", purpose: "Exercise packaged watch checks",
+      structure: {
+        rootMode: "contents",
+        defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
+        root: { children: [
+          { kind: "file", name: { type: "literal", value: "required.ts" }, quantity: "exactly_one", exports: { name: "file_stem", policy: "block" } },
+          { kind: "file", name: { type: "literal", value: "watch.jsonl" }, quantity: "exactly_one" },
+        ] },
+      },
+    };
+    const valid = "export function required() {}";
+    await writeFile(join(target, "required.ts"), valid);
+    await writeFile(definitionPath, JSON.stringify(definition));
+    const report = join(target, "watch.jsonl");
+    const fd = openSync(report, "w");
+    const child = spawn(process.execPath, [cliPath, target, "--watch", "--definition", definitionPath, "--format", "json"], {
+      cwd: consumer, stdio: ["ignore", fd, "pipe"],
+    });
+    closeSync(fd);
+    watchChildren.push(child);
+    const exited = new Promise<{ code: number | null; signal: string | null }>((done) => {
+      child.once("exit", (code, signal) => done({ code, signal }));
+    });
+    let errors = "";
+    child.stderr!.on("data", (data) => { errors += data.toString(); });
+    const reports = () => readFileSync(report, "utf8").split("\n").slice(0, -1).map((line) => JSON.parse(line));
+    await vi.waitFor(() => expect(reports()).toHaveLength(1), { timeout: 10_000 });
+    expect(reports()[0].conforms).toBe(true);
+    await pause(1_500);
+    expect(reports()).toHaveLength(1);
+    await writeFile(join(target, "required.ts"), "export function wrong() {}");
+    await vi.waitFor(() => expect(reports()).toHaveLength(2), { timeout: 10_000 });
+    expect(reports()[1].conforms).toBe(false);
+    await writeFile(join(target, "required.ts"), valid);
+    await vi.waitFor(() => expect(reports()).toHaveLength(3), { timeout: 10_000 });
+    expect(reports()[2].conforms).toBe(true);
+    await writeFile(definitionPath, "{");
+    await vi.waitFor(() => expect(errors.trim()).not.toBe(""), { timeout: 10_000 });
+    expect(JSON.parse(errors.trim()).operation).toBe("error");
+    expect(child.exitCode).toBeNull();
+    await writeFile(definitionPath, JSON.stringify(definition));
+    await vi.waitFor(() => expect(reports()).toHaveLength(4), { timeout: 10_000 });
+    expect(reports()[3].conforms).toBe(true);
+    child.kill("SIGINT");
+    expect(await exited).toEqual({ code: 0, signal: null });
+  }, 30_000);
+
   it("prints the packed package version through both npm launchers", async () => {
     const installed = join(consumer, "node_modules/anatomy-cli");
     const manifest = JSON.parse(await readFile(join(installed, "package.json"), "utf8"));

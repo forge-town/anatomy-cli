@@ -10,6 +10,7 @@ export type AnatomyCliOptions = {
   ignore: string[];
   help: boolean;
   version: boolean;
+  watch: boolean;
   queryPath: string | null;
   gitFiles: boolean;
 };
@@ -37,6 +38,7 @@ export const parseCliArguments = (
     ignore: [],
     help: false,
     version: false,
+    watch: false,
     queryPath: null,
     gitFiles: false,
   };
@@ -54,6 +56,11 @@ export const parseCliArguments = (
 
     if (argument === "--version" || argument === "-v") {
       options.version = true;
+      continue;
+    }
+
+    if (argument === "--watch") {
+      options.watch = true;
       continue;
     }
 
@@ -150,6 +157,9 @@ export const parseCliArguments = (
 
     return err(new AnatomyCliArgumentError(`Unknown argument "${argument}"`));
   }
+
+  if (options.watch && options.queryPath !== null)
+    return err(new AnatomyCliArgumentError("--watch cannot be combined with --query"));
 
   if (options.queryPath !== null && options.ignore.length > 0) {
     return err(

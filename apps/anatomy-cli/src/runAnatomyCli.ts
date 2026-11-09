@@ -51,8 +51,9 @@ const defaultDependencies: AnatomyCliDependencies = {
 
 export const runAnatomyCli = async (
   args: string[],
-  dependencies: AnatomyCliDependencies = defaultDependencies,
+  overrides: Partial<AnatomyCliDependencies> = {},
 ): Promise<Result<number, AnatomyCliError>> => {
+  const dependencies: AnatomyCliDependencies = { ...defaultDependencies, ...overrides };
   const optionsResult = parseCliArguments(args);
   if (optionsResult.isErr()) return err(optionsResult.error);
 

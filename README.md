@@ -326,6 +326,34 @@ silently omitting them. Ignored untracked artifacts and empty directories are
 outside this file-based inventory. JSON reports identify `fileSelection: "git"`
 and have an empty `ignoredNames` list.
 
+## Watch mode
+
+```bash
+anatomy ./src --watch
+anatomy . --git-files --watch
+anatomy ./packages/db-schema --bundle ./config/db-schema.bundle.json --watch
+anatomy ./src --watch --format json
+```
+
+Watch mode checks immediately, then polls the selected file inventory every
+500 ms and coalesces edits before running another complete check. Scans never
+overlap. It observes file additions, deletions, renames, source edits, and changes
+to the explicit definition or bundle. With automatic discovery, it also observes
+ancestor `anatomy.json` files and new closer definitions.
+
+File selection follows the same ignores or Git rules as a normal check. Invalid
+definitions and source errors are reported without ending the session; fix the
+file to check again. Press Ctrl+C to stop after the current check. The process
+returns the latest check's exit code (`0`, `1`, or `2`). `--query` cannot be combined
+with `--watch`; help and version queries remain one-shot operations.
+
+With `--format json`, stdout contains one compact JSON report per line (NDJSON);
+operational errors are compact JSON on stderr. Writes to redirected stdout/stderr
+files do not trigger new checks by themselves. Those files still participate in
+structural validation, so keep reports outside the target or exclude them.
+Polling enumerates selected paths and reads file metadata; its cost grows with
+repository size.
+
 ## Development
 
 ```bash

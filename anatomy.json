@@ -541,6 +541,46 @@
                         "value": "version.spec.ts"
                       },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "AnatomyWatchError.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "readWatchSnapshot.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "runAnatomyWatch.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "watch.spec.ts"
+                      },
+                      "quantity": "exactly_one"
                     }
                   ]
                 },

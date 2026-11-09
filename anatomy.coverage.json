@@ -955,6 +955,18 @@
       "role": "test",
       "reason": "Version metadata regression tests; intentionally expose no public runtime exports.",
       "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/AnatomyWatchError.ts": {
+      "role": "class",
+      "reason": "Dedicated watch session error; exported class name matches its filename.",
+      "runtimeExports": [
+        "AnatomyWatchError"
+      ]
+    },
+    "apps/anatomy-cli/src/watch.spec.ts": {
+      "role": "test",
+      "reason": "Watch session and filesystem inventory regression tests; no public runtime exports.",
+      "runtimeExports": []
     }
   }
 }

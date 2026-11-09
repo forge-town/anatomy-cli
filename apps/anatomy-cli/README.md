@@ -90,6 +90,26 @@ If you installed with npm globally, use `npm uninstall -g anatomy-cli` instead.
 For custom installation directories, PATH settings, and backups, see the
 [installation guide](https://github.com/forge-town/anatomy-cli#install-anatomy).
 
+## Watch mode
+
+```bash
+anatomy ./src --watch
+anatomy . --git-files --watch
+anatomy ./src --watch --format json
+```
+
+Checks run immediately and after changes to selected files or definitions. Watch
+mode polls every 500 ms, coalesces edits, and runs complete checks serially. It
+uses the same ignores and Git selection as normal checks, and also supports
+`--bundle`. Configuration and source errors do not stop monitoring. Press Ctrl+C
+to stop after the current check; the latest check determines the exit code.
+
+JSON output is one report per stdout line (NDJSON), with operational errors on
+stderr. Redirected report writes do not retrigger scans, but the report files
+still count for structure checks. Keep reports outside the target or ignore them.
+`--query` and `--watch` are mutually exclusive. Large repositories incur repeated
+inventory and metadata reads.
+
 ## SDK
 
 The same package also provides an ESM SDK, runtime schemas, and TypeScript types:
