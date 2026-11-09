@@ -581,6 +581,146 @@
                         "value": "watch.spec.ts"
                       },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "AnatomyModelError.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "AnatomyModelConfigSchema.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "AnatomyCompletionSchema.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "getModelConfigPath.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "readModelConfig.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "runModelConfig.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "generateAnatomy.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "runAnatomyGeneration.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "model-generation.spec.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "AnatomySkillFiles.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "AnatomySkillInstallError.ts"
+                      },
+                      "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "getSkillDestinations.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "runSkillCommand.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "skill-install.spec.ts"
+                      },
+                      "quantity": "exactly_one"
                     }
                   ]
                 },
@@ -595,6 +735,76 @@
                   "name": { "type": "literal", "value": "tsconfig.build.json" },
                   "quantity": "exactly_one",
                   "policyOverrides": {}
+                },
+                {
+                  "kind": "directory",
+                  "name": {
+                    "type": "literal",
+                    "value": "skills"
+                  },
+                  "quantity": "exactly_one",
+                  "children": [
+                    {
+                      "kind": "directory",
+                      "name": {
+                        "type": "literal",
+                        "value": "generate-anatomy"
+                      },
+                      "quantity": "exactly_one",
+                      "children": [
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "SKILL.md"
+                          },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "directory",
+                          "name": {
+                            "type": "literal",
+                            "value": "references"
+                          },
+                          "quantity": "exactly_one",
+                          "children": [
+                            {
+                              "kind": "file",
+                              "name": {
+                                "type": "literal",
+                                "value": "workflow.md"
+                              },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": {
+                                "type": "literal",
+                                "value": "anatomy-format.md"
+                              },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": {
+                                "type": "literal",
+                                "value": "checklist.md"
+                              },
+                              "quantity": "exactly_one"
+                            },
+                            {
+                              "kind": "file",
+                              "name": {
+                                "type": "literal",
+                                "value": "example.anatomy.json"
+                              },
+                              "quantity": "exactly_one"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             },

@@ -1,0 +1,25 @@
+{
+  "name": "Service modules",
+  "purpose": "Each service module owns its index and same-named implementation.",
+  "structure": {
+    "rootMode": "contents",
+    "defaultPolicies": {
+      "missingRequired": "block",
+      "unexpectedEntry": "block",
+      "nameMismatch": "block",
+      "nestingMismatch": "block"
+    },
+    "bindings": { "Name": { "format": "PascalCase" } },
+    "root": {
+      "children": [{
+        "kind": "directory",
+        "name": { "type": "placeholder", "value": "<Name>Service" },
+        "quantity": "one_or_more",
+        "children": [
+          { "kind": "file", "name": { "type": "literal", "value": "index.ts" }, "quantity": "exactly_one" },
+          { "kind": "file", "name": { "type": "placeholder", "value": "<Name>Service.ts" }, "quantity": "exactly_one" }
+        ]
+      }]
+    }
+  }
+}

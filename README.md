@@ -326,6 +326,100 @@ silently omitting them. Ignored untracked artifacts and empty directories are
 outside this file-based inventory. JSON reports identify `fileSelection: "git"`
 and have an empty `ignoredNames` list.
 
+## Generate Anatomy with a model
+
+Configure an OpenAI-compatible Chat Completions endpoint and your model:
+
+```bash
+anatomy config model --base-url https://your-provider.example/v1 --model your-model --api-key-env ANATOMY_API_KEY
+anatomy config model --show
+```
+
+Set the API key in the named environment variable using your normal secret
+management. The settings file stores only its variable name. Settings live in
+`$XDG_CONFIG_HOME/anatomy/model.json`, or `~/.config/anatomy/model.json`; Windows
+uses `%APPDATA%/anatomy/model.json` when available. `--model-config <file>` selects
+a custom file for either configuration or generation. For updates and options:
+
+```bash
+anatomy config model --help
+anatomy config model --model another-model
+```
+
+Preview model-inferred rules or save them without overwriting existing files:
+
+```bash
+anatomy ./src --generate --instructions "Infer reusable service naming patterns; test files are optional"
+anatomy ./src --generate --output ./src/anatomy.json
+```
+
+Generation sends selected directory names and structure, the current Anatomy JSON
+Schema and your instructions to the configured provider. It does not send source
+file contents. Existing filesystem ignores apply; `--ignore` and `--git-files`
+select the context as for checks. The LLM can infer placeholders and quantities;
+literal snapshots are not used as a fallback. Review the generated conventions
+before adopting them.
+
+Every candidate is checked locally for JSON syntax, schema and rule semantics.
+An invalid candidate gets at most one corrective request. A valid definition can
+still identify existing structural violations: those counts are reported on
+stderr without relaxing your requirements. Export implementations are not checked
+during generation. Preview JSON goes to stdout; `--output` exclusively creates a
+new file only after validation. Run a normal check afterward, particularly when
+Git selection includes the newly generated definition itself.
+
+The endpoint must support `/chat/completions`. JSON mode is enabled by default;
+use `anatomy config model --no-json-mode` for compatible providers that reject
+`response_format`, or `--json-mode` to restore it. The default request timeout is
+60 seconds; `--timeout-ms` accepts 1000–300000. Directory context is limited to
+200 KB and responses to 2 MB. Requests do not follow redirects. Authentication,
+transport, truncated-response and validation failures leave the output unwritten.
+Generation cannot be combined with `--watch`, `--query`, `--definition` or `--bundle`.
+
+## Install the generation skill for agents
+
+Use your agent's own model to inspect a folder and infer reusable Anatomy rules:
+
+```bash
+anatomy skills install --agent codex,claude-code,pi
+anatomy skills install --agent codex --scope project
+anatomy skills install --agent claude-code --dry-run
+anatomy skills install --path ./custom-skills
+anatomy skills schema
+```
+
+The default scope is `user`; `project` installs relative to your current working
+directory. `--path` selects a skills root and cannot be combined with `--agent`.
+
+| Agent | User skills root | Project skills root | Example invocation |
+| --- | --- | --- | --- |
+| Codex | `~/.agents/skills` | `.agents/skills` | `$generate-anatomy` followed by the target folder |
+| Claude Code | `~/.claude/skills` | `.claude/skills` | `/generate-anatomy ./src` |
+| pi | `~/.pi/agent/skills` | `.pi/skills` | `/skill:generate-anatomy ./src` |
+
+These are the default locations documented by [Codex](https://learn.chatgpt.com/docs/build-skills),
+[Claude Code](https://code.claude.com/docs/en/skills) and [pi](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/skills.md).
+For a customized agent directory, pass its skills root with `--path`. Start a new
+agent session after installation; pi also supports `/reload`. Ask the skill to
+generate `./src/anatomy.json` from `./src` and any conventions you provide.
+
+| Bundled skill | Purpose |
+| --- | --- |
+| [generate-anatomy](apps/anatomy-cli/skills/generate-anatomy/SKILL.md) | Chinese instructions, format reference, example and completion checklist for generating and validating Anatomy rules. |
+
+The skill uses the host agent's model and tools, so it needs no separate Anatomy
+API key. The configurable `--generate` command above remains available for direct
+terminal generation. `skills schema` prints the current input JSON Schema without
+model configuration. The skill preserves user requirements and reports existing
+directory violations separately from invalid rules.
+
+Installation copies the skill and all references into `generate-anatomy` under
+each selected root. Identical installations are idempotent. Changed existing
+skills and destination symlinks are refused; preserve or remove the existing copy
+explicitly before replacing it. The npm package includes all resources, and the
+one-shot CLI installer retains its own copy after its download cache disappears.
+Uninstalling the CLI leaves copies installed for agents in place.
+
 ## Watch mode
 
 ```bash

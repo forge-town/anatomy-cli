@@ -229,6 +229,78 @@ bun run anatomy ./packages/services \
 
 检查整个仓库可使用 `anatomy . --git-files`：需要 Git，包含所有已跟踪文件（即使被忽略规则匹配）及未被忽略的新文件。它读取当前工作区，已删除文件仍会报告缺失。此模式包含契约文件，不应用默认名称排除规则，拒绝与 `--ignore` 混用，遇到符号链接或子模块会报错。未跟踪且被忽略的本地产物、空目录不属于此文件清单。JSON 会标明 `fileSelection: "git"`，`ignoredNames` 为空。
 
+## 给 Agent 安装生成 Skill
+
+```bash
+anatomy skills install --agent codex,claude-code,pi
+anatomy skills install --agent codex --scope project
+anatomy skills install --agent claude-code --dry-run
+anatomy skills install --path ./custom-skills
+anatomy skills schema
+```
+
+默认安装到当前用户；`--scope project` 安装到当前工作目录对应的位置。
+`--path` 指定自定义 skills 根目录，与 `--agent` 互斥。
+
+| Agent | 用户级目录 | 项目级目录 | 调用示例 |
+| --- | --- | --- | --- |
+| Codex | `~/.agents/skills` | `.agents/skills` | `$generate-anatomy` 后接目标目录 |
+| Claude Code | `~/.claude/skills` | `.claude/skills` | `/generate-anatomy ./src` |
+| pi | `~/.pi/agent/skills` | `.pi/skills` | `/skill:generate-anatomy ./src` |
+
+默认位置依据 [Codex](https://learn.chatgpt.com/docs/build-skills)、[Claude Code](https://code.claude.com/docs/en/skills)
+与 [pi](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/skills.md) 的官方资料；自定义 Agent 目录时使用 `--path`。
+安装后开启新会话；pi 也可用 `/reload` 重载。指定目标和输出，例如“根据 ./src 生成 ./src/anatomy.json，并遵循项目现有规范”。
+
+| 随包 Skill | 用途 |
+| --- | --- |
+| [generate-anatomy](apps/anatomy-cli/skills/generate-anatomy/SKILL.md) | 中文生成流程、格式参考、示例及交付检查清单。 |
+
+Skill 使用宿主 Agent 的模型和工具，无需另配 Anatomy API Key。下面的 `--generate` 则供终端直接调用配置的模型。
+`skills schema` 无需模型配置即可输出当前输入 JSON Schema。Skill 会保留用户明确要求，并区分规则无效和目录存在违规。
+
+安装会复制完整 Skill 及引用资源；内容相同时重复执行不会修改文件。已有不同内容或目标目录为符号链接时拒绝覆盖，
+需要先明确保留或移除旧副本。npm 包包含资源，一次性 CLI 安装也会保留资源，下载缓存移除后仍可安装 Skill。
+卸载 CLI 不删除已经安装给 Agent 的副本。
+
+## 使用模型生成 Anatomy
+
+先配置 OpenAI 兼容接口、模型名和读取 API Key 的环境变量名：
+
+```bash
+anatomy config model --base-url https://your-provider.example/v1 --model your-model --api-key-env ANATOMY_API_KEY
+anatomy config model --show
+anatomy config model --help
+```
+
+通过你平时使用的密钥管理方式设置该环境变量。配置文件只保存变量名，不保存 API Key。
+默认位置为 `$XDG_CONFIG_HOME/anatomy/model.json` 或 `~/.config/anatomy/model.json`；
+Windows 优先使用 `%APPDATA%/anatomy/model.json`。配置和生成都支持 `--model-config <file>` 自定义位置。
+再次运行配置命令可更新部分设置，例如 `anatomy config model --model another-model`。
+
+```bash
+# 预览 LLM 根据目录和规范归纳出的规则
+anatomy ./src --generate --instructions "归纳通用的 Service 命名规则，测试文件可选"
+
+# 校验通过后保存，不覆盖已有文件
+anatomy ./src --generate --output ./src/anatomy.json
+```
+
+生成会把选中的目录名称、层级、当前 Anatomy JSON Schema 和你的补充要求发送给配置的模型，
+不发送源码内容。模型负责归纳占位符、数量等规则，不会退回机械目录快照。
+目录选择沿用普通检查的忽略规则，也支持 `--ignore` 和 `--git-files`。
+
+结果在本地进行 JSON、Schema 和规则语义校验，无效时最多向模型请求修正一次。
+合法规范可以指出现有项目的问题：结构违规数量单独显示在标准错误中，不会为了让当前目录通过而放宽要求。
+生成阶段不检查源码导出的实现。默认标准输出为 JSON，指定 `--output` 后仅创建新文件。
+采纳前请审阅，并运行普通检查；Git 模式下，新增的定义文件自身也可能参与后续扫描。
+
+接口需要支持 `/chat/completions`，默认启用 JSON mode；不支持 `response_format` 的服务可用
+`anatomy config model --no-json-mode` 关闭，`--json-mode` 可重新开启。
+默认请求超时为 60 秒，`--timeout-ms` 可配置 1000–300000 毫秒；目录上下文上限为 200 KB，响应上限为 2 MB。
+请求不跟随重定向。认证、连接、截断响应或校验失败时不会写入输出文件。
+生成不能与 `--watch`、`--query`、`--definition` 或 `--bundle` 同用。
+
 ## 持续检查
 
 ```bash

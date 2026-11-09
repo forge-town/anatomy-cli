@@ -1,7 +1,7 @@
 import { err, ok, Result } from "neverthrow";
 import { spawnSync } from "node:child_process";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { AnatomyInstallError } from "./AnatomyInstallError.js";
 import { configurePath } from "./configurePath.js";
@@ -10,6 +10,7 @@ import { type InstallOptions } from "./parseInstallOptions.js";
 import { posixLauncher } from "./posixLauncher.js";
 import { windowsLauncher } from "./windowsLauncher.js";
 import { readAnatomyVersion } from "./readAnatomyVersion.js";
+import { AnatomySkillFiles } from "./AnatomySkillFiles.js";
 
 const markerName = "install.json";
 
@@ -46,6 +47,7 @@ export const runInstallation = (
     return Result.fromThrowable(() => {
       rmSync(launcher, { force: true });
       rmSync(join(prefix, "anatomy.mjs"), { force: true });
+      for (const file of AnatomySkillFiles) rmSync(join(prefix, "skills", "generate-anatomy", file), { force: true });
       return ["Anatomy uninstalled. Your project files were not changed.", `Shell PATH settings and profile backups were kept. You can remove the Anatomy PATH entry for ${bin}.`];
     }, (cause) => new AnatomyInstallError(`Could not uninstall Anatomy from ${prefix}.`, { cause }))();
   }
@@ -61,6 +63,12 @@ export const runInstallation = (
     stage = mkdtempSync(join(prefix, ".install-"));
     const payload = join(stage, "anatomy.mjs");
     copyFileSync(bundle, payload);
+    const skillRoot = join(context.packageRoot, "skills", "generate-anatomy");
+    if (existsSync(skillRoot)) for (const file of AnatomySkillFiles) {
+      const output = join(stage, "skills", "generate-anatomy", file);
+      mkdirSync(dirname(output), { recursive: true });
+      copyFileSync(join(skillRoot, file), output);
+    }
     writeFileSync(join(stage, "launcher"), context.platform === "win32" ? windowsLauncher : posixLauncher);
     chmodSync(join(stage, "launcher"), 0o755);
     return payload;
@@ -73,6 +81,11 @@ export const runInstallation = (
     }
     return Result.fromThrowable(() => {
       mkdirSync(bin, { recursive: true });
+      if (existsSync(join(stage!, "skills"))) for (const file of AnatomySkillFiles) {
+        const output = join(prefix, "skills", "generate-anatomy", file);
+        mkdirSync(dirname(output), { recursive: true });
+        copyFileSync(join(stage!, "skills", "generate-anatomy", file), output);
+      }
       writeFileSync(join(stage!, markerName), JSON.stringify({ owner, version: version.value }, null, 2));
       renameSync(payload, join(prefix, "anatomy.mjs"));
       renameSync(join(stage!, "launcher"), launcher);

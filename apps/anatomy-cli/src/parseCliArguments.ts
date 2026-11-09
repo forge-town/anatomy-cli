@@ -11,6 +11,10 @@ export type AnatomyCliOptions = {
   help: boolean;
   version: boolean;
   watch: boolean;
+  generate: boolean;
+  modelConfigPath: string | null;
+  outputPath: string | null;
+  instructions: string | null;
   queryPath: string | null;
   gitFiles: boolean;
 };
@@ -39,6 +43,10 @@ export const parseCliArguments = (
     help: false,
     version: false,
     watch: false,
+    generate: false,
+    modelConfigPath: null,
+    outputPath: null,
+    instructions: null,
     queryPath: null,
     gitFiles: false,
   };
@@ -56,6 +64,20 @@ export const parseCliArguments = (
 
     if (argument === "--version" || argument === "-v") {
       options.version = true;
+      continue;
+    }
+
+    if (argument === "--generate") {
+      options.generate = true;
+      continue;
+    }
+    if (["--model-config", "--output", "--instructions"].includes(argument)) {
+      const value = getOptionValue(args, index, argument);
+      if (value.isErr()) return err(value.error);
+      const key = argument === "--model-config" ? "modelConfigPath" : argument === "--output" ? "outputPath" : "instructions";
+      if (options[key] !== null) return err(new AnatomyCliArgumentError(`${argument} may only be specified once`));
+      options[key] = value.value;
+      consumedIndexes.add(index + 1);
       continue;
     }
 
@@ -158,6 +180,10 @@ export const parseCliArguments = (
     return err(new AnatomyCliArgumentError(`Unknown argument "${argument}"`));
   }
 
+  if (options.generate && (options.watch || options.queryPath !== null || options.bundlePath !== null || options.definitionPath !== null))
+    return err(new AnatomyCliArgumentError("--generate cannot be combined with --watch, --query, --bundle or --definition"));
+  if (!options.generate && (options.modelConfigPath !== null || options.outputPath !== null || options.instructions !== null))
+    return err(new AnatomyCliArgumentError("Model configuration, output and instructions options require --generate"));
   if (options.watch && options.queryPath !== null)
     return err(new AnatomyCliArgumentError("--watch cannot be combined with --query"));
 
