@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AnatomyCliExitCode } from "./AnatomyCliExitCode.js";
 import { AnatomyDefinitionFileError } from "./AnatomyDefinitionFileError.js";
 import { AnatomyFileTreeError } from "./AnatomyFileTreeError.js";
+import { AnatomyVersionError } from "./AnatomyVersionError.js";
 import { runAnatomyCli, type AnatomyCliDependencies } from "./runAnatomyCli.js";
 
 const definition = createEmptyAnatomyDraft("Empty", "Allows an empty root");
@@ -20,6 +21,31 @@ const createDependencies = (
 };
 
 describe("runAnatomyCli", () => {
+  it.each(["--version", "-v"])("prints the version for %s without scanning a project", async (flag) => {
+    const dependencies = { ...createDependencies(ok([])), readVersion: vi.fn(() => ok("0.0.5-canary.12.1")) };
+    const result = await runAnatomyCli([flag], dependencies);
+    expect(result._unsafeUnwrap()).toBe(AnatomyCliExitCode.success);
+    expect(dependencies.writeOutput).toHaveBeenCalledExactlyOnceWith("0.0.5-canary.12.1");
+    expect(dependencies.findDefinition).not.toHaveBeenCalled();
+    expect(dependencies.readDefinition).not.toHaveBeenCalled();
+    expect(dependencies.collectTree).not.toHaveBeenCalled();
+  });
+
+  it("shows help without reading version metadata when both are requested", async () => {
+    const dependencies = { ...createDependencies(ok([])), readVersion: vi.fn(() => ok("0.0.5")) };
+    expect((await runAnatomyCli(["--help", "--version"], dependencies))._unsafeUnwrap()).toBe(0);
+    expect(dependencies.writeOutput).toHaveBeenCalledWith(expect.stringContaining("Usage: anatomy"));
+    expect(dependencies.readVersion).not.toHaveBeenCalled();
+  });
+
+  it("returns a version metadata error without attempting a check", async () => {
+    const error = new AnatomyVersionError("package.json");
+    const dependencies = { ...createDependencies(ok([])), readVersion: vi.fn(() => err(error)) };
+    expect((await runAnatomyCli(["--version"], dependencies))._unsafeUnwrapErr()).toBe(error);
+    expect(dependencies.writeOutput).not.toHaveBeenCalled();
+    expect(dependencies.findDefinition).not.toHaveBeenCalled();
+  });
+
   it("returns success and human output for a conforming project", async () => {
     const dependencies = createDependencies(ok([]));
     const result = await runAnatomyCli(["--definition", "anatomy.json"], dependencies);

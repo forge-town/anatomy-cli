@@ -22,6 +22,7 @@ beforeEach(() => {
   mkdirSync(home);
   const packageRoot = join(temporary, "package");
   mkdirSync(join(packageRoot, "dist"), { recursive: true });
+  writeFileSync(join(packageRoot, "package.json"), JSON.stringify({ name: "anatomy-cli", version: "0.0.5-canary.12.1" }));
   writeFileSync(join(packageRoot, "dist", "main.js"), 'console.log(process.argv.includes("--help") ? "Usage: anatomy [target] [options]" : JSON.stringify(process.argv.slice(2)));\n');
   options = { prefix: join(home, ".anatomy"), modifyPath: true, uninstall: false, help: false };
   context = {
@@ -52,6 +53,9 @@ describe("one-shot installation", () => {
   it("installs a persistent CLI outside the runner cache and preserves argument boundaries", () => {
     const result = runInstallation(options, context);
     expect(result.isOk()).toBe(true);
+    expect(JSON.parse(readFileSync(join(options.prefix, "install.json"), "utf8"))).toMatchObject({
+      owner: "anatomy-cli/installer-v1", version: "0.0.5-canary.12.1",
+    });
     rmSync(context.packageRoot, { recursive: true });
     const output = execFileSync(join(options.prefix, "bin", "anatomy"), ["./src with spaces", "--ignore", "a,b"], { encoding: "utf8" });
     expect(JSON.parse(output)).toEqual(["./src with spaces", "--ignore", "a,b"]);

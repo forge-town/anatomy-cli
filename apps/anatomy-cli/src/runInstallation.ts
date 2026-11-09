@@ -2,12 +2,14 @@ import { err, ok, Result } from "neverthrow";
 import { spawnSync } from "node:child_process";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { AnatomyInstallError } from "./AnatomyInstallError.js";
 import { configurePath } from "./configurePath.js";
 import { getPathPlan } from "./getPathPlan.js";
 import { type InstallOptions } from "./parseInstallOptions.js";
 import { posixLauncher } from "./posixLauncher.js";
 import { windowsLauncher } from "./windowsLauncher.js";
+import { readAnatomyVersion } from "./readAnatomyVersion.js";
 
 const markerName = "install.json";
 
@@ -48,6 +50,9 @@ export const runInstallation = (
     }, (cause) => new AnatomyInstallError(`Could not uninstall Anatomy from ${prefix}.`, { cause }))();
   }
 
+  const version = readAnatomyVersion(pathToFileURL(join(context.packageRoot, "dist", "main.js")).href);
+  if (version.isErr()) return err(new AnatomyInstallError("Could not read the release version before installation.", { cause: version.error }));
+
   let stage: string | undefined;
   const prepared = Result.fromThrowable(() => {
     const bundle = join(context.packageRoot, "dist", "main.js");
@@ -68,7 +73,7 @@ export const runInstallation = (
     }
     return Result.fromThrowable(() => {
       mkdirSync(bin, { recursive: true });
-      writeFileSync(join(stage!, markerName), JSON.stringify({ owner }, null, 2));
+      writeFileSync(join(stage!, markerName), JSON.stringify({ owner, version: version.value }, null, 2));
       renameSync(payload, join(prefix, "anatomy.mjs"));
       renameSync(join(stage!, "launcher"), launcher);
       renameSync(join(stage!, markerName), marker);

@@ -4,6 +4,7 @@ import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { ResultAsync } from "neverthrow";
+import { applyEdits, modify, parse, type ParseError } from "jsonc-parser";
 import { NpmReleaseError } from "./NpmReleaseError.js";
 import { planNpmRelease, type NpmPackageHistory } from "./planNpmRelease.js";
 
@@ -11,6 +12,21 @@ export const runNpmRelease = (mode: string) =>
   ResultAsync.fromPromise(
     (async () => {
       const root = resolve(import.meta.dirname, "../../..");
+      if (mode === "sync-version") {
+        const pkg = JSON.parse(await readFile(join(root, "apps/anatomy-cli/package.json"), "utf8"));
+        if (pkg.name !== "anatomy-cli" || !/^0\.0\.(0|[1-9]\d*)$/.test(pkg.version))
+          throw new NpmReleaseError("Cannot sync version: expected anatomy-cli with a stable 0.0.x version");
+        const lockPath = join(root, "bun.lock");
+        const lock = await readFile(lockPath, "utf8");
+        const errors: ParseError[] = [];
+        const parsed = parse(lock, errors, { allowTrailingComma: true });
+        if (errors.length || parsed?.workspaces?.["apps/anatomy-cli"]?.name !== pkg.name)
+          throw new NpmReleaseError("Cannot sync version: invalid Bun lockfile workspace");
+        await writeFile(lockPath, applyEdits(lock, modify(
+          lock, ["workspaces", "apps/anatomy-cli", "version"], pkg.version, {},
+        )));
+        return;
+      }
       const output = join(root, "docs/verification/npm-release/artifacts");
       const packagePaths = ["apps/anatomy-cli"];
       const names = ["anatomy-cli"];
@@ -139,6 +155,7 @@ console.log(JSON.stringify({node:process.version,version:${JSON.stringify(versio
           channel,
           process.env.GITHUB_RUN_ID ?? "0",
           process.env.GITHUB_RUN_ATTEMPT ?? "1",
+          (await manifest(packagePaths[0]!)).version,
         );
         if (plan.isErr()) throw plan.error;
         const packages = [];

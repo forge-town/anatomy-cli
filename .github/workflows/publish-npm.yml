@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       channel:
-        description: 'stable increments 0.0.x; canary publishes only to the canary tag'
+        description: 'stable publishes the source version; canary publishes only to the canary tag'
         type: choice
         options: [stable, canary]
         default: stable
@@ -65,7 +65,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - name: Test and build the source snapshot
         run: bun run quality
-      - name: Prepare the next patch and verify packed consumers
+      - name: Prepare the source version and verify packed consumers
         run: bun apps/anatomy-cli/src/release-main.ts prepare
       - name: Publish and verify registry consumers
         env:

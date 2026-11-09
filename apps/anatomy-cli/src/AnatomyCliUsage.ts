@@ -11,6 +11,8 @@ export const AnatomyCliUsage = [
   "      --format <format>    human or json (default: human)",
   "      --query <path>       Query constraints relative to target (path may not exist)",
   "      --git-files          Check tracked and non-ignored untracked files (requires Git)",
+  "      --watch              Recheck on file or definition changes; Ctrl+C to stop",
   "      --ignore <paths>     Comma-separated names; may be repeated",
   "  -h, --help               Show this help",
+  "  -v, --version            Show the installed release version",
 ].join("\n");

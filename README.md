@@ -61,12 +61,17 @@ before the first edit. **Open a new terminal** after installation, then run:
 
 ```bash
 anatomy --help
+anatomy --version
 anatomy ./src
 ```
 
 Installation does not generate `anatomy.json`; keep your definition in the
 repository as described below. Unknown shells and read-only profiles receive
 manual PATH instructions instead of a silent setup failure.
+
+Use `anatomy --version` (or `anatomy -v`) to print the installed release version
+without scanning a project. `npx anatomy-cli --version` reports the downloaded
+package's version without installing it to `~/.anatomy`.
 
 ### Upgrade, customize or uninstall
 
@@ -321,6 +326,34 @@ silently omitting them. Ignored untracked artifacts and empty directories are
 outside this file-based inventory. JSON reports identify `fileSelection: "git"`
 and have an empty `ignoredNames` list.
 
+## Watch mode
+
+```bash
+anatomy ./src --watch
+anatomy . --git-files --watch
+anatomy ./packages/db-schema --bundle ./config/db-schema.bundle.json --watch
+anatomy ./src --watch --format json
+```
+
+Watch mode checks immediately, then polls the selected file inventory every
+500 ms and coalesces edits before running another complete check. Scans never
+overlap. It observes file additions, deletions, renames, source edits, and changes
+to the explicit definition or bundle. With automatic discovery, it also observes
+ancestor `anatomy.json` files and new closer definitions.
+
+File selection follows the same ignores or Git rules as a normal check. Invalid
+definitions and source errors are reported without ending the session; fix the
+file to check again. Press Ctrl+C to stop after the current check. The process
+returns the latest check's exit code (`0`, `1`, or `2`). `--query` cannot be combined
+with `--watch`; help and version queries remain one-shot operations.
+
+With `--format json`, stdout contains one compact JSON report per line (NDJSON);
+operational errors are compact JSON on stderr. Writes to redirected stdout/stderr
+files do not trigger new checks by themselves. Those files still participate in
+structural validation, so keep reports outside the target or exclude them.
+Polling enumerates selected paths and reads file metadata; its cost grows with
+repository size.
+
 ## Development
 
 ```bash
@@ -352,11 +385,30 @@ outside this workspace and is not modified by this project.
 
 ## Publishing
 
-`Publish anatomy-cli` automatically publishes a stable patch when release-related
+The npm page uses `apps/anatomy-cli/README.md`. Keep its installation and SDK
+instructions current and use absolute links. The package's `files` list must
+include `README.md`: release preparation copies only those listed files into
+the staging directory. After building, run
+`bun apps/anatomy-cli/src/release-main.ts prepare` to verify the actual release
+archive and its CLI/SDK consumers without publishing. README changes appear on
+npm after a new version is published by the workflow below.
+
+Before merging a release, bump the public package with the installed `bumpp` tool:
+
+```bash
+bun run version:patch
+```
+
+This increments `apps/anatomy-cli/package.json` from `0.0.x` to the next patch and
+synchronizes its workspace version in `bun.lock`. Commit both files with the
+release changes. The command does not commit, tag, push, or publish on its own.
+The private workspace packages keep their own versions.
+
+`Publish anatomy-cli` publishes the source manifest version when release-related
 changes reach `main`. Only `anatomy-cli` is published, providing both the CLI and SDK.
-Its next version increments the third number in `0.0.x`. Minor and major releases
-are disabled until explicitly enabled. The engine and schema workspaces are private;
-their compiled code and declarations ship inside `anatomy-cli`.
+Stable versions stay in the `0.0.x` line until explicitly changed. The engine and
+schema workspaces are private; their compiled code and declarations ship inside
+`anatomy-cli`.
 
 Configure the repository Actions secret `NPM_TOKEN` with non-interactive publish
 access to `anatomy-cli`. The workflow uses Node from `.nvmrc`, runs `bun run quality`,
@@ -374,15 +426,15 @@ gh workflow run publish-npm.yml --ref main -f channel=canary
 The Actions UI also accepts `channel=stable` (the default) or `channel=canary`.
 Stable runs require `main`; canaries can use a feature branch. Before the workflow
 is on the default branch, pushing a `canary-*` Git tag triggers a canary from that
-commit. Canary versions look like `0.0.4-canary.<run-id>.<attempt>` and update only
+commit. Canary versions look like `0.0.5-canary.<run-id>.<attempt>` and update only
 the npm `canary` tag. Install `anatomy-cli@canary` for both the CLI and SDK.
 
-Stable version numbers come from the highest registry `0.0.x` patch of `anatomy-cli`.
-A stable retry resumes the same source version instead of bumping again; conflicting
-published artifacts fail. The version changes only in a staged package copy under
-ignored root `docs/`.
-The workflow does not commit version changes; registry metadata records the
-published version and source commit. Canary runs do not advance `latest`.
+The source manifest is the version authority. Stable preparation rejects stale
+versions and versions already published from a different commit; it never silently
+increments the staging version. A stable retry resumes the same source version;
+conflicting artifacts fail. Canary preparation appends its run identity to the
+source version only in the staged copy under ignored root `docs/`, leaving the
+source files and npm `latest` unchanged.
 
 The package's `bin` entries stay distinct: `anatomy-cli` dispatches to the installer;
 `anatomy` dispatches to the checker. The release includes the CLI bundles and
