@@ -1,6 +1,6 @@
 {
   "name": "anatomy-cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Anatomy CLI and SDK for repository structure and source export validation.",
   "license": "MIT",
   "repository": {

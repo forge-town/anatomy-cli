@@ -186,6 +186,38 @@
                     "name": "file_stem",
                     "policy": "block"
                   }
+                },
+                {
+                  "kind": "file",
+                  "name": {
+                    "type": "literal",
+                    "value": "AnatomyDependencyConfigSchema.ts"
+                  },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": {
+                    "type": "literal",
+                    "value": "AnatomyDependencyIssueSchema.ts"
+                  },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": {
+                    "type": "literal",
+                    "value": "AnatomyDependencyPathPatternSchema.ts"
+                  },
+                  "quantity": "exactly_one"
+                },
+                {
+                  "kind": "file",
+                  "name": {
+                    "type": "literal",
+                    "value": "AnatomyDependencyRequestSchema.ts"
+                  },
+                  "quantity": "exactly_one"
                 }
               ]
             },

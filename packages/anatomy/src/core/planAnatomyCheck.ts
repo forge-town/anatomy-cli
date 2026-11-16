@@ -1,5 +1,6 @@
 import {
   type AnatomyDraftInput,
+  type AnatomyDependencyIssue,
   type AnatomyEntry,
   type AnatomyFunctionExportCheck,
   type AnatomyNode,
@@ -31,6 +32,7 @@ export type AnatomyCheckIssue = {
   path: string;
   constraintId: string | null;
   message: string;
+  dependency?: AnatomyDependencyIssue;
   expectedExport?: string;
   actualExports?: AnatomySourceExports;
 };

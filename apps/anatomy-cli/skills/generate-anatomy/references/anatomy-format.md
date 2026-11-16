@@ -1,6 +1,6 @@
 # Anatomy 单定义格式
 
-根对象只包含 name、purpose、structure。name 为 1–120 字符；purpose 为最多 2000 字符的用途说明。structure 包含 rootMode、defaultPolicies、root，可选 bindings。此 skill 生成 contents 模式；root.children 直接对应被扫描目录的内容。
+根对象包含 name、purpose、structure，可选 dependencies。dependencies 声明直接本地引用的禁止规则：rules 数组中每项含唯一 name、from/to 路径模式数组和 block 或 warn 策略；aliases 显式映射本地引用。不根据目录名猜测依赖方向，只有用户明确要求时才添加。未映射的裸包名视为外部依赖，自动读取 tsconfig 和传递引用分析不在当前范围内。name 为 1–120 字符；purpose 为最多 2000 字符的用途说明。structure 包含 rootMode、defaultPolicies、root，可选 bindings。此 skill 生成 contents 模式；root.children 直接对应被扫描目录的内容。
 
 目录或文件节点包含 kind、name、quantity。目录 kind 为 directory，并有 children；文件 kind 为 file。name 对象使用 type 与 value：literal 精确匹配一个名称；placeholder 的值是单个目录或文件名模板，例如 <Name>Service.ts。不要把带路径分隔符的多级路径塞进一个 name。
 

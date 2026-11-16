@@ -229,6 +229,43 @@ bun run anatomy ./packages/services \
 
 检查整个仓库可使用 `anatomy . --git-files`：需要 Git，包含所有已跟踪文件（即使被忽略规则匹配）及未被忽略的新文件。它读取当前工作区，已删除文件仍会报告缺失。此模式包含契约文件，不应用默认名称排除规则，拒绝与 `--ignore` 混用，遇到符号链接或子模块会报错。未跟踪且被忽略的本地产物、空目录不属于此文件清单。JSON 会标明 `fileSelection: "git"`，`ignoredNames` 为空。
 
+## 依赖边界检查
+
+在 anatomy.json 根对象添加可选 dependencies，即可随普通扫描和 watch 模式检查依赖：
+
+```json
+"dependencies": {
+  "rules": [{
+    "name": "界面不能引用数据层内部实现",
+    "from": ["src/ui/**"],
+    "to": ["src/data/internal/**"],
+    "policy": "block"
+  }],
+  "aliases": { "@/*": ["src/*"] }
+}
+```
+
+from 指引用方，to 指解析后的目标文件。所有命中规则都生效；block 阻断，warn 只提示。
+规则名在当前定义内唯一。路径以扫描根为基准，使用 POSIX 分隔符；支持段内 * 与完整的 ** 段，
+不支持否定、?、括号集合、绝对路径或 ..。模式字符限 ASCII 字母/数字及 `_ @ . * / -`。
+
+支持 JS/TS 静态 import、re-export、TypeScript 类型引用、import-equals 和字符串动态 import；不分析 JSDoc 或注释中的引用。
+使用虚拟 TypeScript Bundler 解析器处理相对路径、目录 index、.js 到 .ts 的替换，以及显式 aliases。
+不自动读取 tsconfig 或包 exports；未映射的裸包名视为外部依赖，workspace 包也必须显式配置 aliases 才会检查。
+只检查直接引用，不追踪 re-export 后的传递依赖，不执行目标源码。运行时加载器、AMD、别名化 require 等不在静态分析范围内。
+
+缺少选中源码、语法错误、本地引用无法解析（含被忽略/扫描范围外文件及不支持的资源类型）、计算式 import 或直接 require 调用会报执行错误，不能当作通过。
+退出码：无阻断为 0，阻断违规为 1，配置/执行错误为 2。JSON 中 dependency 提供规则名、原始引用、解析目标和一开始计数的行列。
+Bundle 支持各挂载定义的相对规则，保留来源和挂载链；跨模块约束应放在共同父定义，模式不能用 .. 越出挂载范围。
+
+SDK 的 scanAnatomy 使用调用方完整目录清单和选中源码检查这些规则；也可调用独立的 checkAnatomyDependencies。
+已有 checkAnatomy、planAnatomyCheck 和 query 仍是结构相关接口，不负责验证依赖。
+checkAnatomyDependencies 返回可 await 的 ResultAsync，接收 config、files、sources 和可选 scope；不读取文件系统。
+每份源码限 5 MB，选中源码合计限 20 MB。LLM 生成只校验依赖配置格式，不验证真实引用。
+完整 API 示例及路径语法见[英文依赖边界文档](README.md#dependency-boundaries)。
+
+仓库自身已经启用边界：schemas 不能引用引擎或 CLI，引擎不能反向引用 CLI。
+
 ## 给 Agent 安装生成 Skill
 
 ```bash

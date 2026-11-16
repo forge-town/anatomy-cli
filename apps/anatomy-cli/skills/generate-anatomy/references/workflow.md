@@ -8,7 +8,7 @@
 
 若 Anatomy CLI 可用，执行 anatomy skills schema 获取与当前版本一致的 JSON Schema。目录层级、rootMode、name、quantity 和绑定写法以随附格式规范为基础。若用户仅通过 npx 安装 skill，可在宿主允许下载软件时使用 npx anatomy-cli skills schema；已有可用版本优先复用。
 
-生成一份单定义 anatomy.json，rootMode 使用 contents，root.children 描述目标文件夹内部，不再包一层目标目录名。不创建 Bundle、composition 引用、schemaVersion 或业务版本字段。只有已检查源码或用户明确要求时才添加 exports 约束。
+生成一份单定义 anatomy.json，rootMode 使用 contents，root.children 描述目标文件夹内部，不再包一层目标目录名。不创建 Bundle、composition 引用、schemaVersion 或业务版本字段。只有已检查源码或用户明确要求时才添加 exports 约束。用户要求依赖边界时，应读取相关引用声明并按明确要求填写 dependencies；显式映射需要检查的 workspace 别名，不能把未映射裸包名被跳过说成已经校验。
 
 写入用户授权的输出位置后，运行 anatomy TARGET --definition OUTPUT --format json，显式指定同一目标。区分退出码：0 表示无阻断问题，1 表示规范有效但目录存在阻断违规，2 表示配置或执行错误。先修复生成过程造成的格式、绑定或作用域错误；最多进行两轮工具反馈修正，仍失败则保留可检查的草稿并说明问题。用户要求新增必需文件而目录尚缺时，应报告违规，不能为让检查通过而放宽用户规范。
 

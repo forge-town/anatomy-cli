@@ -1,3 +1,4 @@
+import { anatomyFilePaths } from "../core/anatomyFilePaths.js";
 import {
   AnatomyScanRequestSchema,
   type AnatomyDiagnostic,
@@ -6,6 +7,8 @@ import {
   type AnatomyTarget,
   type AnatomyFunctionExportCheck,
   type AnatomyEntry,
+  type AnatomyDependencyConfig,
+  type AnatomyOrigin,
 } from "@anatomy-cli/schemas";
 import { err, ok } from "neverthrow";
 import { resolveAnatomyBundle } from "./resolveAnatomyBundle.js";
@@ -96,6 +99,7 @@ export const planAnatomyBundle = (input: unknown) => {
   if (resolved.isErr()) return err(resolved.error);
   const issues: AnatomyFinding[] = [];
   const exports: ExportPlan[] = [];
+  const dependencies: { config: AnatomyDependencyConfig; scope: string; origin: AnatomyOrigin; mounts: AnatomyMount[] }[] = [];
   let instances = 0;
   const walk = (
     key: string,
@@ -112,6 +116,7 @@ export const planAnatomyBundle = (input: unknown) => {
       return;
     }
     const unit = resolved.value.compiled.get(key)!;
+    if (unit.definition.dependencies) dependencies.push({ config: unit.definition.dependencies, scope: base, origin: { definitionKey: key, rulePath: "/dependencies", sourceNodeId: null }, mounts });
     const mapPath = (path: string) => {
       const relative = unit.entryRoot
         ? path === target.name || path === "."
@@ -290,6 +295,6 @@ export const planAnatomyBundle = (input: unknown) => {
   };
   walk(resolved.value.bundle.root, request.target, ".", []);
   if (diagnostics.length) return err(diagnostics);
-  return ok({ issues, exports, sources: request.sources ?? {} });
+  return ok({ issues, exports, dependencies, files: anatomyFilePaths(request.target.children), sources: request.sources ?? {} });
 };
 export type AnatomyBundlePlan = ReturnType<typeof planAnatomyBundle>;

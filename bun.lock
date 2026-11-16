@@ -20,7 +20,7 @@
     },
     "apps/anatomy-cli": {
       "name": "anatomy-cli",
-      "version": "0.0.6",
+      "version": "0.0.7",
       "bin": {
         "anatomy-cli": "./bin/anatomy-cli.js",
         "anatomy": "./bin/anatomy.js",

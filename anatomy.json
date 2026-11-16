@@ -721,6 +721,26 @@
                         "value": "skill-install.spec.ts"
                       },
                       "quantity": "exactly_one"
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "collectDependencySources.ts"
+                      },
+                      "quantity": "exactly_one",
+                      "exports": {
+                        "name": "file_stem",
+                        "policy": "block"
+                      }
+                    },
+                    {
+                      "kind": "file",
+                      "name": {
+                        "type": "literal",
+                        "value": "dependency-boundaries.spec.ts"
+                      },
+                      "quantity": "exactly_one"
                     }
                   ]
                 },
@@ -2167,6 +2187,42 @@
                             "name": "file_stem",
                             "policy": "block"
                           }
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "anatomyFilePaths.ts"
+                          },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "dependencySourcePaths.ts"
+                          },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "matchesDependencyPath.ts"
+                          },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
                         }
                       ]
                     },
@@ -2317,6 +2373,26 @@
                           "name": { "type": "literal", "value": "index.ts" },
                           "quantity": "exactly_one",
                           "policyOverrides": {}
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "checkAnatomyDependencies.ts"
+                          },
+                          "quantity": "exactly_one",
+                          "exports": {
+                            "name": "file_stem",
+                            "policy": "block"
+                          }
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "dependency-boundaries.spec.ts"
+                          },
+                          "quantity": "exactly_one"
                         }
                       ]
                     }
@@ -2516,6 +2592,38 @@
                             "name": "file_stem",
                             "policy": "block"
                           }
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "AnatomyDependencyConfigSchema.ts"
+                          },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "AnatomyDependencyIssueSchema.ts"
+                          },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "AnatomyDependencyPathPatternSchema.ts"
+                          },
+                          "quantity": "exactly_one"
+                        },
+                        {
+                          "kind": "file",
+                          "name": {
+                            "type": "literal",
+                            "value": "AnatomyDependencyRequestSchema.ts"
+                          },
+                          "quantity": "exactly_one"
                         }
                       ]
                     },
@@ -2673,6 +2781,48 @@
           "quantity": "exactly_one",
           "policyOverrides": {}
         }
+      ]
+    }
+  },
+  "dependencies": {
+    "rules": [
+      {
+        "name": "schemas-stay-independent",
+        "from": [
+          "packages/schemas/src/**"
+        ],
+        "to": [
+          "apps/**",
+          "packages/anatomy/**"
+        ],
+        "policy": "block"
+      },
+      {
+        "name": "engine-does-not-import-cli",
+        "from": [
+          "packages/anatomy/src/**"
+        ],
+        "to": [
+          "apps/**"
+        ],
+        "policy": "block"
+      }
+    ],
+    "aliases": {
+      "@anatomy-cli/anatomy": [
+        "packages/anatomy/src/index.ts"
+      ],
+      "@anatomy-cli/anatomy/*": [
+        "packages/anatomy/src/*/index.ts"
+      ],
+      "@anatomy-cli/schemas": [
+        "packages/schemas/src/index.ts"
+      ],
+      "@anatomy-cli/schemas/*": [
+        "packages/schemas/src/*/index.ts"
+      ],
+      "anatomy-cli": [
+        "apps/anatomy-cli/src/index.ts"
       ]
     }
   }

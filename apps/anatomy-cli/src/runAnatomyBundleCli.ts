@@ -1,3 +1,4 @@
+import { collectDependencySources } from "./collectDependencySources.js";
 import { readFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { Result, ResultAsync, ok } from "neverthrow";
@@ -122,5 +123,7 @@ export const runAnatomyBundleCli = async (
     if (source.isErr()) return fail(source.error);
     sources[check.path] = source.value;
   }
-  return emit(await scanAnatomy({ ...input, sources }));
+  const dependencySources = await collectDependencySources(options.targetPath, plan.value.files, plan.value.dependencies);
+  if (dependencySources.isErr()) return fail({ code: "source_unavailable", message: dependencySources.error.message });
+  return emit(await scanAnatomy({ ...input, sources: { ...sources, ...dependencySources.value } }));
 };
