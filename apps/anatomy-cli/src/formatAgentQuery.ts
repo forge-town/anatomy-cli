@@ -1,4 +1,4 @@
-import { resolveAnatomyExportName } from "@anatomy-cli/anatomy/core";
+import { renderNameTemplate, resolveAnatomyExportName } from "@anatomy-cli/anatomy/core";
 import type { AnatomyDraftInput, AnatomyNode, AnatomyPolicies, AnatomyQuantity, AnatomyQueryWithConstraints } from "@anatomy-cli/schemas";
 import { resolve } from "node:path";
 
@@ -39,9 +39,7 @@ export const formatAgentQuery = (
         ...node.alternatives.flatMap((entry) => ruleLines(entry, inherited, depth + 1)),
       ];
     }
-    const name = node.name.type === "literal" ? node.name.value : node.name.value.replace(
-      /<([^<>]+)>/, (placeholder, binding: string) => result.captures[binding] ?? placeholder,
-    );
+    const name = node.name.type === "literal" ? node.name.value : renderNameTemplate(node.name.value,result.captures);
     const effective = { ...inherited, ...node.policyOverrides };
     const overrides = Object.entries(node.policyOverrides).filter(
       ([key, value]) => inherited[key as keyof AnatomyPolicies] !== value,

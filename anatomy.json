@@ -1933,6 +1933,12 @@
                       "name": { "type": "literal", "value": "core" },
                       "quantity": "exactly_one",
                       "children": [
+              {"id": "149d2b25-259e-43e5-b362-3ced22dcbead", "kind": "file", "name": {"type": "literal", "value": "NameTemplateToken.ts"}, "quantity": "exactly_one", "policyOverrides": {}},
+              {"id": "fec1bf49-fbb2-434c-a68d-db16e2763c44", "kind": "file", "name": {"type": "literal", "value": "bindingFormatPatterns.ts"}, "quantity": "exactly_one", "policyOverrides": {}},
+              {"id": "9c2e1801-8b2e-49be-bf83-244bf2388e21", "kind": "file", "name": {"type": "literal", "value": "parseNameTemplate.ts"}, "quantity": "exactly_one", "policyOverrides": {}, "exports": {"name": "file_stem", "policy": "block"}},
+              {"id": "4a35f0c5-4899-46b1-9e72-99bb443545f1", "kind": "file", "name": {"type": "literal", "value": "formatBindingValue.ts"}, "quantity": "exactly_one", "policyOverrides": {}, "exports": {"name": "file_stem", "policy": "block"}},
+              {"id": "1d2b31a6-a31a-4130-8108-14c17be4b850", "kind": "file", "name": {"type": "literal", "value": "renderNameTemplate.ts"}, "quantity": "exactly_one", "policyOverrides": {}, "exports": {"name": "file_stem", "policy": "block"}},
+              {"id": "56e061e8-8370-4caf-bf3b-6d83a06aa634", "kind": "file", "name": {"type": "literal", "value": "name-template.spec.ts"}, "quantity": "exactly_one", "policyOverrides": {}},
                         {
                           "kind": "file",
                           "name": { "type": "literal", "value": "AnatomyCheckCode.ts" },

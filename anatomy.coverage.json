@@ -1,5 +1,8 @@
 {
   "exceptions": {
+    "packages/anatomy/src/core/NameTemplateToken.ts": {"role": "types", "reason": "Discriminated token model for generic placeholder syntax; intentionally no runtime exports.", "runtimeExports": []},
+    "packages/anatomy/src/core/bindingFormatPatterns.ts": {"role": "data", "reason": "Shared naming convention patterns used by canonical capture validation and formatted references.", "runtimeExports": ["bindingFormatPatterns"]},
+    "packages/anatomy/src/core/name-template.spec.ts": {"role": "test", "reason": "Regression tests for arbitrary placeholder positions, binding reuse, optional capture and formatting.", "runtimeExports": []},
     "apps/anatomy-cli/bin/anatomy-cli.js": {
       "role": "entrypoint",
       "reason": "Executable process entrypoint; intentionally has no public runtime exports.",

@@ -21,3 +21,8 @@ export * from "./resolveAnatomyPolicies.js";
 export * from "./ResolvedAnatomyPolicy.js";
 export * from "./updateAnatomyNode.js";
 export * from "./validateAnatomyForPublish.js";
+export * from "./NameTemplateToken.js";
+export * from "./bindingFormatPatterns.js";
+export * from "./parseNameTemplate.js";
+export * from "./formatBindingValue.js";
+export * from "./renderNameTemplate.js";

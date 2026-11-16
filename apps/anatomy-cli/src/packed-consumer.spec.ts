@@ -109,6 +109,20 @@ AnatomyScanOutcomeSchema.parse(result);console.log(JSON.stringify(result));`,
 }, 120_000);
 
 describe("isolated packed Node consumer", () => {
+  it("reuses multiple placeholders at arbitrary positions in the packed SDK", async () => {
+    const source = `import {checkAnatomy, AnatomyDraftInputSchema} from 'anatomy-cli';
+const definition = AnatomyDraftInputSchema.parse({name:'Templates',purpose:'Validate ancestor scopes',structure:{rootMode:'contents',bindings:{Domain:{pattern:'[a-z]+'},Name:{format:'PascalCase'}},defaultPolicies:{missingRequired:'block',unexpectedEntry:'block',nameMismatch:'block',nestingMismatch:'block'},root:{children:[{id:'00000000-0000-4000-8000-000000000001',kind:'directory',name:{type:'placeholder',value:'_<Domain>'},quantity:'one_or_more',policyOverrides:{},children:[{id:'00000000-0000-4000-8000-000000000002',kind:'directory',name:{type:'placeholder',value:'<Name>Service<Domain:PascalCase>'},quantity:'one_or_more',policyOverrides:{},children:[]}]}]}}});
+for(const [name,valid] of [['Access',true],['wrong',false]]) {
+ const result=checkAnatomy(definition,[{kind:'directory',name:'_account',children:[{kind:'directory',name:name+'ServiceAccount',children:[]}]}])._unsafeUnwrap();
+ if(result.conforms!==valid) throw Error('template constraint lost in packed SDK');
+ if(!valid && !result.issues.some(issue=>issue.code==='binding_format_mismatch')) throw Error('missing template diagnostic');
+}
+console.log('packed-template-ok');`;
+    await writeFile(join(consumer, "template-sdk.mjs"), source);
+    const result = (await execute("node", ["template-sdk.mjs"], consumer))._unsafeUnwrap();
+    expect(result.stdout).toContain("packed-template-ok");
+  });
+
   it("installs bundled agent skills and exports the schema without model configuration", async () => {
     const destination = join(consumer, "custom agent skills");
     const args = [cliPath, "skills", "install", "--path", destination];
