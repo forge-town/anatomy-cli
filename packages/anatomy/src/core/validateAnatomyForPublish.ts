@@ -1,6 +1,7 @@
 import type { AnatomyDraftInput, AnatomyEntry, AnatomyNode } from "@anatomy-cli/schemas";
 import { err, ok, Result, type Result as ResultType } from "neverthrow";
 import { AnatomyValidationCode } from "./AnatomyValidationCode.js";
+import { parseNameTemplate } from "./parseNameTemplate.js";
 
 export type AnatomyValidationIssue = {
   code: (typeof AnatomyValidationCode)[keyof typeof AnatomyValidationCode];
@@ -9,8 +10,6 @@ export type AnatomyValidationIssue = {
   field: "id" | "name" | "binding" | "minimumMatches" | "maximumMatches" | "exports";
   message: string;
 };
-
-const PlaceholderPattern = /^[^<>/\\]*<[^<>/\\]+>[^<>/\\]*$/;
 
 const BindingNamePattern = /^[A-Za-z][A-Za-z0-9_]*$/;
 
@@ -109,7 +108,7 @@ export const validateAnatomyForPublish = (
   };
 
   const validateName = (entry: AnatomyEntry, parentId: string | null) => {
-    if (entry.name.type === "placeholder" && !PlaceholderPattern.test(entry.name.value)) {
+    if (entry.name.type === "placeholder" && !parseNameTemplate(entry.name.value)) {
       issues.push({
         code: AnatomyValidationCode.invalidPlaceholder,
         nodeId: entry.id,
@@ -153,7 +152,11 @@ export const validateAnatomyForPublish = (
     }
   };
 
-  const visitNodes = (nodes: AnatomyNode[], parentId: string | null, inheritedBindings: string[] = []) => {
+  const visitNodes = (
+    nodes: AnatomyNode[],
+    parentId: string | null,
+    inheritedBindings: string[] = [],
+  ) => {
     validateDuplicateLiteralNames(nodes, parentId);
 
     for (const node of nodes) {
@@ -192,16 +195,48 @@ export const validateAnatomyForPublish = (
       }
 
       validateName(node, parentId);
-      const captured = node.name.type === "placeholder" ? /<([^<>]+)>/.exec(node.name.value)?.[1] : undefined;
-      const availableBindings = captured ? [...inheritedBindings, captured] : inheritedBindings;
+      const availableBindings = [...inheritedBindings];
+      const tokens =
+        node.name.type === "placeholder" ? parseNameTemplate(node.name.value) : undefined;
+      let previousUnbound = false;
+      for (const token of tokens ?? []) {
+        if (token.kind === "literal") {
+          previousUnbound = false;
+          continue;
+        }
+        const known = availableBindings.includes(token.name);
+        if ((token.format && (!known || (previousUnbound && !inheritedBindings.includes(token.name)))) || (!known && previousUnbound)) {
+          issues.push({
+            code: AnatomyValidationCode.invalidPlaceholder,
+            nodeId: node.id,
+            parentId,
+            field: "name",
+            message: token.format
+              ? `Formatted reference <${token.name}> needs an ancestor capture or an earlier capture separated by a literal delimiter`
+              : `Adjacent unbound placeholders need a literal delimiter`,
+          });
+        }
+        previousUnbound = !known;
+        if (!known && !token.format) availableBindings.push(token.name);
+      }
       if (node.kind === "file" && node.exports && node.exports.name !== "file_stem") {
         const name = node.exports.name;
-        const binding = /<([^<>]+)>/.exec(name.value)?.[1];
-        if (isRealPathExpression(name.value) ||
-            (name.type === "placeholder" && (!PlaceholderPattern.test(name.value) || !binding || !availableBindings.includes(binding)))) {
+        const exportTokens =
+          name.type === "placeholder" ? parseNameTemplate(name.value) : undefined;
+        if (
+          isRealPathExpression(name.value) ||
+          (name.type === "placeholder" &&
+            (!exportTokens ||
+              exportTokens.some(
+                (token) => token.kind === "placeholder" && !availableBindings.includes(token.name),
+              )))
+        ) {
           issues.push({
-            code: AnatomyValidationCode.invalidExportName, nodeId: node.id, parentId, field: "exports",
-            message: `Export name "${name.value}" must be a name expression whose placeholder is captured by this file or an ancestor directory`,
+            code: AnatomyValidationCode.invalidExportName,
+            nodeId: node.id,
+            parentId,
+            field: "exports",
+            message: `Export name "${name.value}" must reference placeholders captured by this file or an ancestor directory`,
           });
         }
       }

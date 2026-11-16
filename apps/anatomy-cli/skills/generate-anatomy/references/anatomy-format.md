@@ -8,6 +8,8 @@ quantity 可选 exactly_one、optional、one_or_more、zero_or_more。它表示�
 
 bindings 是占位符名字到约束对象的映射。format 可选 PascalCase、camelCase、kebab-case、snake_case、SCREAMING_SNAKE_CASE，也可使用 pattern 完整匹配正则表达式。只给确实使用且有依据的占位符添加约束。
 
+名称模板支持多个占位符：`_<Domain>` 首次捕获域值，后代在任意位置复用同名占位符，例如 `<Domain:PascalCase><Name?>Service`、`<Name>Service<Domain:PascalCase>`。`:PascalCase` 是对已绑定值的显式格式转换引用，目标格式同时校验，并兼容 GitHub 等缩写内部大小写；不会重新覆盖规范捕获值。`?` 允许空捕获，兼容 `GithubService` 等没有额外 Name 的名称。普通 `<Name>` 仍要求非空并严格复用。多个首次捕获之间需要字面分隔符（按左侧最短边界匹配），相邻且未绑定时校验拒绝；兄弟目录捕获独立。实现、测试、导出和查询中都复用完整模板，不枚举域，也不声明专用前缀约束。
+
 defaultPolicies 包含 missingRequired、unexpectedEntry、nameMismatch、nestingMismatch，值均为 block、warn 或 allow。节点可以有同名字段组成的 policyOverrides。新项目通常把缺少必需项和层级错误设为 block；已有项目策略应依据用户要求决定，不能静默忽略违规。
 
 ID 可省略，读取时会生成。policyOverrides 的空对象可省略。不要创建 schemaVersion 字段或把 CLI/npm 的版本号写入定义。

@@ -8,6 +8,7 @@ import { err, ok, type Result } from "neverthrow";
 import { resolveAnatomyExportName } from "./resolveAnatomyExportName.js";
 import { anatomyRulePaths } from "./anatomyRulePaths.js";
 import { AnatomyQueryPathError } from "./AnatomyQueryPathError.js";
+import { renderNameTemplate } from "./renderNameTemplate.js";
 import { evaluateName } from "./evaluateName.js";
 import { resolveAnatomyPolicies } from "./resolveAnatomyPolicies.js";
 import {
@@ -81,11 +82,7 @@ export const queryAnatomy = (
           ? null
           : node.name.type === "literal"
             ? node.name.value
-            : node.name.value.replace(
-                /<([^<>]+)>/,
-                (placeholder, name: string) =>
-                  result.captures[name] ?? placeholder,
-              );
+            : renderNameTemplate(node.name.value, result.captures);
       return {
         rulePath: registry.get(node.id)!.rulePath,
         node,

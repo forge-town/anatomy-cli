@@ -1,5 +1,8 @@
 import { Result } from "neverthrow";
 import type { AnatomyEntry, AnatomyBinding, AnatomyBindingFormat } from "@anatomy-cli/schemas";
+import { bindingFormatPatterns } from "./bindingFormatPatterns.js";
+import { formatBindingValue } from "./formatBindingValue.js";
+import { parseNameTemplate } from "./parseNameTemplate.js";
 
 export type BindingScope = Readonly<Record<string, string>>;
 
@@ -14,50 +17,6 @@ type BindingMismatch = Exclude<NameMatch, { kind: "none" } | { kind: "match" }>;
 
 const escapeRegularExpression = (value: string): string => {
   return value.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
-};
-
-const createNamePattern = (entry: AnatomyEntry, ignoreCase = false): RegExp => {
-  if (entry.name.type === "literal") {
-    return new RegExp(
-      `^${escapeRegularExpression(entry.name.value)}$`,
-      ignoreCase ? "i" : undefined,
-    );
-  }
-
-  const openingBracket = entry.name.value.indexOf("<");
-  const closingBracket = entry.name.value.indexOf(">", openingBracket + 1);
-  const prefix = entry.name.value.slice(0, openingBracket);
-  const suffix = entry.name.value.slice(closingBracket + 1);
-  const placeholderExpression = suffix.includes(".") ? "[^./\\\\]+" : "[^/\\\\]+";
-
-  return new RegExp(
-    `^${escapeRegularExpression(prefix)}${placeholderExpression}${escapeRegularExpression(suffix)}$`,
-    ignoreCase ? "i" : undefined,
-  );
-};
-
-const parsePlaceholder = (
-  entry: AnatomyEntry,
-): { name: string; prefix: string; suffix: string } | undefined => {
-  if (entry.name.type !== "placeholder") return undefined;
-
-  const openingBracket = entry.name.value.indexOf("<");
-  const closingBracket = entry.name.value.indexOf(">", openingBracket + 1);
-  if (openingBracket < 0 || closingBracket < 0) return undefined;
-
-  return {
-    name: entry.name.value.slice(openingBracket + 1, closingBracket),
-    prefix: entry.name.value.slice(0, openingBracket),
-    suffix: entry.name.value.slice(closingBracket + 1),
-  };
-};
-
-const bindingFormatPatterns: Record<AnatomyBindingFormat, RegExp> = {
-  PascalCase: /^[A-Z][A-Za-z0-9]*$/,
-  camelCase: /^[a-z][A-Za-z0-9]*$/,
-  "kebab-case": /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-  snake_case: /^[a-z0-9]+(?:_[a-z0-9]+)*$/,
-  SCREAMING_SNAKE_CASE: /^[A-Z0-9]+(?:_[A-Z0-9]+)*$/,
 };
 
 const compilePattern = Result.fromThrowable(
@@ -111,47 +70,107 @@ export const evaluateName = (
   ignoreCase = false,
 ): NameMatch => {
   if (entry.name.type === "literal") {
-    return createNamePattern(entry, ignoreCase).test(actualName)
+    return new RegExp(
+      `^${escapeRegularExpression(entry.name.value)}$`,
+      ignoreCase ? "i" : undefined,
+    ).test(actualName)
       ? { kind: "match", captures: {} }
       : { kind: "none" };
   }
-
-  const placeholder = parsePlaceholder(entry);
-  if (!placeholder) return { kind: "none" };
-
-  const placeholderExpression = placeholder.suffix.includes(".")
-    ? "[^./\\\\]+"
-    : "[^/\\\\]+";
-  const pattern = new RegExp(
-    `^${escapeRegularExpression(placeholder.prefix)}(${placeholderExpression})${escapeRegularExpression(placeholder.suffix)}$`,
-    ignoreCase ? "i" : undefined,
-  );
-  const match = pattern.exec(actualName);
+  const tokens = parseNameTemplate(entry.name.value);
+  if (!tokens) return { kind: "none" };
+  const placeholders = tokens.filter((token) => token.kind === "placeholder");
+  const buildPattern = (fallback: boolean): string | undefined => {
+    let source = "^",
+      group = 0;
+    let previousUnbound = false;
+    const groups = new Map<string, number>();
+    for (const [index, token] of tokens.entries()) {
+      if (token.kind === "literal") {
+        source += escapeRegularExpression(token.value);
+        previousUnbound = false;
+        continue;
+      }
+      group++;
+      const known = Object.hasOwn(scope, token.name) ? scope[token.name] : undefined;
+      const previous = groups.get(token.name);
+      if (token.format && known === undefined && previous === undefined) return undefined;
+      if (token.format && known === undefined && previousUnbound) return undefined;
+      if (known === "" && !token.optional) return undefined;
+      if (!fallback && known !== undefined) {
+        const expected = token.format ? formatBindingValue(known, token.format) : known;
+        const escaped = escapeRegularExpression(expected);
+        source +=
+          "(" +
+          (token.format
+            ? escaped.replace(
+                /[A-Za-z]/g,
+                (letter) => `[${letter.toLowerCase()}${letter.toUpperCase()}]`,
+              )
+            : escaped) +
+          ")";
+      } else if (!fallback && previous !== undefined && !token.format) source += `(\\${previous})`;
+      else {
+        const excludesDot = tokens
+          .slice(index + 1)
+          .some((part) => part.kind === "literal" && part.value.includes("."));
+        source +=
+          "(" + (excludesDot ? "[^./\\\\]" : "[^/\\\\]") + (token.optional ? "*?" : "+?") + ")";
+      }
+      if (previous === undefined) groups.set(token.name, group);
+      previousUnbound = known === undefined && previous === undefined && token.format === undefined;
+    }
+    return source + "$";
+  };
+  const exactPattern = buildPattern(false);
+  if (!exactPattern) return { kind: "none" };
+  const flags = ignoreCase ? "i" : undefined;
+  const match =
+    new RegExp(exactPattern, flags).exec(actualName) ??
+    new RegExp(buildPattern(true)!, flags).exec(actualName);
   if (!match) return { kind: "none" };
-
-  const capturedValue = match[1];
-  if (capturedValue === undefined) return { kind: "none" };
-
-  const boundValue = scope[placeholder.name];
-  if (boundValue !== undefined && boundValue !== capturedValue) {
-    return {
-      kind: "binding_consistency_mismatch",
-      name: placeholder.name,
-      expected: boundValue,
-      actual: capturedValue,
-    };
-  }
-
-  const binding = bindings[placeholder.name];
-  if (binding !== undefined) {
-    const bindingMismatch = matchesBinding(binding, capturedValue);
-    if (bindingMismatch !== undefined) {
-      return { ...bindingMismatch, name: placeholder.name };
+  const captures: Record<string, string> = {};
+  for (const [index, placeholder] of placeholders.entries()) {
+    const captured = match[index + 1]!;
+    const bound = Object.hasOwn(captures, placeholder.name)
+      ? captures[placeholder.name]
+      : Object.hasOwn(scope, placeholder.name)
+        ? scope[placeholder.name]
+        : undefined;
+    if (placeholder.format) {
+      if (bound === undefined) return { kind: "none" };
+      if (!bindingFormatPatterns[placeholder.format].test(captured))
+        return {
+          kind: "binding_format_mismatch",
+          name: placeholder.name,
+          value: captured,
+          format: placeholder.format,
+        };
+      const expected = formatBindingValue(bound, placeholder.format);
+      if (captured.toLowerCase() !== expected.toLowerCase())
+        return {
+          kind: "binding_consistency_mismatch",
+          name: placeholder.name,
+          expected,
+          actual: captured,
+        };
+    } else {
+      if (bound !== undefined && bound !== captured)
+        return {
+          kind: "binding_consistency_mismatch",
+          name: placeholder.name,
+          expected: bound,
+          actual: captured,
+        };
+      const binding = Object.hasOwn(bindings, placeholder.name)
+        ? bindings[placeholder.name]
+        : undefined;
+      if (binding && !(placeholder.optional && captured === "")) {
+        const mismatch = matchesBinding(binding, captured);
+        if (mismatch) return { ...mismatch, name: placeholder.name };
+      }
+      if (bound === undefined) captures[placeholder.name] = captured;
     }
   }
-
-  return {
-    kind: "match",
-    captures: boundValue === undefined ? { [placeholder.name]: capturedValue } : {},
-  };
+  return { kind: "match", captures };
 };
