@@ -35,7 +35,7 @@ export const formatAgentCheck = (
         ? issue.path === "." ? tree : entries.flatMap((entry) => entry.kind === "directory" ? entry.children : [])
         : entries;
       return {
-        ...issue, rulePath: rule?.rulePath ?? null, expected: rule?.node ?? null,
+        ...issue, rulePath: issue.dependency ? `/dependencies/rules/${issue.dependency.ruleIndex}` : rule?.rulePath ?? null, expected: rule?.node ?? null,
         actual: actual.map(({ kind, name }) => ({ kind, name })),
       };
     }),

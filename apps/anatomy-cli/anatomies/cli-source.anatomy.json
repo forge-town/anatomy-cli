@@ -576,6 +576,26 @@
             "value": "skill-install.spec.ts"
           },
           "quantity": "exactly_one"
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "collectDependencySources.ts"
+          },
+          "quantity": "exactly_one",
+          "exports": {
+            "name": "file_stem",
+            "policy": "block"
+          }
+        },
+        {
+          "kind": "file",
+          "name": {
+            "type": "literal",
+            "value": "dependency-boundaries.spec.ts"
+          },
+          "quantity": "exactly_one"
         }
       ]
     }

@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { AnatomyDependencyIssueSchema } from "./AnatomyDependencyIssueSchema.js";
 import { AnatomyNodeSchema } from "./AnatomyNodeSchema.js";
 import { AnatomyPolicyValueSchema } from "./AnatomyPolicyValueSchema.js";
 import { AnatomySourceExportsSchema } from "./AnatomySourceExportsSchema.js";
@@ -8,6 +9,7 @@ export const AnatomyCheckWithDiagnosticsSchema = z.object({
   conforms: z.boolean(),
   summary: z.object({ block: z.number(), warn: z.number(), allow: z.number() }),
   issues: z.array(z.object({
+    dependency: AnatomyDependencyIssueSchema.optional(),
     code: z.string(),
     severity: AnatomyPolicyValueSchema,
     path: z.string(),

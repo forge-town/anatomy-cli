@@ -420,6 +420,100 @@ explicitly before replacing it. The npm package includes all resources, and the
 one-shot CLI installer retains its own copy after its download cache disappears.
 Uninstalling the CLI leaves copies installed for agents in place.
 
+## Dependency boundaries
+
+Add optional `dependencies` to an `anatomy.json` definition. Rules forbid **direct local imports** between path groups; all matching rules apply, including type-only references:
+
+```json
+"dependencies": {
+  "rules": [{
+    "name": "ui-must-not-import-data-internals",
+    "from": ["src/ui/**"],
+    "to": ["src/data/internal/**"],
+    "policy": "block"
+  }],
+  "aliases": { "@/*": ["src/*"] }
+}
+```
+
+Run normal checks; no extra mode is needed:
+
+```bash
+anatomy . --format json
+anatomy . --watch
+anatomy . --bundle ./anatomy.bundle.json --format json
+```
+
+A rule has a unique `name`, non-empty `from`/`to` glob arrays, and `policy` of
+`block` (default) or `warn`. Patterns are case-sensitive, anchored, root-relative
+POSIX paths. `*` matches within one segment; a whole `**` segment matches zero or
+more segments. No negation, braces, character classes, `?`, absolute paths or
+`..` segments are supported. Pattern characters are ASCII letters/digits plus
+`_ @ . * / -`. Unmatched edges are allowed. To enforce a public entry point,
+forbid consumer imports to that module's internal directories; do not forbid the
+public index. Boundaries check direct edges, without following re-export chains.
+
+Aliases are explicit local mappings similar to TypeScript `paths`: each key may
+contain at most one `*`, and its targets are ordered root-relative paths. Exact
+keys take priority over wildcard keys; wildcard matches use TypeScript's prefix
+priority and target fallbacks. The analyzer resolves relative paths, directory
+indices and JavaScript-to-TypeScript extension substitution using a virtual
+TypeScript Bundler resolver. It does not read `tsconfig.json`, package exports or
+real node_modules. Unmapped bare specifiers (including Node builtins and workspace
+package names) are external and excluded; **declare aliases for workspace imports
+you want checked**. Local imports absent from the selected inventory, including
+ignored or outside-target files, produce errors. Asset formats unsupported by the
+resolver also produce errors.
+
+Selected JS/TS source files are parsed for static imports, side effects,
+re-exports, type-only imports, `import("...")` type references, import-equals,
+and literal dynamic imports. JSDoc/comment references are not analyzed. Computed dynamic imports and direct CommonJS
+`require(...)` calls produce operational errors. No target code is executed.
+Runtime loader hooks, aliased require functions, AMD and computed reflection are
+outside this static analysis; it is not a general proof of runtime dependencies.
+
+JSON dependency findings include `dependency` with `ruleName`, `ruleIndex`,
+`specifier`, resolved `targetPath` and one-based `line`/`column`. Single-definition
+reports link `rulePath` to `/dependencies/rules/N`; Bundle findings retain the
+owning definition, mount chain and mount-relative `scopePath`. Each mounted
+definition's patterns and aliases are relative to its mount. All paths in edge
+metadata remain relative to the overall scan root. Complete inventory is shared
+across mounts; patterns cannot reach a sibling with `..`, so declare cross-module
+rules in their common parent definition.
+
+Exit codes remain 0 for no blocks (warnings may exist), 1 for forbidden blocked
+edges, and 2 for missing source, invalid syntax or unresolved/unsupported local
+analysis. Error outcomes do not certify a partial pass. Existing definitions
+without `dependencies` keep their existing behavior.
+
+The data-only SDK supports these boundaries through `scanAnatomy` when you supply
+all selected source text. A separate dependency-only API is available:
+
+```ts
+import { checkAnatomyDependencies } from "anatomy-cli";
+
+const result = await checkAnatomyDependencies({
+  config: definition.dependencies,
+  files: ["src/ui/view.ts", "src/data/internal/model.ts"],
+  sources: { "src/ui/view.ts": 'import "@/data/internal/model.js";' },
+});
+if (result.isErr()) throw result.error;
+console.log(result.value);
+```
+
+`files` is the complete root-relative inventory; `sources` must include every
+JS/TS file matching any rule's `from`. Unselected target files need no source
+text. A mounted caller may pass `scope` (default `.`). The SDK reads no filesystem
+and never fetches dependencies. TypeScript loads only when a selected source
+needs analysis. Existing source limits apply: 5 MB per selected file, 20 MB total.
+Structural APIs (`checkAnatomy`, `planAnatomyCheck`, queries) do not evaluate
+these edges; use `scanAnatomy`, `checkAnatomyDependencies` or the CLI for dependency
+conformance. Model generation validates dependency configuration but does not
+verify actual edges.
+
+The repository's own contract now prevents the schemas package from importing
+engine/CLI source and prevents the engine from importing CLI source.
+
 ## Watch mode
 
 ```bash

@@ -109,6 +109,7 @@ AnatomyScanOutcomeSchema.parse(result);console.log(JSON.stringify(result));`,
 }, 120_000);
 
 describe("isolated packed Node consumer", () => {
+
   it("reuses multiple placeholders at arbitrary positions in the packed SDK", async () => {
     const source = `import {checkAnatomy, AnatomyDraftInputSchema} from 'anatomy-cli';
 const definition = AnatomyDraftInputSchema.parse({name:'Templates',purpose:'Validate ancestor scopes',structure:{rootMode:'contents',bindings:{Domain:{pattern:'[a-z]+'},Name:{format:'PascalCase'}},defaultPolicies:{missingRequired:'block',unexpectedEntry:'block',nameMismatch:'block',nestingMismatch:'block'},root:{children:[{id:'00000000-0000-4000-8000-000000000001',kind:'directory',name:{type:'placeholder',value:'_<Domain>'},quantity:'one_or_more',policyOverrides:{},children:[{id:'00000000-0000-4000-8000-000000000002',kind:'directory',name:{type:'placeholder',value:'<Name>Service<Domain:PascalCase>'},quantity:'one_or_more',policyOverrides:{},children:[]}]}]}}});
@@ -122,6 +123,46 @@ console.log('packed-template-ok');`;
     const result = (await execute("node", ["template-sdk.mjs"], consumer))._unsafeUnwrap();
     expect(result.stdout).toContain("packed-template-ok");
   });
+
+  it("checks dependency boundaries in packed CLI/SDK and watches source edits", async () => {
+    const target = join(consumer, "dependency-project");
+    for (const name of ["ui", "data"]) await mkdir(join(target, name), { recursive: true });
+    const view = join(target, "ui/view.ts");
+    await writeFile(view, "export const view = 1;");
+    await writeFile(join(target, "data/model.ts"), "export const model = 1;");
+    const config = join(consumer, "dependencies.json");
+    const dependencies = { rules: [{ name: "no-ui-data", from: ["ui/**"], to: ["data/**"] }], aliases: { "@/*": ["*"] } };
+    const definition = { name: "Dependency fixture", purpose: "Packed dependency checks", dependencies, structure: {
+      rootMode: "contents", defaultPolicies: { missingRequired: "block", unexpectedEntry: "block", nameMismatch: "block", nestingMismatch: "block" },
+      root: { children: ["ui", "data"].map((name) => ({ kind: "directory", name: { type: "literal", value: name }, quantity: "exactly_one", children: [{ kind: "file", name: { type: "literal", value: name === "ui" ? "view.ts" : "model.ts" }, quantity: "exactly_one" }] })) },
+    } };
+    await writeFile(config, JSON.stringify(definition));
+    await writeFile(join(consumer, "dependencies-sdk.mjs"), `import {checkAnatomyDependencies} from 'anatomy-cli';
+const result = await checkAnatomyDependencies({config:${JSON.stringify(dependencies)}, files:['ui/view.ts','data/model.ts'], sources:{'ui/view.ts':'import "@/data/model.js";'}});
+if(result.isErr()) throw result.error; console.log(JSON.stringify(result.value));`);
+    const sdk = (await execute(process.execPath, ["dependencies-sdk.mjs"], consumer))._unsafeUnwrap();
+    expect(JSON.parse(sdk.stdout)[0]).toMatchObject({ code: "dependency_forbidden", targetPath: "data/model.ts" });
+    const child = spawn(process.execPath, [cliPath, target, "--definition", config, "--watch"], { cwd: consumer, stdio: ["ignore", "pipe", "pipe"] });
+    watchChildren.push(child);
+    let output = "";
+    child.stdout!.on("data", (data) => { output += data.toString(); });
+    child.stderr!.resume();
+    const exited = new Promise<number | null>((done) => child.once("exit", (code) => done(code)));
+    await vi.waitFor(() => expect(output).toContain("Anatomy check: PASS"), { timeout: 10_000 });
+    await writeFile(view, 'import "@/data/model.js";');
+    await vi.waitFor(() => expect(output).toContain("dependency_forbidden"), { timeout: 10_000 });
+    const blocked = await execute(process.execPath, [cliPath, target, "--definition", config, "--format", "json"], consumer);
+    expect(blocked.isErr()).toBe(true);
+    if (blocked.isErr()) expect(blocked.error).toMatchObject({ code: 1 });
+    await writeFile(view, 'const load = import(dynamicPath);');
+    const unsupported = await execute(process.execPath, [cliPath, target, "--definition", config, "--format", "json"], consumer);
+    expect(unsupported.isErr()).toBe(true);
+    if (unsupported.isErr()) expect(unsupported.error).toMatchObject({ code: 2, stdout: "" });
+    await writeFile(view, "export const view = 1;");
+    await vi.waitFor(() => expect(output.match(/Anatomy check: PASS/g)?.length).toBeGreaterThanOrEqual(2), { timeout: 10_000 });
+    child.kill("SIGTERM");
+    expect(await exited).toBe(0);
+  }, 30_000);
 
   it("installs bundled agent skills and exports the schema without model configuration", async () => {
     const destination = join(consumer, "custom agent skills");

@@ -1,4 +1,5 @@
 export const AnatomyCheckCode = {
+  dependencyForbidden: "dependency_forbidden",
   missingRequired: "missing_required",
   unexpectedEntry: "unexpected_entry",
   nameMismatch: "name_mismatch",

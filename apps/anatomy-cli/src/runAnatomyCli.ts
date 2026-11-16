@@ -1,5 +1,8 @@
+import { collectDependencySources } from "./collectDependencySources.js";
+import { checkAnatomyDependencies } from "@anatomy-cli/anatomy";
 import { runAnatomyBundleCli } from "./runAnatomyBundleCli.js";
 import {
+  anatomyFilePaths,
   checkAnatomy,
   planAnatomyCheck,
   queryAnatomy,
@@ -141,6 +144,21 @@ export const runAnatomyCli = async (
         definitionPath.value,
       ),
     );
+  }
+
+  if (definition.value.dependencies) {
+    const files = anatomyFilePaths(tree.value);
+    const config = definition.value.dependencies;
+    const sources = await collectDependencySources(options.targetPath, files, [{ config, scope: "." }]);
+    if (sources.isErr()) return err(sources.error);
+    const boundaries = await checkAnatomyDependencies({ config, files, sources: sources.value });
+    if (boundaries.isErr()) return err(boundaries.error);
+    for (const dependency of boundaries.value) {
+      checked.value.issues.push({ code: dependency.code, path: dependency.path, severity: dependency.severity,
+        constraintId: null, message: dependency.message, dependency });
+      checked.value.summary[dependency.severity]++;
+    }
+    checked.value.conforms = checked.value.summary.block === 0;
   }
 
   dependencies.writeOutput(

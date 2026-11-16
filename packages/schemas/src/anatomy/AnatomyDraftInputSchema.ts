@@ -1,5 +1,6 @@
 import { z } from "zod/v4";
 
+import { AnatomyDependencyConfigSchema } from "./AnatomyDependencyConfigSchema.js";
 import { AnatomyStructureSchema } from "./AnatomyStructureSchema.js";
 
 /** Author-managed definition used to create or replace an Anatomy draft. */
@@ -10,6 +11,8 @@ export const AnatomyDraftInputSchema = z.strictObject({
   purpose: z.string().trim().max(2000),
   /** Recursive structure contract composed of files and directories. */
   structure: AnatomyStructureSchema,
+  /** Optional local dependency boundaries, evaluated by full scans. */
+  dependencies: AnatomyDependencyConfigSchema.optional(),
 });
 
 export type AnatomyDraftInput = z.infer<typeof AnatomyDraftInputSchema>;

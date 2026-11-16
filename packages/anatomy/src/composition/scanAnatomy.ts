@@ -1,3 +1,4 @@
+import { checkAnatomyDependencies } from "../source/checkAnatomyDependencies.js";
 import type {
   AnatomyScanOutcome,
   AnatomySourceExports,
@@ -85,6 +86,18 @@ export const scanAnatomy = async (
           ],
         };
       issues.push(...checked.value.issues.map(finding));
+    }
+  }
+  for (const boundary of planned.value.dependencies) {
+    const result = await checkAnatomyDependencies({ config: boundary.config, scope: boundary.scope, files: planned.value.files, sources });
+    if (result.isErr()) return { operation: "check", status: "error", conforms: null, diagnostics: [{ code: "source_analysis_error", message: result.error.message, entryPath: result.error.path }] };
+    for (const dependency of result.value) {
+      const origin = { ...boundary.origin, rulePath: `/dependencies/rules/${dependency.ruleIndex}` };
+      const instanceKey = JSON.stringify([origin.definitionKey, boundary.mounts]);
+      issues.push({ code: dependency.code, severity: dependency.severity, message: dependency.message,
+        entryPath: dependency.path, scopePath: boundary.scope, origin, mounts: boundary.mounts, captures: {},
+        policyOrigin: { origin, policy: "dependencies" }, instanceKey,
+        issueKey: JSON.stringify([instanceKey, origin.rulePath, dependency.path, dependency.targetPath, dependency.line, dependency.column]), dependency });
     }
   }
   issues.sort((a, b) =>

@@ -1015,6 +1015,44 @@
       "role": "test",
       "reason": "Executable test suite; no public runtime API is exported.",
       "runtimeExports": []
+    },
+    "apps/anatomy-cli/src/dependency-boundaries.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/anatomy/src/source/dependency-boundaries.spec.ts": {
+      "role": "test",
+      "reason": "Executable test suite; no public runtime API is exported.",
+      "runtimeExports": []
+    },
+    "packages/schemas/src/anatomy/AnatomyDependencyConfigSchema.ts": {
+      "role": "schema",
+      "reason": "Dedicated Zod boundary schema with inferred types.",
+      "runtimeExports": [
+        "AnatomyDependencyConfigSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDependencyIssueSchema.ts": {
+      "role": "schema",
+      "reason": "Dedicated Zod boundary schema with inferred types.",
+      "runtimeExports": [
+        "AnatomyDependencyIssueSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDependencyPathPatternSchema.ts": {
+      "role": "schema",
+      "reason": "Dedicated Zod boundary schema with inferred types.",
+      "runtimeExports": [
+        "AnatomyDependencyPathPatternSchema"
+      ]
+    },
+    "packages/schemas/src/anatomy/AnatomyDependencyRequestSchema.ts": {
+      "role": "schema",
+      "reason": "Dedicated Zod boundary schema with inferred types.",
+      "runtimeExports": [
+        "AnatomyDependencyRequestSchema"
+      ]
     }
   }
 }

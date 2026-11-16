@@ -150,6 +150,34 @@ replacing it. Resources are included in npm and retained by the one-shot CLI
 installer after its download cache disappears. CLI uninstall leaves agent copies
 in place.
 
+## Dependency boundaries
+
+Add optional `dependencies` to an Anatomy definition to forbid local module edges:
+
+```json
+"dependencies": {
+  "rules": [{ "name": "no-ui-data-internals", "from": ["src/ui/**"], "to": ["src/data/internal/**"], "policy": "block" }],
+  "aliases": { "@/*": ["src/*"] }
+}
+```
+
+Normal single-definition, Bundle and watch scans check static JS/TS imports,
+re-exports, type references and literal dynamic imports. Reports include the
+rule, resolved target and source line/column. `warn` keeps the scan conforming;
+`block` exits 1. Missing source, invalid syntax and unresolved/unsupported local
+imports exit 2. No source is executed.
+
+Explicit aliases are required for workspace packages: unmapped bare imports are
+external and excluded. There is no automatic tsconfig/package-exports discovery
+or transitive dependency analysis. Computed dynamic imports and direct CommonJS
+require calls cannot be certified. Patterns support `*` and whole `**` segments.
+
+The SDK exports `checkAnatomyDependencies` as an awaitable ResultAsync API for
+supplied `config`, complete `files`, selected `sources`, and optional mount
+`scope`. Full `scanAnatomy` also applies declared boundaries; structural/query
+helpers do not certify them. See the [boundary guide](https://github.com/forge-town/anatomy-cli#dependency-boundaries)
+for full semantics, source limits, examples and unsupported cases.
+
 ## Watch mode
 
 ```bash

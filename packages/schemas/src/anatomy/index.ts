@@ -25,3 +25,7 @@ export * from "./AnatomyFunctionExportRuleSchema.js";
 export * from "./AnatomySourceExportsSchema.js";
 export * from "./AnatomyFunctionExportCheckSchema.js";
 export * from "./createAnatomyNodeId.js";
+export * from "./AnatomyDependencyConfigSchema.js";
+export * from "./AnatomyDependencyIssueSchema.js";
+export * from "./AnatomyDependencyRequestSchema.js";
+export * from "./AnatomyDependencyPathPatternSchema.js";

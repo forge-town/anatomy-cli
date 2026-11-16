@@ -31,6 +31,6 @@ export const runAnatomyGeneration = (options: AnatomyCliOptions, writeOutput: (v
       process.stderr.write(`Saved ${resolve(options.outputPath)}.\n`);
     } else writeOutput(generated.value.json.trimEnd());
     const summary = generated.value.summary;
-    process.stderr.write(`Generated rules validated. Observed structure: ${summary.block} block, ${summary.warn} warn, ${summary.allow} allow. Source exports were not checked.\n`);
+    process.stderr.write(`Generated rules validated. Observed structure: ${summary.block} block, ${summary.warn} warn, ${summary.allow} allow. Source exports and dependency edges were not checked.\n`);
     return 0;
   })(), (cause) => cause instanceof AnatomyModelError ? cause : new AnatomyModelError("Unable to generate or save Anatomy; existing files were not overwritten.", { cause }));

@@ -1,8 +1,11 @@
 import { z } from "zod/v4";
+import { AnatomyDependencyIssueSchema } from "../anatomy/AnatomyDependencyIssueSchema.js";
 import { AnatomyOriginSchema } from "./AnatomyOriginSchema.js";
 import { AnatomyMountSchema } from "./AnatomyMountSchema.js";
 import { AnatomyPolicyValueSchema } from "../anatomy/AnatomyPolicyValueSchema.js";
 export const AnatomyFindingSchema = z.strictObject({
+  /** Direct edge details when this is a dependency finding. */
+  dependency: AnatomyDependencyIssueSchema.optional(),
   code: z.string(),
   severity: AnatomyPolicyValueSchema,
   message: z.string(),
